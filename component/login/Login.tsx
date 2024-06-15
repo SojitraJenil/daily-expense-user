@@ -1,5 +1,4 @@
 import React from "react";
-import { FcGoogle } from "react-icons/fc";
 
 function Login() {
     return (
@@ -51,7 +50,6 @@ function Login() {
                         </div>
                     </form>
                     <button className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-70 duration-300 text-[#002D74]">
-                        <FcGoogle className="text-2xl me-4" />
                         Login with Google
                     </button>
                 </div>
