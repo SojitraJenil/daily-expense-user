@@ -58,14 +58,13 @@ const AddExpense = () => {
         );
     };
 
-    const handleAddClick=()=>{
-        const arr= []
-        
+    const handleAddClick = () => {
+        const arr = []
     }
 
     return (
         <div className="py-5">
-                      <Container maxWidth="lg"> {/* Use maxWidth to limit width and center content */}
+            <Container maxWidth="lg"> {/* Use maxWidth to limit width and center content */}
                 <div className="border border-gray-300 p-5">
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} sm={3}>
@@ -125,14 +124,14 @@ const AddExpense = () => {
                         <Grid item xs={12} sm={2} container justifyContent="flex-end">
                             <Tooltip title="Add">
                                 <IconButton onClick={handleAddClick}>
-                                    <ControlPointIcon/>
+                                    <ControlPointIcon />
                                 </IconButton>
                             </Tooltip>
+                            <Button className="bg-black text-white px-4">Submit</Button>
                         </Grid>
-                        
                     </Grid>
                 </div>
-            </Container>  
+            </Container>
         </div>
     );
 };
