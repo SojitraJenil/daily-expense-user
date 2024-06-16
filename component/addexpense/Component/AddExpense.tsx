@@ -1,14 +1,13 @@
-import { Button, Chip, Container, Grid, IconButton, TextField, Tooltip } from "@mui/material";
-import React from "react";
+import React from 'react'
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { Theme, useTheme } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
+import { Button, Chip, Container, Grid, IconButton, TextField, Tooltip } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -20,7 +19,7 @@ const MenuProps = {
             width: 250,
         },
     },
-};
+}
 
 const names = [
     'Oliver Hansen',
@@ -57,17 +56,14 @@ const AddExpense = () => {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
-
-    const handleAddClick=()=>{
-        const arr= []
-        
-    }
-
     return (
-        <div className="py-5">
-                      <Container maxWidth="lg"> {/* Use maxWidth to limit width and center content */}
+        <div>
+            <Container maxWidth="lg"> {/* Use maxWidth to limit width and center content */}
                 <div className="border border-gray-300 p-5">
                     <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={1}>
+                            <p>1</p>
+                        </Grid>
                         <Grid item xs={12} sm={3}>
                             <FormControl sx={{ minWidth: 120, width: '100%' }}> {/* Adjust width based on screen size */}
                                 <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
@@ -122,19 +118,14 @@ const AddExpense = () => {
                                 </IconButton>
                             </Tooltip>
                         </Grid>
-                        <Grid item xs={12} sm={2} container justifyContent="flex-end">
-                            <Tooltip title="Add">
-                                <IconButton onClick={handleAddClick}>
-                                    <ControlPointIcon/>
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                        
                     </Grid>
                 </div>
-            </Container>  
+                <div>
+                    <input type='submit'>Submit</input>
+                </div>
+            </Container>
         </div>
-    );
-};
+    )
+}
 
-export default AddExpense;
+export default AddExpense
