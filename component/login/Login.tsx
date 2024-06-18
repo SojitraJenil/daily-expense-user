@@ -72,7 +72,7 @@ const Login: React.FC = () => {
                 mobileNumber: "",
                 password: "",
             });
-            router.push('/');
+            router.push('/expense');
         } catch (error) {
             console.error("Error adding document: ", error);
             alert("Error adding document: " + error);
