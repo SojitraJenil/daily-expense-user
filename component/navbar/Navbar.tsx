@@ -16,7 +16,6 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
-import { log } from 'console';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -79,8 +78,11 @@ export default function PrimarySearchAppBar() {
         setAnchorEl(null);
         handleMobileMenuClose();
     };
+
     const handleLogout = () => {
-        router.push('/login')
+        localStorage.removeItem('username');
+        localStorage.removeItem('mobileNumber');
+        router.push('/login');
         handleMobileMenuClose();
     };
 
@@ -185,7 +187,7 @@ export default function PrimarySearchAppBar() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        Welcome , {Name} , {Mobile_No}
+                        Welcome, {Name ? Name : 'Guest'}, {Mobile_No ? Mobile_No : ''}
                     </Typography>
                     <Search>
                         <SearchIconWrapper>

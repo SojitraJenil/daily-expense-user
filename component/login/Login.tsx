@@ -68,8 +68,11 @@ const Login: React.FC = () => {
             setLoader(true);
             await addDoc(collection(db, "users"), formValues);
 
-            localStorage.setItem('username', formValues.name);
-            localStorage.setItem('mobileNumber', formValues.mobileNumber);
+            // Store in localStorage (client-side only)
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('username', formValues.name);
+                localStorage.setItem('mobileNumber', formValues.mobileNumber);
+            }
 
             setFormValues({
                 name: "",
@@ -86,15 +89,18 @@ const Login: React.FC = () => {
     };
 
     useEffect(() => {
-        const storedName = localStorage.getItem('username');
-        const storedMobileNumber = localStorage.getItem('mobileNumber');
+        // Initialize formValues from localStorage (client-side only)
+        if (typeof window !== 'undefined') {
+            const storedName = localStorage.getItem('username');
+            const storedMobileNumber = localStorage.getItem('mobileNumber');
 
-        if (storedName && storedMobileNumber) {
-            setFormValues({
-                name: storedName,
-                mobileNumber: storedMobileNumber,
-                password: "",
-            });
+            if (storedName && storedMobileNumber) {
+                setFormValues({
+                    name: storedName,
+                    mobileNumber: storedMobileNumber,
+                    password: "",
+                });
+            }
         }
     }, []);
 
