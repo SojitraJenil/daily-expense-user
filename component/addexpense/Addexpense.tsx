@@ -63,78 +63,81 @@ const AddExpense = () => {
     }
 
     return (
-        <div className="py-5">
-            <Container maxWidth="lg">
-                <div className="border border-gray-300 p-5">
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} sm={3}>
-                            <FormControl sx={{ minWidth: 120, width: '100%' }}>
-                                <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
-                                <Select
-                                    labelId="demo-multiple-chip-label"
-                                    id="demo-multiple-chip"
-                                    multiple
-                                    value={personName}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                                    renderValue={(selected) => (
-                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                            {selected.map((value) => (
-                                                <Chip key={value} label={value} />
-                                            ))}
-                                        </Box>
-                                    )}
-                                    MenuProps={MenuProps}
-                                >
-                                    {names.map((name) => (
-                                        <MenuItem
-                                            key={name}
-                                            value={name}
-                                            style={getStyles(name, personName, theme)}
-                                        >
-                                            {name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+        <>
+            <div className="py-5">
+                <Container maxWidth="lg">
+                    <div className="border border-gray-300 p-5">
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={12} sm={3}>
+                                <FormControl sx={{ minWidth: 120, width: '100%' }}>
+                                    <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+                                    <Select
+                                        labelId="demo-multiple-chip-label"
+                                        id="demo-multiple-chip"
+                                        multiple
+                                        value={personName}
+                                        onChange={handleChange}
+                                        input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                                        renderValue={(selected) => (
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                {selected.map((value) => (
+                                                    <Chip key={value} label={value} />
+                                                ))}
+                                            </Box>
+                                        )}
+                                        MenuProps={MenuProps}
+                                    >
+                                        {names.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    label="Category"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    label="Amount"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={2} container justifyContent="flex-end">
+                                <Tooltip title="Delete">
+                                    <IconButton>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} sm={2} container justifyContent="flex-end">
+                                <Tooltip title="Add">
+                                    <IconButton onClick={handleAddClick}>
+                                        <ControlPointIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                label="Category"
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                label="Amount"
-                                variant="outlined"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={2} container justifyContent="flex-end">
-                            <Tooltip title="Delete">
-                                <IconButton>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                        <Grid item xs={12} sm={2} container justifyContent="flex-end">
-                            <Tooltip title="Add">
-                                <IconButton onClick={handleAddClick}>
-                                    <ControlPointIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                    </Grid>
-                </div>
-                <div className="justify-center mx-auto py-2 flex">
-                    <Button className="bg-black text-white px-4">Submit</Button>
-                </div>
-            </Container>
-        </div>
+                    </div>
+                    <div className="justify-center mx-auto py-2 flex">
+                        <Button className="bg-black text-white px-4">Submit</Button>
+                    </div>
+                </Container>
+            </div>
+        </>
+
     );
 };
 
