@@ -15,6 +15,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useRouter } from 'next/router';
+import { log } from 'console';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -57,6 +59,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+    const router = useRouter();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -76,12 +79,20 @@ export default function PrimarySearchAppBar() {
         setAnchorEl(null);
         handleMobileMenuClose();
     };
+    const handleLogout = () => {
+        router.push('/login')
+        handleMobileMenuClose();
+    };
 
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
     const menuId = 'primary-search-account-menu';
+
+    const Name = localStorage.getItem('username');
+    const Mobile_No = localStorage.getItem('mobileNumber');
+
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}
@@ -98,8 +109,8 @@ export default function PrimarySearchAppBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
     );
 
@@ -174,7 +185,7 @@ export default function PrimarySearchAppBar() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        MUI
+                        Welcome , {Name} , {Mobile_No}
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
