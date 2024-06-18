@@ -80,8 +80,6 @@ export default function PrimarySearchAppBar() {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('mobileNumber');
         router.push('/login');
         handleMobileMenuClose();
     };
@@ -91,9 +89,6 @@ export default function PrimarySearchAppBar() {
     };
 
     const menuId = 'primary-search-account-menu';
-
-    const Name = localStorage.getItem('username');
-    const Mobile_No = localStorage.getItem('mobileNumber');
 
     const renderMenu = (
         <Menu
@@ -187,7 +182,7 @@ export default function PrimarySearchAppBar() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        Welcome, {Name ? Name : 'Guest'}, {Mobile_No ? Mobile_No : ''}
+                        Welcome
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
