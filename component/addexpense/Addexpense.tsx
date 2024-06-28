@@ -1,144 +1,127 @@
-import { Button, Chip, Container, Grid, IconButton, TextField, Tooltip } from "@mui/material";
-import React from "react";
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import { Theme, useTheme } from '@mui/material/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import FormControl from '@mui/material/FormControl';
+// import React from "react";
+// import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+// import { IoMdArrowRoundDown, IoMdArrowRoundUp } from "react-icons/io";
+// import { Chart as ChartJs } from "react-chartjs-2";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+// // Simplified Card component
+// const Card = () => {
+//     return (
+//         <Box
+//             p="6"
+//             border=".1px solid"
+//             borderColor="gray.50"
+//             overflow="hidden"
+//             borderRadius="10"
+//             background="white"
+//         >
+//         </Box>
+//     );
+// };
 
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
+// // Addexpense component
+// const Addexpense = () => {
+//     const expense = 500;
+//     const income = 1000;
 
-const names = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder',
-];
+//     return (
+//         <Card mt="9" display="flex">
+//             <Heading size="sm" color="gray.700">
+//                 Reports
+//             </Heading>
+//             <Flex
+//                 w="full"
+//                 justifyContent="center"
+//                 alignItems="center"
+//                 flexDirection={{
+//                     base: "column",
+//                     sm: "column",
+//                     md: "column",
+//                     lg: "row",
+//                     xl: "row",
+//                 }}
+//             >
+//                 <Box
+//                     flex={1}
+//                     mt="10"
+//                     ml={{ base: 0, lg: -20 }}
+//                     mr="4"
+//                     width="300px"
+//                     height="300px"
+//                     display="flex"
+//                     alignItems="center"
+//                     justifyContent="center"
+//                 >
+//                     <ChartJs
+//                         data={{
+//                             labels: ["Income", "Expense"],
+//                             datasets: [
+//                                 {
+//                                     data: [income, expense],
+//                                     backgroundColor: ["#48BB78", "#F56565"],
+//                                 },
+//                             ],
+//                         }}
+//                         type="doughnut"
+//                     />
+//                 </Box>
+//                 <Flex
+//                     flex={1}
+//                     w="full"
+//                     flexDirection="column"
+//                     alignItems="center"
+//                     justifyContent="space-evenly"
+//                     ml={{ base: 0, lg: -6 }}
+//                     mr="2"
+//                 >
+//                     <Heading size="md" mb="4" color="gray.700">
+//                         Your Balance $ {income - expense}
+//                     </Heading>
+//                     <Flex
+//                         justifyContent="space-evenly"
+//                         alignItems="center"
+//                         bg="gray.50"
+//                         w={["full", "full", "full", "80%", "80%"]}
+//                         h="100px"
+//                         border="1px solid"
+//                         borderColor="gray.100"
+//                     >
+//                         <IoMdArrowRoundUp color="#48BB78" fontSize="30px" />
+//                         <Flex flexDirection="column">
+//                             <Heading color="gray.700">$ {income}</Heading>
+//                             <Text color="gray.500">Total Income</Text>
+//                         </Flex>
+//                     </Flex>
+//                     <Flex
+//                         justifyContent="space-evenly"
+//                         alignItems="center"
+//                         bg="gray.50"
+//                         w={["full", "full", "full", "80%", "80%"]}
+//                         h="100px"
+//                         mt="3"
+//                         border="1px solid"
+//                         borderColor="gray.100"
+//                     >
+//                         <IoMdArrowRoundDown color="#F56565" fontSize="30px" />
+//                         <Flex flexDirection="column">
+//                             <Heading color="gray.700">$ {expense}</Heading>
+//                             <Text color="gray.500">Total Expense</Text>
+//                         </Flex>
+//                     </Flex>
+//                 </Flex>
+//             </Flex>
+//         </Card>
+//     );
+// };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-    return {
-        fontWeight:
-            personName.indexOf(name) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
-    };
+// export default Addexpense;
+import React from 'react'
+
+function Addexpense() {
+    return (
+        <div>
+
+        </div>
+    )
 }
 
-const AddExpense = () => {
-    const theme = useTheme();
-    const [personName, setPersonName] = React.useState<string[]>([]);
-
-    const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-        const {
-            target: { value },
-        } = event;
-        setPersonName(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-
-    const handleAddClick = () => {
-        const arr = []
-    }
-
-    return (
-        <>
-            <div className="py-5">
-                <Container maxWidth="lg">
-                    <div className="border border-gray-300 p-5">
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={12} sm={3}>
-                                <FormControl sx={{ minWidth: 120, width: '100%' }}>
-                                    <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
-                                    <Select
-                                        labelId="demo-multiple-chip-label"
-                                        id="demo-multiple-chip"
-                                        multiple
-                                        value={personName}
-                                        onChange={handleChange}
-                                        input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                                        renderValue={(selected) => (
-                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                {selected.map((value) => (
-                                                    <Chip key={value} label={value} />
-                                                ))}
-                                            </Box>
-                                        )}
-                                        MenuProps={MenuProps}
-                                    >
-                                        {names.map((name) => (
-                                            <MenuItem
-                                                key={name}
-                                                value={name}
-                                                style={getStyles(name, personName, theme)}
-                                            >
-                                                {name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={12} sm={3}>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Category"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={3}>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    label="Amount"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={2} container justifyContent="flex-end">
-                                <Tooltip title="Delete">
-                                    <IconButton>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={12} sm={2} container justifyContent="flex-end">
-                                <Tooltip title="Add">
-                                    <IconButton onClick={handleAddClick}>
-                                        <ControlPointIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className="justify-center mx-auto py-2 flex">
-                        <Button className="bg-black text-white px-4">Submit</Button>
-                    </div>
-                </Container>
-            </div>
-        </>
-
-    );
-};
-
-export default AddExpense;
+export default Addexpense
