@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navbar from 'component/navbar/Navbar';
-import AddExpense from 'component/addexpense/Addexpense';
 import BottomBar from 'component/bottombar/BottomBar';
 import Chat from 'component/chat/Chat';
 import Calculator from 'component/calc/Calculator';
