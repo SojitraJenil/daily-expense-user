@@ -114,12 +114,19 @@
 // };
 
 // export default Addexpense;
-import React from 'react'
+import { Button } from '@mui/material'
+import React, { useState } from 'react'
+import AddExpenseModal from './Component/AddExpenseModal'
 
 function Addexpense() {
+    const [addExpenseModal,setAddExpenseModal]=useState(false)
+    const handleExpenseModalOpen=()=>{
+        setAddExpenseModal(!addExpenseModal)
+    }
     return (
         <div>
-
+            <Button onClick={handleExpenseModalOpen}>ADD EXPENSE</Button>
+            {addExpenseModal && <AddExpenseModal/>}
         </div>
     )
 }
