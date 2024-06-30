@@ -1,29 +1,31 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import FolderIcon from '@mui/icons-material/Folder';
+import HomeIcon from '@mui/icons-material/Home';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import ChatIcon from '@mui/icons-material/Chat';
 
-export default function SimpleBottomNavigation() {
-    const [value, setValue] = React.useState(0);
+export default function BottomBar({ isNavigate, onNavigate }: { isNavigate: string, onNavigate: (navigateName: string) => void }) {
+    const [value, setValue] = React.useState<string>(isNavigate);
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue);
+        onNavigate(newValue);
+    };
 
     return (
-        <Box sx={{ width: '100%', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000 }}>
-            <BottomNavigation
-                showLabels
-                value={value}
-                onChange={(event, newValue) => {
-                    setValue(newValue);
-                }}
-            >
-                <BottomNavigationAction label="Home" icon={<RestoreIcon />} />
-                <BottomNavigationAction label="Chart" icon={<FavoriteIcon />} />
-                <BottomNavigationAction label="Calculator" icon={<LocationOnIcon />} />
-                <BottomNavigationAction label="Profile" icon={<FolderIcon />} />
-            </BottomNavigation>
-        </Box>
+        <BottomNavigation
+            value={value}
+            onChange={(event, newValue) => {
+                handleChange(newValue);
+            }}
+            showLabels
+        >
+            <BottomNavigationAction value="landing" label="Home" icon={<HomeIcon />} />
+            <BottomNavigationAction value="graph" label="Chart" icon={<LeaderboardIcon />} />
+            <BottomNavigationAction value="calc" label="Calculator" icon={<CalculateIcon />} />
+            <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
+        </BottomNavigation>
     );
 }

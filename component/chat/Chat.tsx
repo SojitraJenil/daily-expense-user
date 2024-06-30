@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Addexpense = () => {
+function Chat() {
     return (
         <div>
-            AddExpense
+            Chat
         </div>
     )
 }
 
-export default Addexpense
+export default Chat

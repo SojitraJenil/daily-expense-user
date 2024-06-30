@@ -1,20 +1,27 @@
-import AddExpense from "component/addexpense/Addexpense";
-import BottomBar from "component/bottombar/BottomBar";
-import Navbar from "component/navbar/Navbar";
-import { Inter } from "next/font/google";
+import React, { useEffect, useState } from 'react';
+import DefaultLayout from 'component/layout/LandingLayout';
+import Login from 'component/login/Login';
+import Auth from './auth/Auth';
+import Landing from './landing';
 
-const inter = Inter({ subsets: ["latin"] });
+const Index = () => {
+  const metadata = {
+    title: "Daily Expense",
+    description: "Play Ludo online with friends and family on FireLudo, the ultimate Ludo gaming platform."
+  };
 
-export default function Home() {
+  const [isAuth, setIsAuth] = useState(false);
+
+  useEffect(() => {
+    setIsAuth(true)
+  }, [])
+
   return (
-    <div className={`${inter.className}`}>
-      <div className="w-full max-w-lg h-screen mx-auto bg-slate-300 border border-black flex flex-col">
-        <div className="flex-grow overflow-auto pb-16"> {/* Ensure content area is scrollable and has padding bottom for BottomBar */}
-          <Navbar />
-          <AddExpense />
-        </div>
-        <BottomBar />
-      </div>
+    <div>
+      {/* <Auth /> */}
+      {isAuth ? <Login /> : <Landing metadata={metadata} />}
     </div>
   );
-}
+};
+
+export default Index;

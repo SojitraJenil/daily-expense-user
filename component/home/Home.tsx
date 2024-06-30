@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Addexpense = () => {
+const Home = () => {
     return (
         <div>
-            AddExpense
+            Home
         </div>
     )
 }
 
-export default Addexpense
+export default Home

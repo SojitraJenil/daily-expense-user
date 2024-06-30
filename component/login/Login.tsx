@@ -1,7 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import { useRouter } from 'next/navigation';
+import { db, auth } from "../../firebase";
+import { useRouter } from "next/router"
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import Cookies from "universal-cookie";
+import { FcGoogle } from "react-icons/fc";
 
 interface FormValues {
     name: string;
@@ -24,6 +27,14 @@ const Login: React.FC = () => {
     const [errors, setErrors] = useState<Errors>({});
     const [loader, setLoader] = useState<boolean>(false);
     const router = useRouter();
+    const cookies = new Cookies();
+
+    useEffect(() => {
+        const authToken = cookies.get("auth-token");
+        if (authToken) {
+            router.push("/landing");
+        }
+    }, [cookies, router]);
 
     const validateForm = useCallback((): Errors => {
         const errors: Errors = {};
@@ -72,7 +83,12 @@ const Login: React.FC = () => {
                 mobileNumber: "",
                 password: "",
             });
-            router.push('/expense');
+
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            cookies.set("auth-token", "dummy-auth-token", { expires: expiryDate });
+
+            router.push("/landing");
         } catch (error) {
             console.error("Error adding document: ", error);
             alert("Error adding document: " + error);
@@ -81,12 +97,25 @@ const Login: React.FC = () => {
         }
     };
 
+    const signInGoogle = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            cookies.set("auth-token", result.user.refreshToken, { expires: expiryDate });
+            router.push("/landing");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <div className="relative bg-gray-200">
             <div className="flex items-center justify-center h-screen relative z-30 ">
                 <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg opacity-80">
                     <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                        Login
+                        Get Started
                     </h2>
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
@@ -142,7 +171,7 @@ const Login: React.FC = () => {
                                 value={formValues.password}
                                 onChange={handleChange}
                                 className="mt-1 text-black p-2 block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Enter your password"
+                                placeholder="Create a password"
                             />
                             {errors.password && (
                                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -165,6 +194,14 @@ const Login: React.FC = () => {
                             </button>
                         </div>
                     </form>
+                    <hr className="text-gray-100 my-4" />
+                    <button
+                        onClick={signInGoogle}
+                        className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-70 duration-300 text-[#002D74]"
+                    >
+                        <FcGoogle className="text-2xl me-4" />
+                        Login with Google
+                    </button>
                 </div>
             </div>
         </div>

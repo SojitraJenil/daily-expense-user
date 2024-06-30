@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Addexpense = () => {
+function Graph() {
     return (
         <div>
-            AddExpense
+            graph
         </div>
     )
 }
 
-export default Addexpense
+export default Graph
