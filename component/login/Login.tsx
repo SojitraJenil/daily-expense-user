@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useCallback, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "../../firebase";
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import Cookies from "universal-cookie";
 import { FcGoogle } from "react-icons/fc";
@@ -31,8 +32,10 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         const authToken = cookies.get("auth-token");
-        if (authToken) {
+        if (authToken.mobileNumber) {
             router.push("/landing");
+        } else {
+            router.push("/login");
         }
     }, [cookies, router]);
 
@@ -78,15 +81,15 @@ const Login: React.FC = () => {
         try {
             setLoader(true);
             await addDoc(collection(db, "users"), formValues);
-            setFormValues({
-                name: "",
-                mobileNumber: "",
-                password: "",
+
+            const authToken = JSON.stringify({
+                mobileNumber: formValues.mobileNumber,
+                name: formValues.name,
             });
 
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 30);
-            cookies.set("auth-token", "dummy-auth-token", { expires: expiryDate });
+            cookies.set("auth-token", authToken, { expires: expiryDate });
 
             router.push("/landing");
         } catch (error) {
@@ -101,9 +104,16 @@ const Login: React.FC = () => {
         try {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
+
+            const authToken = JSON.stringify({
+                mobileNumber: "", // Update with Google login details if needed
+                name: result.user?.displayName || "",
+            });
+
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + 30);
-            cookies.set("auth-token", result.user.refreshToken, { expires: expiryDate });
+            cookies.set("auth-token", authToken, { expires: expiryDate });
+
             router.push("/landing");
         } catch (error) {
             console.error(error);
@@ -112,7 +122,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="relative bg-gray-200">
-            <div className="flex items-center justify-center h-screen relative z-30 ">
+            <div className="flex items-center justify-center h-screen relative z-30">
                 <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg opacity-80">
                     <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
                         Get Started
@@ -146,7 +156,7 @@ const Login: React.FC = () => {
                                 Mobile Number
                             </label>
                             <input
-                                type="number"
+                                type="tel"
                                 id="mobileNumber"
                                 value={formValues.mobileNumber}
                                 onChange={handleChange}

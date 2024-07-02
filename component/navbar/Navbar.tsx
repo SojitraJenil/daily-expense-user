@@ -16,9 +16,15 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
+import Cookies from 'universal-cookie';
 
 export default function Navbar() {
     const router = useRouter();
+    const cookies = new Cookies();
+    const authToken = cookies.get("auth-token");
+    console.log(authToken?.mobileNumber);
+    console.log(authToken?.name);
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -132,7 +138,10 @@ export default function Navbar() {
                         noWrap
                         component="div"
                     >
-                        <span className='text-md'>Welcome</span> <span className='text-sm' > Mr.John doe</span>
+                        <div className="text-[15px]">
+                            Mobile No:- {authToken?.mobileNumber} <br />
+                            Name:- {authToken?.name}
+                        </div>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

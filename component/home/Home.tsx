@@ -17,6 +17,7 @@ import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import moment from "moment";
 import { Avatar, Stack, CircularProgress } from "@mui/material";
+import Cookies from "universal-cookie";
 
 interface Transaction {
     [x: string]: unknown;
@@ -31,6 +32,8 @@ const Home: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     console.log("transactions", transactions);
+    const cookies = new Cookies();
+    const authToken = cookies.get("auth-token");
 
     const [loading, setLoading] = useState(true);
     const [formValues, setFormValues] = useState<Transaction>({
@@ -69,7 +72,7 @@ const Home: React.FC = () => {
                 desc: formValues.desc,
                 amount: parseFloat(formValues.amount),
                 timestamp: timestamp,
-                id: "",
+                id: authToken?.mobileNumber,
             };
 
             const docRef = await addDoc(collection(db, "transactions"), transaction);
