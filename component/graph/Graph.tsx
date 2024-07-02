@@ -1,9 +1,47 @@
+// import React from 'react'
+// // import { PieChart } from '@mui/x-charts/PieChart';
+// import { PieChart } from '@mui/x-charts';
+
+// function Graph() {
+//     return (
+//         <div>
+//             <PieChart
+//                 series={[
+//                     {
+//                         data: [
+//                             { id: 0, value: 10, label: 'series A' },
+//                             { id: 1, value: 15, label: 'series B' },
+//                             { id: 2, value: 20, label: 'series C' },
+//                         ],
+//                     },
+//                 ]}
+//                 width={400}
+//                 height={200}
+//             />
+//         </div>
+//     )
+// }
+
+// export default Graph
+import { PieChart } from '@mui/x-charts'
 import React from 'react'
 
 function Graph() {
     return (
         <div>
-            graph
+            {/* <PieChart
+                series={[
+                    {
+                        data: [
+                            { id: 0, value: 10, label: 'series A' },
+                            { id: 1, value: 15, label: 'series B' },
+                            { id: 2, value: 20, label: 'series C' },
+                        ],
+                    },
+                ]}
+                width={400}
+                height={200}
+            /> */}
         </div>
     )
 }
