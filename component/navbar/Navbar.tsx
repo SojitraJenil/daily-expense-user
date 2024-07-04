@@ -46,6 +46,7 @@ export default function Navbar() {
     };
 
     const handleLogout = () => {
+        cookies.remove('auth-token');
         router.push('/login');
         handleMobileMenuClose();
     };
@@ -138,10 +139,10 @@ export default function Navbar() {
                         noWrap
                         component="div"
                     >
-                        <div className="text-[15px]">
-                            Mobile No:- {authToken?.mobileNumber} <br />
-                            Name:- {authToken?.name}
-                        </div>
+                        {/* <Typography className="text-[15px]">
+                            <span>Mobile No:- {authToken?.mobileNumber}</span>
+                            <span> Name:- {authToken?.name}</span>
+                        </Typography> */}
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

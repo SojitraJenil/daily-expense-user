@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
@@ -14,7 +15,7 @@ function Auth1() {
     useEffect(() => {
         const authToken = cookies.get("auth-token");
         if (authToken) {
-            console.log("Navigating to /join"); // Check if navigation is supposed to happen
+            console.log("Navigating to /join");
             router.push("/join");
         }
     }, [cookies, router]);

@@ -1,65 +1,47 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db, auth } from "../../firebase";
-import { useRouter } from "next/router";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import Cookies from "universal-cookie";
-import { FcGoogle } from "react-icons/fc";
+import React, { useState } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Cookies from 'universal-cookie';
 
 interface FormValues {
-    name: string;
     mobileNumber: string;
     password: string;
 }
 
 interface Errors {
-    name?: string;
     mobileNumber?: string;
     password?: string;
 }
 
 const Login: React.FC = () => {
     const [formValues, setFormValues] = useState<FormValues>({
-        name: "",
-        mobileNumber: "",
-        password: "",
+        mobileNumber: '',
+        password: '',
     });
+
     const [errors, setErrors] = useState<Errors>({});
     const [loader, setLoader] = useState<boolean>(false);
     const router = useRouter();
-    const cookies = new Cookies();
 
-    useEffect(() => {
-        const authToken = cookies.get("auth-token");
-        if (authToken.mobileNumber) {
-            router.push("/landing");
-        } else {
-            router.push("/login");
-        }
-    }, [cookies, router]);
-
-    const validateForm = useCallback((): Errors => {
+    const validateForm = (): Errors => {
         const errors: Errors = {};
 
-        if (!formValues.name.trim()) {
-            errors.name = "Name is required";
-        }
-
         if (!formValues.mobileNumber.trim()) {
-            errors.mobileNumber = "Mobile number is required";
+            errors.mobileNumber = 'Mobile number is required';
         } else if (!/^\d{10}$/.test(formValues.mobileNumber)) {
-            errors.mobileNumber = "Mobile number must be 10 digits";
+            errors.mobileNumber = 'Mobile number must be 10 digits';
         }
 
         if (!formValues.password.trim()) {
-            errors.password = "Password is required";
+            errors.password = 'Password is required';
         } else if (formValues.password.length < 6) {
-            errors.password = "Password must be at least 6 characters";
+            errors.password = 'Password must be at least 6 characters';
         }
 
         return errors;
-    }, [formValues]);
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = event.target;
@@ -80,43 +62,39 @@ const Login: React.FC = () => {
 
         try {
             setLoader(true);
-            await addDoc(collection(db, "users"), formValues);
 
-            const authToken = JSON.stringify({
-                mobileNumber: formValues.mobileNumber,
-                name: formValues.name,
+            // Login logic
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where('mobileNumber', '==', formValues.mobileNumber));
+            const querySnapshot = await getDocs(q);
+
+            let isAuthenticated = false;
+
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                if (user.password === formValues.password) {
+                    isAuthenticated = true;
+                }
             });
 
-            const expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + 30);
-            cookies.set("auth-token", authToken, { expires: expiryDate });
-
-            router.push("/landing");
+            if (isAuthenticated) {
+                const cookies = new Cookies();
+                const authToken = JSON.stringify({
+                    mobileNumber: formValues.mobileNumber,
+                    password: formValues.password,
+                });
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30); // Expires in 30 days
+                cookies.set('auth-token', authToken, { expires: expiryDate });
+                router.push('/landing'); // Navigate to landing page after successful login
+            } else {
+                setErrors({ password: 'Incorrect mobile number or password' });
+            }
         } catch (error) {
-            console.error("Error adding document: ", error);
-            alert("Error adding document: " + error);
+            console.error('Error: ', error);
+            alert('Error: ' + error);
         } finally {
             setLoader(false);
-        }
-    };
-
-    const signInGoogle = async () => {
-        try {
-            const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-
-            const authToken = JSON.stringify({
-                mobileNumber: "", // Update with Google login details if needed
-                name: result.user?.displayName || "",
-            });
-
-            const expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + 30);
-            cookies.set("auth-token", authToken, { expires: expiryDate });
-
-            router.push("/landing");
-        } catch (error) {
-            console.error(error);
         }
     };
 
@@ -124,35 +102,10 @@ const Login: React.FC = () => {
         <div className="relative bg-gray-200">
             <div className="flex items-center justify-center h-screen relative z-30">
                 <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg opacity-80">
-                    <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                        Get Started
-                    </h2>
+                    <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Login</h2>
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Name
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                maxLength={10}
-                                value={formValues.name}
-                                onChange={handleChange}
-                                className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Enter your Name"
-                            />
-                            {errors.name && (
-                                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="mobileNumber"
-                                className="block text-sm font-medium text-gray-700"
-                            >
+                            <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700">
                                 Mobile Number
                             </label>
                             <input
@@ -169,10 +122,7 @@ const Login: React.FC = () => {
                             )}
                         </div>
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700"
-                            >
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                 Password
                             </label>
                             <input
@@ -181,11 +131,9 @@ const Login: React.FC = () => {
                                 value={formValues.password}
                                 onChange={handleChange}
                                 className="mt-1 text-black p-2 block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Create a password"
+                                placeholder="Enter your Password"
                             />
-                            {errors.password && (
-                                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                            )}
+                            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                         </div>
                         <div>
                             <button
@@ -199,19 +147,19 @@ const Login: React.FC = () => {
                                         role="status"
                                     ></div>
                                 ) : (
-                                    "Join Room"
+                                    'Login'
                                 )}
                             </button>
                         </div>
                     </form>
                     <hr className="text-gray-100 my-4" />
-                    <button
-                        onClick={signInGoogle}
-                        className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-70 duration-300 text-[#002D74]"
+                    <Link
+                        className={`link `}
+                        href="/register"
                     >
-                        <FcGoogle className="text-2xl me-4" />
-                        Login with Google
-                    </button>
+                        Don`t have an account yet? click to Register...
+                    </Link>
+                    {/* Optional: Add Google sign-in button */}
                 </div>
             </div>
         </div>

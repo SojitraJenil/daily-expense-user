@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
+import { collection, addDoc, Timestamp, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import moment from "moment";
 import { Avatar, Stack, CircularProgress } from "@mui/material";
@@ -26,12 +26,13 @@ interface Transaction {
     desc: string;
     amount: any;
     timestamp: any;
+    mobileNumber: string;
 }
+
 
 const Home: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    console.log("transactions", transactions);
     const cookies = new Cookies();
     const authToken = cookies.get("auth-token");
 
@@ -41,8 +42,10 @@ const Home: React.FC = () => {
         desc: "",
         amount: 0,
         timestamp: null,
-        id: ""
+        id: "",
+        mobileNumber: authToken?.mobileNumber || "",
     });
+
     const formatDateTime = (timestamp: any) => {
         if (!timestamp || !timestamp.seconds) {
             return { formattedDate: "", formattedTime: "" };
@@ -73,6 +76,7 @@ const Home: React.FC = () => {
                 amount: parseFloat(formValues.amount),
                 timestamp: timestamp,
                 id: authToken?.mobileNumber,
+                mobileNumber: authToken?.mobileNumber,
             };
 
             const docRef = await addDoc(collection(db, "transactions"), transaction);
@@ -84,6 +88,7 @@ const Home: React.FC = () => {
                 amount: 0,
                 timestamp: null,
                 id: "",
+                mobileNumber: authToken?.mobileNumber || "",
             });
             handleClose();
         } catch (error) {
@@ -94,8 +99,14 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         const fetchTransactions = async () => {
+            if (!authToken?.mobileNumber) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const querySnapshot = await getDocs(collection(db, "transactions"));
+                const q = query(collection(db, "transactions"), where("mobileNumber", "==", authToken.mobileNumber));
+                const querySnapshot = await getDocs(q);
 
                 const transactionsData: Transaction[] = [];
                 querySnapshot.forEach((doc) => {
@@ -111,6 +122,8 @@ const Home: React.FC = () => {
 
         fetchTransactions();
     }, []);
+
+
 
     if (loading) {
         return (
@@ -174,21 +187,24 @@ const Home: React.FC = () => {
                     return (
                         item.type === "expense" && (
                             <Box
-                                key={item.id}
-                                className="bg-red-50 mt-4 flex justify-between items-center border border-red-100 p-4 shadow-md rounded-md"
+                                key={item.id} // Ensure item.id is unique
+                                className="bg-red-50 mt-4 flex justify-between items-center border border-red-100 p-1 shadow-md rounded-md"
                             >
                                 <Stack direction="row" className="items-center justify-center">
-                                    <Avatar className="bg-red-400 text-white w-8 h-8 rounded-lg">
+                                    <Avatar className="bg-red-400 text-white w-8 h-8 rounded-lg uppercase">
                                         {item.desc[0]}
                                     </Avatar>
-                                    <Typography variant="body1" className="ml-3 font-bold text-gray-700">
-                                        {item.desc}
-                                    </Typography>
                                 </Stack>
-                                <Typography variant="body1">
-                                    $ {item.amount}
-                                    <br />
-                                    <span className="text-[12px]">{formattedTime} || {formattedDate}</span>
+                                <Typography variant="body1" className="justify-around w-full flex">
+                                    <div>
+                                        {item.desc}
+                                    </div>
+                                    <div>
+                                        <span>{item.amount}₹</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-[12px]">{formattedTime}  ll {formattedDate}</span>
+                                    </div>
                                 </Typography>
                             </Box>
                         )
@@ -227,11 +243,6 @@ const Home: React.FC = () => {
                                 value="expense"
                                 control={<Radio color="error" />}
                                 label="Expense"
-                            />
-                            <FormControlLabel
-                                value="income"
-                                control={<Radio color="success" />}
-                                label="Income"
                             />
                         </RadioGroup>
                         <Divider className="mb-4" />
