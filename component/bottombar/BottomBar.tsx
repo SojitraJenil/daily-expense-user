@@ -21,6 +21,13 @@ export default function BottomBar({ isNavigate, onNavigate }: { isNavigate: stri
                 handleChange(newValue);
             }}
             showLabels
+            sx={{
+                backgroundColor: 'white',
+                '& .Mui-selected': {
+                    backgroundColor: 'black',
+                    color: 'white',
+                },
+            }}
         >
             <BottomNavigationAction value="landing" label="Home" icon={<HomeIcon />} />
             <BottomNavigationAction value="graph" label="Chart" icon={<LeaderboardIcon />} />

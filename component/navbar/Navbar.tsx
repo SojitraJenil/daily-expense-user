@@ -14,6 +14,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import DownloadIcon from '@mui/icons-material/Download';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
@@ -21,13 +22,10 @@ import Cookies from 'universal-cookie';
 export default function Navbar() {
     const router = useRouter();
     const cookies = new Cookies();
-    const authToken = cookies.get("auth-token");
-    console.log(authToken?.mobileNumber);
-    console.log(authToken?.name);
-
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
+    const [installPrompt, setInstallPrompt] = React.useState<any>(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -35,6 +33,23 @@ export default function Navbar() {
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
+    React.useEffect(() => {
+        const handleBeforeInstallPrompt = (event: any) => {
+            event.preventDefault();
+            setInstallPrompt(event);
+        };
+
+        window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+        return () => {
+            window.removeEventListener(
+                "beforeinstallprompt",
+                handleBeforeInstallPrompt
+            );
+        };
+    }, [installPrompt]);
+
 
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
@@ -54,6 +69,21 @@ export default function Navbar() {
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+    const HandleAppDownload = async () => {
+        if (installPrompt) {
+            try {
+                await installPrompt.prompt();
+                await installPrompt.userChoice;
+                setInstallPrompt(null);
+            } catch (error) {
+                console.error("Error prompting installation:", error);
+            }
+        } else {
+            alert('Daily-expense App is not installed.');
+        }
+    }
+
+
 
     const menuId = 'primary-search-account-menu';
 
@@ -139,25 +169,12 @@ export default function Navbar() {
                         noWrap
                         component="div"
                     >
-                        {/* <Typography className="text-[15px]">
-                            <span>Mobile No:- {authToken?.mobileNumber}</span>
-                            <span> Name:- {authToken?.name}</span>
-                        </Typography> */}
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon />
+                        <IconButton onClick={HandleAppDownload} size="large" aria-label="show 4 new mails" color="inherit">
+                            <Badge color="error">
+                                <DownloadIcon />
                             </Badge>
                         </IconButton>
                         <IconButton
