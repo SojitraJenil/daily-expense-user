@@ -1,38 +1,25 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import DownloadIcon from '@mui/icons-material/Download';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from 'next/router';
 import Cookies from 'universal-cookie';
+import { MenuItem } from '@mui/material';
 
-export default function Navbar() {
+const Navbar = () => {
     const router = useRouter();
     const cookies = new Cookies();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-        React.useState<null | HTMLElement>(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
     const [installPrompt, setInstallPrompt] = React.useState<any>(null);
-
-    const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
 
     React.useEffect(() => {
         const handleBeforeInstallPrompt = (event: any) => {
@@ -50,15 +37,10 @@ export default function Navbar() {
         };
     }, [installPrompt]);
 
-
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
 
     const handleLogout = () => {
         cookies.remove('auth-token');
@@ -66,9 +48,6 @@ export default function Navbar() {
         handleMobileMenuClose();
     };
 
-    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
     const HandleAppDownload = async () => {
         if (installPrompt) {
             try {
@@ -78,18 +57,14 @@ export default function Navbar() {
             } catch (error) {
                 console.error("Error prompting installation:", error);
             }
-        } else {
-            alert('Daily-expense App is not installed.');
         }
-    }
-
-
+    };
 
     const menuId = 'primary-search-account-menu';
 
-    const renderMenu = (
+    const renderMobileMenu = (
         <Menu
-            anchorEl={anchorEl}
+            anchorEl={mobileMoreAnchorEl}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
@@ -100,62 +75,20 @@ export default function Navbar() {
                 vertical: 'top',
                 horizontal: 'right',
             }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-    );
-
-    const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
+            <MenuItem onClick={HandleAppDownload}>
+                <IconButton size="small" aria-label="Download App" color="inherit">
+                    <DownloadIcon />
                 </IconButton>
-                <p>Messages</p>
+                <Typography variant="body1">Download App</Typography>
             </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
+            <MenuItem onClick={handleLogout}>
+                <IconButton size="small" aria-label="Logout" color="inherit">
+                    <LogoutIcon />
                 </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
+                <Typography variant="body1">Logout</Typography>
             </MenuItem>
         </Menu>
     );
@@ -172,18 +105,12 @@ export default function Navbar() {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton onClick={HandleAppDownload} size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge color="error">
-                                <DownloadIcon />
-                            </Badge>
-                        </IconButton>
                         <IconButton
                             size="large"
                             edge="end"
                             aria-label="account of current user"
                             aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
                             color="inherit"
                         >
                             <AccountCircle />
@@ -193,18 +120,19 @@ export default function Navbar() {
                         <IconButton
                             size="large"
                             aria-label="show more"
-                            aria-controls={mobileMenuId}
+                            aria-controls={menuId}
                             aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
+                            onClick={(event) => setMobileMoreAnchorEl(event.currentTarget)}
                             color="inherit"
                         >
-                            <MoreIcon />
+                            <MenuIcon />
                         </IconButton>
                     </Box>
                 </Toolbar>
             </AppBar>
             {renderMobileMenu}
-            {renderMenu}
         </Box>
     );
-}
+};
+
+export default Navbar;

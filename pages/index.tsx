@@ -6,20 +6,21 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 const Index = () => {
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
 
   useEffect(() => {
     const authToken = cookies.get('auth-token');
-    if (authToken) {
+    if (authToken && authToken.mobileNumber) {
       setIsAuth(true);
     } else {
       setIsAuth(false);
     }
   }, []);
 
+  console.log("isAuth", isAuth)
   return (
     <div>
-      {isAuth ? <Login /> : <Landing />}
+      {isAuth ? <Landing /> : <Login />}
     </div>
   );
 };
