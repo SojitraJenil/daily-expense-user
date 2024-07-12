@@ -26,6 +26,8 @@ import {
 import { db } from "../../firebase";
 import TransactionItem from "component/TransactionItem/TransactionItem";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
+import { useAtom, useAtomValue } from "jotai";
+import { userAtom } from "atom/atom";
 interface Transaction {
   id?: string;
   type: "expense" | "income";
@@ -202,6 +204,25 @@ const Home: React.FC = () => {
 
     fetchTransactions();
   }, []);
+
+  const [, setUsers] = useAtom(userAtom);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const fetchedUsers: any[] = [];
+        querySnapshot.forEach((doc) => {
+          fetchedUsers.push({ id: doc.id, ...doc.data() });
+        });
+        setUsers(fetchedUsers);
+      } catch (error) {
+        console.error("Error fetching users: ", error);
+      }
+    };
+
+    fetchUsers();
+  }, [setUsers]);
 
   if (loading) {
     return (

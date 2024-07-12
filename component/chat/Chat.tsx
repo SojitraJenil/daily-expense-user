@@ -1,49 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { useRouter } from 'next/router';
-import { db } from '../../firebase';
+import { useRouter } from "next/router";
+import React from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { useAtom } from "jotai";
+import { userAtom } from "atom/atom";
 
-const Home: React.FC = () => {
-    const [users, setUsers] = useState<any[]>([]);
-    const router = useRouter();
+const Chat = () => {
+  const router = useRouter();
+  const [users] = useAtom(userAtom);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, 'users'));
-                const fetchedUsers: any[] = [];
-                querySnapshot.forEach((doc) => {
-                    fetchedUsers.push({ id: doc.id, ...doc.data() });
-                });
-                console.log(fetchedUsers)
-                setUsers(fetchedUsers);
-            } catch (error) {
-                console.error('Error fetching users: ', error);
-            }
-        };
+  const handleUserClick = (id: string) => {
+    router.push(`/chatDetails/?${id}`);
+  };
 
-        fetchUsers();
-    }, []);
-
-    const handleUserClick = (id: string) => {
-        router.push(`/chatDetails/?${id}`);
-    };
-
-    return (
-        <div className="max-w-3xl mx-auto mt-8">
-            <ul>
-                {users.map((user) => (
-                    <li
-                        key={user.id}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-200 text-center"
-                        onClick={() => handleUserClick(user.id)}
-                    >
-                        {user.name}   --- --- ---{user.mobileNumber}
-                    </li>
-                ))}
-            </ul>
+  return (
+    <>
+      <div className="bg-gray-200 overflow-y-auto">
+        <div>
+          {users.map((user) => (
+            <div
+              key={user.id}
+              className="flex items-center px-2 py-1 border-b-2 bg-[#CBD5E4]"
+              onClick={() => handleUserClick(user.id)}
+            >
+              <div className="text-black">
+                <FaUserCircle className="w-10 h-10 mr-2" />
+              </div>
+              <div className="text-black pb-1">
+                <p className="text-[18px] ps-3 font-semibold">
+                  {user.id === "5AfW9NT1FIYaTVxYMp9A" ? "JUI" : user.name}
+                </p>
+                <span className="text-[14px] text-gray-600 ps-3 font-semibold">
+                  {user.mobileNumber}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
-    );
+      </div>
+      <div />
+    </>
+  );
 };
 
-export default Home;
+export default Chat;

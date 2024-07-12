@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import Login from 'component/login/Login';
-import Landing from './landing';
-import Cookies from 'universal-cookie';
+import React, { useEffect, useState } from "react";
+import Login from "component/login/Login";
+import Landing from "./landing";
+import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
@@ -9,7 +9,7 @@ const Index = () => {
   const [isAuth, setIsAuth] = useState(true);
 
   useEffect(() => {
-    const authToken = cookies.get('auth-token');
+    const authToken = cookies.get("auth-token");
     if (authToken && authToken.mobileNumber) {
       setIsAuth(true);
     } else {
@@ -17,12 +17,7 @@ const Index = () => {
     }
   }, []);
 
-  console.log("isAuth", isAuth)
-  return (
-    <div>
-      {isAuth ? <Landing /> : <Login />}
-    </div>
-  );
+  return <div>{isAuth ? <Landing /> : <Login />}</div>;
 };
 
 export default Index;
