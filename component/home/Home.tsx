@@ -166,6 +166,7 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const fetchTransactions = async () => {
       if (!authToken?.mobileNumber) {
         setLoading(false);
