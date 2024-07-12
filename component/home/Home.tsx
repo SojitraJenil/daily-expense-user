@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -38,6 +39,7 @@ interface Transaction {
 }
 
 const Home: React.FC = () => {
+  const [, setUsers] = useAtom(userAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const cookies = new Cookies();
@@ -65,7 +67,6 @@ const Home: React.FC = () => {
     const formattedTime = moment(jsDate).format("hh:mm A");
     return { formattedDate, formattedTime };
   };
-
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
@@ -205,8 +206,6 @@ const Home: React.FC = () => {
     fetchTransactions();
   }, []);
 
-  const [, setUsers] = useAtom(userAtom);
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -235,16 +234,29 @@ const Home: React.FC = () => {
   return (
     <Card className="p-6 border border-solid border-gray-50 overflow-hidden">
       <Box className="w-full flex justify-center items-center gap-4">
-        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2">Day Expense</Typography>
+          <Typography className="text-gray-500 mb-2 text-center">
+            Total Expense
+          </Typography>
           <Typography variant="h6" className="text-gray-700">
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+          <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
+          <Typography className="text-gray-500 mb-2 text-center">
+            Day Expense
+          </Typography>
+          <Typography variant="h6" className="text-gray-700">
+            ₹{totalExpense}
+          </Typography>
+        </Box>
+        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <ArrowDownwardIcon className="text-red-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2">Week Expense </Typography>
+          <Typography className="text-gray-500 mb-2 text-center">
+            Week Expense{" "}
+          </Typography>
           <Typography variant="h6" className="text-gray-700">
             ₹{totalExpense}
           </Typography>
