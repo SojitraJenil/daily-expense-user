@@ -67,11 +67,13 @@ const Login: React.FC = () => {
       );
       if (response.status == 200) {
         alert(response.data.message);
+        console.log("object", response);
+        const cookies = new Cookies();
+        cookies.set("token", response.data.token);
+        router.push("/landing");
       } else {
         alert(response);
-        const cookies = new Cookies();
-        cookies.set("token", response.token);
-        router.push("/landing");
+        console.log(response);
       }
     } catch (error) {
       console.error("Error: ", error);

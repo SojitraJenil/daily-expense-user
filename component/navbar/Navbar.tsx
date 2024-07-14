@@ -9,6 +9,7 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DownloadIcon from "@mui/icons-material/Download";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
@@ -36,7 +37,7 @@ const Navbar = () => {
         handleBeforeInstallPrompt
       );
     };
-  }, [installPrompt]);
+  }, []);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -51,32 +52,30 @@ const Navbar = () => {
     router.push("/login");
     handleMobileMenuClose();
   };
+
   const HandleAppDownload = async () => {
     if (installPrompt) {
       try {
-        // Prompt user to install the app
         await installPrompt.prompt();
         const choiceResult = await installPrompt.userChoice;
 
-        // Check if the app has been successfully installed
         if (choiceResult.outcome === "accepted") {
           console.log("User accepted the install prompt");
         } else {
           console.log("User dismissed the install prompt");
         }
 
-        // Reset install prompt state
         setInstallPrompt(null);
       } catch (error) {
         console.error("Error prompting installation:", error);
       }
     } else {
-      // Check if the app is already installed
       if (window.matchMedia("(display-mode: standalone)").matches) {
         alert("This app is already installed!");
       } else {
-        // Handle other cases or provide a fallback
-        console.log("App is not installed");
+        alert(
+          "To install the app, please add it to your home screen from the browser menu."
+        );
       }
     }
   };
@@ -107,7 +106,7 @@ const Navbar = () => {
       </MenuItem>
       <MenuItem onClick={handleAdmin}>
         <IconButton size="small" aria-label="Admin" color="inherit">
-          <LogoutIcon />
+          <AdminPanelSettingsIcon />
         </IconButton>
         <Typography variant="body1">Admin</Typography>
       </MenuItem>

@@ -3,14 +3,12 @@ import { axiosInstance } from "./axios";
 export const registerData = async (
   name: string,
   mobileNumber: string,
-  email: string,
   password: string
 ) => {
   try {
     const response = await axiosInstance.post(`/UserRegister`, {
       name,
       mobileNumber,
-      email,
       password,
     });
     return response;

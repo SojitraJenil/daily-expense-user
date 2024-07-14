@@ -8,21 +8,18 @@ interface FormValues {
   name: string;
   mobileNumber: string;
   password: string;
-  email: string;
 }
 
 interface Errors {
   name?: string;
   mobileNumber?: string;
   password?: string;
-  email?: string;
 }
 
 const Register: React.FC = () => {
   const [formValues, setFormValues] = useState<FormValues>({
     name: "",
     mobileNumber: "",
-    email: "",
     password: "",
   });
 
@@ -46,11 +43,6 @@ const Register: React.FC = () => {
     if (!formValues.password.trim()) {
       errors.password = "Password must be at least 6 characters";
     }
-
-    if (!formValues.email.trim() || formValues.email == "") {
-      errors.password = "Email is require";
-    }
-
     return errors;
   };
 
@@ -76,19 +68,15 @@ const Register: React.FC = () => {
       const response = await registerData(
         formValues.name,
         formValues.mobileNumber,
-        formValues.email,
         formValues.password
       );
-
-      console.log("response========", response);
       if (response === "User already exists") {
         setErrors({ mobileNumber: "Mobile number is already registered" });
         alert(response);
-      }
-      if (response.status == 201) {
+      } else if (response.status == 201) {
         alert(response.data.message);
         const cookies = new Cookies();
-        cookies.set("token", response.token);
+        cookies.set("token", response.data.token);
         router.push("/landing");
       }
     } catch (error: any) {
@@ -145,25 +133,6 @@ const Register: React.FC = () => {
                 <p className="text-red-500 text-xs mt-1">
                   {errors.mobileNumber}
                 </p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={formValues.email}
-                onChange={handleChange}
-                className="mt-1 text-black p-2 block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter a Email"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
               )}
             </div>
             <div>
