@@ -43,7 +43,7 @@ const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const cookies = new Cookies();
-  const authToken = cookies.get("auth-token");
+  const authToken = cookies.get("token");
   const [loading, setLoading] = useState(false);
   const [totalExpense, setTotalExpense] = useState("0");
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -171,7 +171,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     const fetchTransactions = async () => {
-      if (!authToken?.mobileNumber) {
+      if (!authToken) {
         setLoading(false);
         return;
       }
@@ -179,7 +179,7 @@ const Home: React.FC = () => {
       try {
         let q = query(
           collection(db, "transactions"),
-          where("mobileNumber", "==", authToken.mobileNumber)
+          where("mobileNumber", "==", authToken)
         );
 
         const querySnapshot = await getDocs(q);

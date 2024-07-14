@@ -9,8 +9,8 @@ const Index = () => {
   const [isAuth, setIsAuth] = useState(true);
 
   useEffect(() => {
-    const authToken = cookies.get("auth-token");
-    if (authToken && authToken.mobileNumber) {
+    const authToken = cookies.get("token");
+    if (authToken) {
       setIsAuth(true);
     } else {
       setIsAuth(false);

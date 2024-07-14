@@ -42,8 +42,12 @@ const Navbar = () => {
     setMobileMoreAnchorEl(null);
   };
 
+  const handleAdmin = () => {
+    router.push("/admin");
+  };
+
   const handleLogout = () => {
-    cookies.remove("auth-token");
+    cookies.remove("token");
     router.push("/login");
     handleMobileMenuClose();
   };
@@ -100,6 +104,12 @@ const Navbar = () => {
           <DownloadIcon />
         </IconButton>
         <Typography variant="body1">Download App</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleAdmin}>
+        <IconButton size="small" aria-label="Admin" color="inherit">
+          <LogoutIcon />
+        </IconButton>
+        <Typography variant="body1">Admin</Typography>
       </MenuItem>
       <MenuItem onClick={handleLogout}>
         <IconButton size="small" aria-label="Logout" color="inherit">
