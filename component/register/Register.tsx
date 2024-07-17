@@ -5,6 +5,7 @@ import Link from "next/link";
 import { registerData } from "API/api";
 
 interface FormValues {
+  [x: string]: any;
   name: string;
   mobileNumber: string;
   password: string;
@@ -77,6 +78,7 @@ const Register: React.FC = () => {
         alert(response.data.message);
         const cookies = new Cookies();
         cookies.set("token", response.data.token);
+        cookies.set("mobileNumber", formValues.mobileNumber);
         router.push("/landing");
       }
     } catch (error: any) {

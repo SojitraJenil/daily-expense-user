@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, TextField, Modal } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Modal,
+  CircularProgress,
+} from "@mui/material";
 
 interface TransactionFormModalProps {
   open: boolean;
@@ -18,28 +25,39 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
 }) => {
   const [formValues, setFormValues] = useState(initialValues);
   const [errors, setErrors] = useState({ desc: "", amount: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setFormValues(initialValues);
   }, [initialValues]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    setFormValues((prevValues: any) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const validate = () => {
     let tempErrors = { desc: "", amount: "" };
-    if (!formValues.desc) tempErrors.desc = "Description is required.";
-    if (!formValues.amount) tempErrors.amount = "Amount is required.";
+    if (!formValues.desc) {
+      tempErrors.desc = "Description is required.";
+    }
+    if (!formValues.amount) {
+      tempErrors.amount = "Amount is required.";
+    } else if (isNaN(Number(formValues.amount))) {
+      tempErrors.amount = "Amount must be a number.";
+    }
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
   };
 
   const handleSubmit = () => {
     if (validate()) {
-      setIsSubmitting(true);
       onSubmit(formValues);
     }
   };
@@ -84,9 +102,9 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
           onClick={handleSubmit}
           fullWidth
           className="mb-2"
-          disabled={isSubmitting}
         >
-          {title}
+          Submit
+          {/* // <CircularProgress size={24} color="inherit" /> */}
         </Button>
         <Button
           variant="outlined"

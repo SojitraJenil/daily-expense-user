@@ -7,4 +7,3 @@ export const axiosInstance = axios.create({
   },
 });
 //   baseURL: "http://localhost:2000/",
-// baseURL: "https://daily-expense-api.onrender.com",

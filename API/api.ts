@@ -49,3 +49,64 @@ export const getUser = async () => {
     throw error;
   }
 };
+
+// =============================Add the expense===========================
+export const addExpense = async (formValues: any) => {
+  try {
+    const response = await axiosInstance.post(`/createExpense`, formValues);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const ErrorMessage = error.response.data.message;
+      return ErrorMessage;
+    } else {
+      console.error("Error message:", error.message);
+    }
+    throw error;
+  }
+};
+
+// Get all expenses
+export const showAllExpenses = async () => {
+  try {
+    const response = await axiosInstance.get(`/showAllExpenses`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching expenses:", error);
+    throw error;
+  }
+};
+
+// Delete an expense
+export const deleteExpense = async (id: string) => {
+  try {
+    await axiosInstance.delete(`/deleteExpense/${id}`);
+  } catch (error: any) {
+    if (error.response) {
+      const ErrorMessage = error.response.data.message;
+      return ErrorMessage;
+    } else {
+      console.error("Error message:", error.message);
+    }
+    throw error;
+  }
+};
+
+// Update an expense
+export const updateExpense = async (id: string, formValues: any) => {
+  try {
+    const response = await axiosInstance.put(
+      `/updateExpense/${id}`,
+      formValues
+    );
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      const ErrorMessage = error.response.data.message;
+      return ErrorMessage;
+    } else {
+      console.error("Error message:", error.message);
+    }
+    throw error;
+  }
+};

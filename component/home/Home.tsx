@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -12,23 +11,16 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import moment from "moment";
 import Cookies from "universal-cookie";
-import Swal from "sweetalert2";
-import {
-  collection,
-  addDoc,
-  Timestamp,
-  getDocs,
-  query,
-  where,
-  deleteDoc,
-  doc,
-  setDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
 import TransactionItem from "component/TransactionItem/TransactionItem";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
-import { useAtom, useAtomValue } from "jotai";
-import { userAtom } from "atom/atom";
+import {
+  addExpense,
+  deleteExpense,
+  showAllExpenses,
+  updateExpense,
+} from "API/api";
+import Swal from "sweetalert2"; // Import SweetAlert
+
 interface Transaction {
   id?: string;
   type: "expense" | "income";
@@ -39,23 +31,23 @@ interface Transaction {
 }
 
 const Home: React.FC = () => {
-  const [, setUsers] = useAtom(userAtom);
   const [isOpen, setIsOpen] = useState(false);
+  const [totalExpense, setTotalExpense] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const cookies = new Cookies();
   const authToken = cookies.get("token");
   const [loading, setLoading] = useState(false);
-  const [totalExpense, setTotalExpense] = useState("0");
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
+  const mobileNumber = cookies.get("mobileNumber");
   const initialFormValues = {
     type: "expense",
     desc: "",
     amount: 0,
     timestamp: null,
-    mobileNumber: authToken?.mobileNumber || "",
+    mobileNumber: mobileNumber,
   };
 
   const formatDateTime = (timestamp: any) => {
@@ -67,32 +59,92 @@ const Home: React.FC = () => {
     const formattedTime = moment(jsDate).format("hh:mm A");
     return { formattedDate, formattedTime };
   };
+
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
     setSelectedTransaction(null);
   };
 
-  useEffect(() => {
-    const calculateTotalExpense = () => {
-      const total = transactions
-        .filter((transaction) => transaction.type === "expense")
-        .reduce(
-          (acc, transaction) => acc + parseFloat(transaction.amount.toString()),
-          0
-        );
-      setTotalExpense(total.toFixed(2));
-    };
-
-    calculateTotalExpense();
-  }, [transactions]);
-
-  const deleteTransaction = (id: string | undefined) => {
-    if (!id) {
-      console.error("Invalid transaction ID:", id);
+  const fetchTransactions = async () => {
+    if (!authToken) {
+      setLoading(false);
       return;
     }
 
+    try {
+      const transactionsData = await showAllExpenses();
+      console.log("Fetched transactions data:", transactionsData);
+      if (!transactionsData || !transactionsData.data) {
+        console.error("No data fetched");
+        setLoading(false);
+        return;
+      }
+      const sortedTransactions = transactionsData.data.sort(
+        (a: any, b: any) => {
+          return moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf();
+        }
+      );
+      const normalizedMobileNumber = String(mobileNumber).trim();
+      const filteredTransactions = sortedTransactions.filter(
+        (item: { mobileNumber: string }) =>
+          String(item.mobileNumber).trim() === normalizedMobileNumber
+      );
+      const formattedTransactions = filteredTransactions.map((item: any) => ({
+        id: item._id,
+        type: item.type.toLowerCase(),
+        desc: item.desc,
+        amount: parseFloat(item.amount),
+        timestamp: item.timestamp,
+        mobileNumber: item.mobileNumber,
+      }));
+
+      setTransactions(formattedTransactions);
+      console.log("Formatted transactions:", formattedTransactions);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchTransactions();
+  }, []);
+
+  const handleOpenUpdateModal = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setUpdateModalOpen(true);
+  };
+
+  const addTransaction = async (formValues: any) => {
+    try {
+      const response = await addExpense(formValues);
+      console.log("Added transaction:", response);
+      handleClose();
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error adding transaction:", error);
+    }
+  };
+
+  const updateTransaction = async (formValues: any) => {
+    console.log("formValues", formValues);
+    if (!selectedTransaction) return;
+
+    try {
+      const response = await updateExpense(selectedTransaction.id!, formValues);
+      console.log("Updated transaction:", response);
+      setUpdateModalOpen(false);
+      setSelectedTransaction(null);
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+  };
+
+  const deleteTransaction = async (id: string) => {
     Swal.fire({
       title: "Are you sure you want to delete this item?",
       icon: "warning",
@@ -103,7 +155,7 @@ const Home: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await deleteDoc(doc(db, "transactions", id));
+          await deleteExpense(id);
           setTransactions(
             transactions.filter((transaction) => transaction.id !== id)
           );
@@ -123,105 +175,6 @@ const Home: React.FC = () => {
       }
     });
   };
-
-  const handleOpenUpdateModal = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setUpdateModalOpen(true);
-  };
-
-  const addTransaction = async (formValues: any) => {
-    try {
-      const transaction: Omit<Transaction, "id"> = {
-        ...formValues,
-        amount: parseFloat(formValues.amount.toString()),
-        timestamp: Timestamp.now(), // Use Firebase server timestamp
-      };
-      const docRef = await addDoc(collection(db, "transactions"), transaction);
-      setTransactions([...transactions, { ...transaction, id: docRef.id }]);
-      handleClose();
-    } catch (error) {
-      console.error("Error adding transaction: ", error);
-    }
-  };
-
-  const updateTransaction = async (formValues: any) => {
-    if (!selectedTransaction) return;
-
-    try {
-      const transactionRef = doc(db, "transactions", selectedTransaction.id!);
-      const updatedTransaction = {
-        ...selectedTransaction,
-        ...formValues,
-        amount: parseFloat(formValues.amount.toString()),
-        timestamp: Timestamp.now(),
-      };
-      await setDoc(transactionRef, updatedTransaction);
-
-      const updatedTransactions = transactions.map((t) =>
-        t.id === selectedTransaction.id ? updatedTransaction : t
-      );
-      setTransactions(updatedTransactions);
-      setUpdateModalOpen(false);
-      setSelectedTransaction(null);
-    } catch (error) {
-      console.error("Error updating transaction: ", error);
-    }
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    const fetchTransactions = async () => {
-      if (!authToken) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        let q = query(
-          collection(db, "transactions"),
-          where("mobileNumber", "==", authToken)
-        );
-
-        const querySnapshot = await getDocs(q);
-        const transactionsData: Transaction[] = [];
-        querySnapshot.forEach((doc) => {
-          transactionsData.push({ id: doc.id, ...doc.data() } as Transaction);
-        });
-
-        transactionsData.sort((a, b) => {
-          return (
-            moment(b.timestamp.toDate()).valueOf() -
-            moment(a.timestamp.toDate()).valueOf()
-          );
-        });
-
-        setTransactions(transactionsData);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, []);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const fetchedUsers: any[] = [];
-        querySnapshot.forEach((doc) => {
-          fetchedUsers.push({ id: doc.id, ...doc.data() });
-        });
-        setUsers(fetchedUsers);
-      } catch (error) {
-        console.error("Error fetching users: ", error);
-      }
-    };
-
-    fetchUsers();
-  }, [setUsers]);
 
   if (loading) {
     return (
@@ -276,27 +229,28 @@ const Home: React.FC = () => {
       <Divider className="my-4" />
 
       <Typography>Expense History</Typography>
-      {transactions.map(
-        (item, index) =>
-          item.type === "expense" && (
-            <div key={item.id}>
-              {index === 0 ||
-              formatDateTime(item.timestamp).formattedDate !==
-                formatDateTime(transactions[index - 1].timestamp)
-                  .formattedDate ? (
-                <div className="mt-4 bg-slate-200 text-center">
-                  {formatDateTime(item.timestamp).formattedDate}
-                </div>
-              ) : null}
-              <TransactionItem
-                transaction={item}
-                onEdit={handleOpenUpdateModal}
-                onDelete={deleteTransaction}
-                formatDateTime={formatDateTime}
-              />
-            </div>
-          )
-      )}
+      {transactions &&
+        transactions.map(
+          (item, index) =>
+            item.type === "expense" && (
+              <div key={item.id}>
+                {index === 0 ||
+                formatDateTime(item.timestamp).formattedDate !==
+                  formatDateTime(transactions[index - 1].timestamp)
+                    .formattedDate ? (
+                  <div className="mt-4 bg-slate-200 text-center">
+                    {formatDateTime(item.timestamp).formattedDate}
+                  </div>
+                ) : null}
+                <TransactionItem
+                  transaction={item}
+                  onEdit={handleOpenUpdateModal}
+                  onDelete={deleteTransaction}
+                  formatDateTime={formatDateTime}
+                />
+              </div>
+            )
+        )}
 
       <TransactionFormModal
         open={updateModalOpen}

@@ -70,6 +70,7 @@ const Login: React.FC = () => {
         console.log("object", response);
         const cookies = new Cookies();
         cookies.set("token", response.data.token);
+        cookies.set("mobileNumber", formValues.mobileNumber);
         router.push("/landing");
       } else {
         alert(response);
