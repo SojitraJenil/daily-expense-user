@@ -49,6 +49,19 @@ export const getUser = async () => {
     throw error;
   }
 };
+export const deleteUser = async (id: string) => {
+  try {
+    await axiosInstance.delete(`/deleteUser/${id}`);
+  } catch (error: any) {
+    if (error.response) {
+      const ErrorMessage = error.response.data.message;
+      return ErrorMessage;
+    } else {
+      console.error("Error message:", error.message);
+    }
+    throw error;
+  }
+};
 
 // =============================Add the expense===========================
 export const addExpense = async (formValues: any) => {

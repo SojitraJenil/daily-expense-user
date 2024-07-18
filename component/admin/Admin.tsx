@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getUser } from "API/api";
+import { deleteUser, getUser } from "API/api";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Admin: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -36,6 +37,15 @@ const Admin: React.FC = () => {
     } else {
       setIsLoggedIn(false);
       setError("Invalid credentials. Please try again.");
+    }
+  };
+
+  const HandleDelete = (id: string) => {
+    try {
+      const response = deleteUser(id);
+      fetchAllData();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -134,6 +144,14 @@ const Admin: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {user.password}
+                </td>
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                  onClick={() => {
+                    HandleDelete(user._id);
+                  }}
+                >
+                  <DeleteIcon />
                 </td>
               </tr>
             ))}

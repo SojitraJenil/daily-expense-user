@@ -8,8 +8,9 @@ const Chat = () => {
   const router = useRouter();
   const [users] = useAtom(userAtom);
 
-  const handleUserClick = (id: string) => {
-    router.push(`/chatDetails/?${id}`);
+  console.log("users===========>", users);
+  const handleUserClick = (id: string, mobileNumber?: string) => {
+    router.push(`/chatDetails/?mobileNumber=${mobileNumber}/?id=${id}`);
   };
 
   return (
@@ -20,7 +21,7 @@ const Chat = () => {
             <div
               key={user.id}
               className="flex items-center px-2 py-1 border-b-2 bg-[#CBD5E4]"
-              onClick={() => handleUserClick(user.id)}
+              onClick={() => handleUserClick(user._id, user.mobileNumber)}
             >
               <div className="text-black">
                 <FaUserCircle className="w-10 h-10 mr-2" />

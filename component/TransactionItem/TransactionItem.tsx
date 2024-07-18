@@ -2,28 +2,20 @@ import React from "react";
 import { Box, Typography, Avatar, Stack, IconButton } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-import moment from "moment";
 
 interface TransactionItemProps {
   transaction: any;
+  Time: any;
   onEdit: (transaction: any) => void;
-  onDelete: any;
-  formatDateTime: (timestamp: any) => {
-    formattedDate: string;
-    formattedTime: string;
-  };
+  onDelete: (id: string) => void;
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   transaction,
   onEdit,
   onDelete,
-  formatDateTime,
+  Time,
 }) => {
-  const { formattedDate, formattedTime } = formatDateTime(
-    transaction.timestamp
-  );
-
   const handleEditClick = () => {
     onEdit(transaction);
   };
@@ -35,30 +27,54 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   return (
     <Box
       key={transaction.id}
-      className="bg-red-50 mt-2 p-2 sm:p-3 flex flex-col sm:flex-row justify-between items-center border border-red-100 shadow-md rounded-md"
+      sx={{
+        backgroundColor: "rgb(255, 245, 245)",
+        marginTop: 2,
+        paddingTop: 0,
+        paddingBottom: 0,
+        display: "flex",
+        alignItems: "center",
+        border: "1px solid rgb(255, 205, 205)",
+        boxShadow: 1,
+        borderRadius: 1,
+      }}
     >
-      <Stack direction="row" alignItems="center" spacing={2} className="flex-1">
-        <Avatar className="bg-red-400 text-white w-8 h-8 rounded-lg uppercase">
+      <Stack
+        direction="row"
+        paddingLeft={0.5}
+        alignItems="center"
+        spacing={1}
+        sx={{ flex: 1 }}
+      >
+        <Avatar
+          sx={{
+            backgroundColor: "rgb(255, 105, 105)",
+            color: "white",
+            width: 32,
+            height: 32,
+          }}
+        >
           {transaction.desc[0]}
         </Avatar>
-        <Typography variant="body1" className="flex-1">
+        <Typography variant="body1" sx={{ flex: 1 }}>
           {transaction.desc}
         </Typography>
         <Typography variant="body1">₹{transaction.amount}</Typography>
-        <Typography variant="body1" className="">
-          {transaction.mobileNumber}
-        </Typography>
-      </Stack>
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <Typography variant="body2" className="text-gray-500 text-xs">
-          {formattedTime}
-        </Typography>
-        <IconButton onClick={handleEditClick}>
+        <IconButton onClick={handleEditClick} className="p-0 m-0">
           <CreateIcon fontSize="small" />
         </IconButton>
-        <IconButton onClick={handleDeleteClick}>
+        <IconButton onClick={handleDeleteClick} className="p-0 m-0">
           <DeleteIcon fontSize="small" />
         </IconButton>
+      </Stack>
+      <Stack>
+        <Typography
+          variant="body2"
+          className="pr-1"
+          sx={{ color: "gray", fontSize: "0.75rem" }}
+        >
+          {Time}
+        </Typography>
       </Stack>
     </Box>
   );

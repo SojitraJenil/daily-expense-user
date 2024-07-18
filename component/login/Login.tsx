@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "universal-cookie";

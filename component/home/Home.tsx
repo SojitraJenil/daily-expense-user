@@ -16,10 +16,13 @@ import TransactionFormModal from "component/TransactionFormModal/TransactionForm
 import {
   addExpense,
   deleteExpense,
+  getUser,
   showAllExpenses,
   updateExpense,
 } from "API/api";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
+import { useAtom } from "jotai";
+import { userAtom } from "atom/atom";
 
 interface Transaction {
   id?: string;
@@ -50,20 +53,23 @@ const Home: React.FC = () => {
     mobileNumber: mobileNumber,
   };
 
-  const formatDateTime = (timestamp: any) => {
-    if (!timestamp || !timestamp.seconds) {
-      return { formattedDate: "", formattedTime: "" };
-    }
-    const jsDate = new Date(timestamp.seconds * 1000);
-    const formattedDate = moment(jsDate).format("DD-MM-YYYY");
-    const formattedTime = moment(jsDate).format("hh:mm A");
-    return { formattedDate, formattedTime };
-  };
-
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
     setSelectedTransaction(null);
+  };
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+  const [, setUsers] = useAtom(userAtom);
+  const fetchAllData = async () => {
+    try {
+      const response = await getUser();
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const fetchTransactions = async () => {
@@ -98,7 +104,10 @@ const Home: React.FC = () => {
         timestamp: item.timestamp,
         mobileNumber: item.mobileNumber,
       }));
-
+      const totalExpense = formattedTransactions
+        .filter((item: { type: string }) => item.type === "expense")
+        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
+      setTotalExpense(totalExpense);
       setTransactions(formattedTransactions);
       console.log("Formatted transactions:", formattedTransactions);
     } catch (error) {
@@ -201,8 +210,8 @@ const Home: React.FC = () => {
           <Typography className="text-gray-500 mb-2 text-center">
             Day Expense
           </Typography>
-          <Typography variant="h6" className="text-gray-700">
-            ₹{totalExpense}
+          <Typography variant="h6" className="text-gray-700 text-sm">
+            coming...
           </Typography>
         </Box>
         <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
@@ -210,8 +219,8 @@ const Home: React.FC = () => {
           <Typography className="text-gray-500 mb-2 text-center">
             Week Expense{" "}
           </Typography>
-          <Typography variant="h6" className="text-gray-700">
-            ₹{totalExpense}
+          <Typography variant="h6" className="text-gray-700 text-sm">
+            coming...
           </Typography>
         </Box>
       </Box>
@@ -235,18 +244,19 @@ const Home: React.FC = () => {
             item.type === "expense" && (
               <div key={item.id}>
                 {index === 0 ||
-                formatDateTime(item.timestamp).formattedDate !==
-                  formatDateTime(transactions[index - 1].timestamp)
-                    .formattedDate ? (
+                moment(item.timestamp).format("DD-MM-YYYY") !==
+                  moment(transactions[index - 1].timestamp).format(
+                    "DD-MM-YYYY"
+                  ) ? (
                   <div className="mt-4 bg-slate-200 text-center">
-                    {formatDateTime(item.timestamp).formattedDate}
+                    {moment(item.timestamp).format("DD-MM-YYYY")}
                   </div>
                 ) : null}
                 <TransactionItem
                   transaction={item}
                   onEdit={handleOpenUpdateModal}
                   onDelete={deleteTransaction}
-                  formatDateTime={formatDateTime}
+                  Time={moment(item.timestamp).format("hh:mm:ss A")}
                 />
               </div>
             )

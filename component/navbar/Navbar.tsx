@@ -14,6 +14,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
 import { MenuItem } from "@mui/material";
+import { useAtom } from "jotai";
+import { userAtom } from "atom/atom";
 
 const Navbar = () => {
   const router = useRouter();
@@ -23,6 +25,8 @@ const Navbar = () => {
   const [installPrompt, setInstallPrompt] = React.useState<any>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const username = cookies.get("username");
+  const mobileNumber = cookies.get("mobileNumber");
   React.useEffect(() => {
     const handleBeforeInstallPrompt = (event: any) => {
       event.preventDefault();
@@ -123,6 +127,9 @@ const Navbar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          {/* <span className="text-md">
+            Welcome {username} {mobileNumber}
+          </span> */}
           <Typography variant="h6" noWrap component="div"></Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
