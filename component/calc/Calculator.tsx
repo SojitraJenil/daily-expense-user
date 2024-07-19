@@ -147,18 +147,18 @@ function Calculator() {
           </Typography>
         </div>
       </div>
-
-      <Button
-        variant="contained"
-        color="info"
-        onClick={handleOpen}
-        fullWidth
-        className="Mx-8 py-2 text-white bg-blue-500 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center mx-auto"
-      >
-        Add Expense
-      </Button>
+      <div className="text-center">
+        <Button
+          variant="contained"
+          color="info"
+          onClick={handleOpen}
+          className="mx-2 px-10 py-2 text-white bg-blue-500 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center"
+        >
+          Add Expense
+        </Button>
+      </div>
       <hr className="mt-2 bg-black" />
-      <p className="text-black text-[21px] mt-2 text-center">Fuel Records</p>
+      <p className="text-black text-[19px] ms-1 mt-2">Fuel Records</p>
       {fuelRecord &&
         fuelRecord.reverse().map((item: any, index: number) => {
           return (
@@ -166,13 +166,15 @@ function Calculator() {
               {index === 0 ||
               moment(item.timestamp).format("DD-MM-YYYY") !==
                 moment(fuelRecord[index - 1].timestamp).format("DD-MM-YYYY") ? (
-                <div className="mt-4 bg-slate-500 text-white text-center">
+                <div className="mt-4 bg-slate-500 text-white text-center mx-4 rounded-sm">
                   {moment(item.timestamp).format("DD-MM-YYYY")}
                 </div>
               ) : null}
               <Box
-                className={"bg-red-100"}
+                className={"bg-red-200"}
                 sx={{
+                  marginLeft: 2,
+                  marginRight: 2,
                   marginTop: 2,
                   paddingTop: 0,
                   paddingBottom: 0,
