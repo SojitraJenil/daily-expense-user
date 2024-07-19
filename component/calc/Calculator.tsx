@@ -130,7 +130,7 @@ function Calculator() {
   return (
     <div className="bg-white h-[100%]">
       <div className="flex justify-evenly items-center gap-4 pt-2">
-        <div className="w-[200px] h-[150px] bg-gray-300 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
             Current KM
           </Typography>
@@ -138,7 +138,7 @@ function Calculator() {
             5050
           </Typography>
         </div>
-        <div className="w-[200px] h-[150px] bg-gray-300 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
             Last
           </Typography>
@@ -179,7 +179,7 @@ function Calculator() {
                   paddingTop: 0,
                   paddingBottom: 0,
                   alignItems: "center",
-                  border: "1px solid rgb(255, 205, 205)",
+                  border: "1px solid rgb(255, 255, 255)",
                   boxShadow: 1,
                   justifyContent: "space-between",
                   borderRadius: 1,
