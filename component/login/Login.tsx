@@ -67,7 +67,9 @@ const Login: React.FC = () => {
         alert(response.data.message);
         console.log("object", response);
         const cookies = new Cookies();
-        cookies.set("token", response.data.token);
+        const expires = new Date();
+        expires.setMonth(expires.getMonth() + 12);
+        cookies.set("token", response.data.token, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber);
         router.push("/landing");
       } else {
@@ -120,7 +122,7 @@ const Login: React.FC = () => {
                 Password
               </label>
               <input
-                type="password"
+                type="text"
                 id="password"
                 value={formValues.password}
                 onChange={handleChange}

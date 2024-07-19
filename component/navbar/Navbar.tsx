@@ -14,6 +14,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
 import { MenuItem } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAtom } from "jotai";
 import { userAtom } from "atom/atom";
 
@@ -25,8 +26,6 @@ const Navbar = () => {
   const [installPrompt, setInstallPrompt] = React.useState<any>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const username = cookies.get("username");
-  const mobileNumber = cookies.get("mobileNumber");
   React.useEffect(() => {
     const handleBeforeInstallPrompt = (event: any) => {
       event.preventDefault();
@@ -54,6 +53,12 @@ const Navbar = () => {
   const handleLogout = () => {
     cookies.remove("token");
     router.push("/login");
+    handleMobileMenuClose();
+  };
+
+  const handleProfile = () => {
+    cookies.remove("token");
+    router.push("/profile");
     handleMobileMenuClose();
   };
 
@@ -113,6 +118,12 @@ const Navbar = () => {
           <AdminPanelSettingsIcon />
         </IconButton>
         <Typography variant="body1">Admin</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleProfile}>
+        <IconButton size="small" aria-label="Logout" color="inherit">
+          <AccountCircleIcon />
+        </IconButton>
+        <Typography variant="body1">Profile</Typography>
       </MenuItem>
       <MenuItem onClick={handleLogout}>
         <IconButton size="small" aria-label="Logout" color="inherit">

@@ -77,7 +77,9 @@ const Register: React.FC = () => {
       } else if (response.status == 201) {
         alert(response.data.message);
         const cookies = new Cookies();
-        cookies.set("token", response.data.token);
+        const expires = new Date();
+        expires.setMonth(expires.getMonth() + 12);
+        cookies.set("token", response.data.token, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber);
         router.push("/landing");
       }

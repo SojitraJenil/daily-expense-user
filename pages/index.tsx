@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 import Login from "component/login/Login";
 import Landing from "./landing";
-import Cookies from "universal-cookie";
-
-const cookies = new Cookies();
 
 const Index = () => {
-  const [isAuth, setIsAuth] = useState(true);
+  const cookies = new Cookies();
+  const [isAuth, setIsAuth] = useState<null | boolean>(null);
 
   useEffect(() => {
     const authToken = cookies.get("token");
     if (authToken) {
       setIsAuth(true);
+      console.log("AA");
     } else {
       setIsAuth(false);
+      console.log("BB");
     }
   }, []);
+
+  if (isAuth === null) {
+    return <div>Loading...</div>;
+  }
 
   return <div>{isAuth ? <Landing /> : <Login />}</div>;
 };
