@@ -6,6 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -13,14 +14,13 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
-import { MenuItem } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAtom } from "jotai";
-import { userAtom } from "atom/atom";
+import { NavigateNameAtom } from "atom/atom";
 
 const Navbar = () => {
   const router = useRouter();
   const cookies = new Cookies();
+  const [navigateName] = useAtom(NavigateNameAtom);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -121,8 +121,8 @@ const Navbar = () => {
         <Typography variant="body1">Admin</Typography>
       </MenuItem>
       <MenuItem onClick={handleProfile}>
-        <IconButton size="small" aria-label="Logout" color="inherit">
-          <AccountCircleIcon />
+        <IconButton size="small" aria-label="Profile" color="inherit">
+          <AccountCircle />
         </IconButton>
         <Typography variant="body1">Profile</Typography>
       </MenuItem>
@@ -137,13 +137,21 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { xs: "100%", md: "300px" }, // 100% width for small screens, 300px for medium and up
+          left: 0,
+          top: 0,
+          zIndex: 1200,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Toolbar>
-          {/* <span className="text-md">
-            Welcome {username} {mobileNumber}
-          </span> */}
-          <Typography variant="h6" noWrap component="div"></Typography>
-          <Box sx={{ flexGrow: 1 }} />
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            {navigateName}
+          </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size="large"

@@ -66,7 +66,7 @@ const Home: React.FC = () => {
   const fetchAllData = async () => {
     try {
       const response = await getUser();
-      console.log(response)
+      console.log(response);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -153,7 +153,6 @@ const Home: React.FC = () => {
       console.error("Error updating transaction:", error);
     }
   };
-
 
   const deleteTransaction = async (id: string) => {
     Swal.fire({

@@ -21,11 +21,13 @@ import {
 import Cookies from "universal-cookie";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { average } from "firebase/firestore";
 
 function Calculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [CurrentPrice, setCurrentPrice] = useState("");
   const [fuelRecord, setFuelRecord] = useState<any>();
   const [selectedFuel, setSelectedFuel] = useState<any>(null);
   const cookies = new Cookies();
@@ -128,22 +130,30 @@ function Calculator() {
   }
 
   return (
-    <div className="bg-white h-[100%]">
+    <div className="bg-white h-screen">
       <div className="flex justify-evenly items-center gap-4 pt-2">
         <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
-            Current KM
+            Average
           </Typography>
           <Typography variant="h6" className="text-gray-700">
-            5050
+            100
           </Typography>
         </div>
         <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
-            Last
+            1 Liter Price
           </Typography>
-          <Typography variant="h6" className="text-gray-700">
-            5050
+          <Typography variant="h6" className="text-gray-700 text-center">
+            <input
+              type="text"
+              placeholder="Click"
+              value={CurrentPrice}
+              onChange={(e: any) => {
+                setCurrentPrice(e.target.value);
+              }}
+              className="bg-gray-50 w-2/4 border-1 text-md border-black"
+            />
           </Typography>
         </div>
       </div>
@@ -158,7 +168,7 @@ function Calculator() {
         </Button>
       </div>
       <hr className="mt-2 bg-black" />
-      <p className="text-black text-[19px] ms-1 mt-2">Fuel Records</p>
+      <p className="text-black text-[19px] ms-5 mt-2">Fuel Records</p>
       {fuelRecord &&
         fuelRecord.reverse().map((item: any, index: number) => {
           return (
@@ -171,7 +181,7 @@ function Calculator() {
                 </div>
               ) : null}
               <Box
-                className={"bg-red-200"}
+                className={"bg-[#FFF5F5] py-1"}
                 sx={{
                   marginLeft: 2,
                   marginRight: 2,
@@ -193,8 +203,8 @@ function Calculator() {
                   justifyContent={"space-evenly"}
                 >
                   <Typography variant="body1">{index + 1}</Typography>
-                  <Typography variant="body1">{item?.Currentkm}</Typography>
-                  <Typography variant="body1">{item?.fuelPrice}</Typography>
+                  <Typography variant="body1">{item?.Currentkm}-KM</Typography>
+                  <Typography variant="body1">₹{item?.fuelPrice}</Typography>
                   <Typography variant="body1">
                     {moment(item.timestamp).format("hh:mm:ss A")}
                   </Typography>

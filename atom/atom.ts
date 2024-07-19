@@ -1,4 +1,3 @@
-// userAtom.ts
 import { atom } from "jotai";
 
 export interface User {
@@ -10,3 +9,4 @@ export interface User {
 }
 
 export const userAtom = atom<User[]>([]);
+export const NavigateNameAtom = atom("Home"); // Default value set to "landing"

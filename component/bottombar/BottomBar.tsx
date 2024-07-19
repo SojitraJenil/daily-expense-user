@@ -28,7 +28,7 @@ export default function BottomBar({
       }}
       showLabels
       sx={{
-        backgroundColor: "white",
+        backgroundColor: "whitesmoke",
         "& .Mui-selected": {
           backgroundColor: "black",
           color: "white",
@@ -36,22 +36,29 @@ export default function BottomBar({
       }}
     >
       <BottomNavigationAction
-        value="landing"
+        value="Home"
         label="Home"
-        className="py-[10px]"
+        className="py-[10px] bg-slate-200"
         icon={<HomeIcon />}
       />
       <BottomNavigationAction
         value="graph"
         label="Chart"
         icon={<LeaderboardIcon />}
+        className="bg-slate-100"
       />
       <BottomNavigationAction
-        value="calc"
-        label="Calculator"
+        value="Fuel"
+        label="Fuel"
         icon={<CalculateIcon />}
+        className="bg-slate-200"
       />
-      <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
+      <BottomNavigationAction
+        value="chat"
+        className="bg-slate-100"
+        label="Chat"
+        icon={<ChatIcon />}
+      />
     </BottomNavigation>
   );
 }

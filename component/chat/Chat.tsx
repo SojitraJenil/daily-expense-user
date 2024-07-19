@@ -13,11 +13,6 @@ const Chat: FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-green-500 text-white p-4">
-        <h1 className="text-xl font-bold">Chat with John Doe</h1>
-      </header>
-
       {/* Messages */}
       <main className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
@@ -35,7 +30,7 @@ const Chat: FC = () => {
       </main>
 
       {/* Input Area */}
-      <footer className="p-4 bg-white border-t border-gray-300">
+      <footer className="p-4 bg-white border-t border-gray-300 ">
         <div className="flex items-center">
           <input
             type="text"
