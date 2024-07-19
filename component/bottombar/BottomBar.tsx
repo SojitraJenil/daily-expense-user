@@ -38,27 +38,20 @@ export default function BottomBar({
       <BottomNavigationAction
         value="Home"
         label="Home"
-        className="py-[10px] bg-slate-200"
+        className="py-[10px]"
         icon={<HomeIcon />}
       />
       <BottomNavigationAction
         value="graph"
         label="Chart"
         icon={<LeaderboardIcon />}
-        className="bg-slate-100"
       />
       <BottomNavigationAction
         value="Fuel"
         label="Fuel"
         icon={<CalculateIcon />}
-        className="bg-slate-200"
       />
-      <BottomNavigationAction
-        value="chat"
-        className="bg-slate-100"
-        label="Chat"
-        icon={<ChatIcon />}
-      />
+      <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
     </BottomNavigation>
   );
 }

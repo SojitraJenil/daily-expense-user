@@ -34,17 +34,17 @@ interface Transaction {
 }
 
 const Home: React.FC = () => {
+  const cookies = new Cookies();
+  const authToken = cookies.get("token");
+  const mobileNumber = cookies.get("mobileNumber");
   const [isOpen, setIsOpen] = useState(false);
   const [totalExpense, setTotalExpense] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const cookies = new Cookies();
-  const authToken = cookies.get("token");
   const [loading, setLoading] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
-  const mobileNumber = cookies.get("mobileNumber");
   const initialFormValues = {
     type: "expense",
     desc: "",
@@ -195,7 +195,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Card className="p-6 border border-solid border-gray-50 overflow-hidden">
+    <Card className="p-6 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
       <Box className="w-full flex justify-center items-center gap-4">
         <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />

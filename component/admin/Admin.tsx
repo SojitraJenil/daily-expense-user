@@ -58,7 +58,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  if (!isLoggedIn) {
+  if (isLoggedIn) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg">
@@ -76,7 +76,7 @@ const Admin: React.FC = () => {
               <input
                 type="email"
                 id="email"
-                value={email}
+                value={email || "admin@gmail.com"}
                 onChange={handleChange}
                 className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter your Email"
