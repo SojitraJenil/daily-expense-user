@@ -23,13 +23,16 @@ const Navbar = () => {
   const cookies = new Cookies();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-  const [installPrompt, setInstallPrompt] = React.useState<any>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
+  const [isInstallable, setIsInstallable] = React.useState<boolean>(false);
+
   React.useEffect(() => {
-    const handleBeforeInstallPrompt = (event: any) => {
-      event.preventDefault();
-      setInstallPrompt(event);
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true); // Show the install button
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -41,6 +44,29 @@ const Navbar = () => {
       );
     };
   }, []);
+
+  const handleAppDownload = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+
+      if (choiceResult.outcome === "accepted") {
+        console.log("User accepted the A2HS prompt");
+      } else {
+        console.log("User dismissed the A2HS prompt");
+      }
+      setDeferredPrompt(null);
+      setIsInstallable(false);
+    } else {
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        alert("This app is already installed!");
+      } else {
+        alert(
+          "To install the app, please add it to your home screen from the browser menu."
+        );
+      }
+    }
+  };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -62,33 +88,6 @@ const Navbar = () => {
     handleMobileMenuClose();
   };
 
-  const HandleAppDownload = async () => {
-    if (installPrompt) {
-      try {
-        await installPrompt.prompt();
-        const choiceResult = await installPrompt.userChoice;
-
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the install prompt");
-        } else {
-          console.log("User dismissed the install prompt");
-        }
-
-        setInstallPrompt(null);
-      } catch (error) {
-        console.error("Error prompting installation:", error);
-      }
-    } else {
-      if (window.matchMedia("(display-mode: standalone)").matches) {
-        alert("This app is already installed!");
-      } else {
-        alert(
-          "To install the app, please add it to your home screen from the browser menu."
-        );
-      }
-    }
-  };
-
   const menuId = "primary-search-account-menu";
 
   const renderMobileMenu = (
@@ -107,12 +106,14 @@ const Navbar = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={HandleAppDownload}>
-        <IconButton size="small" aria-label="Download App" color="inherit">
-          <DownloadIcon />
-        </IconButton>
-        <Typography variant="body1">Download App</Typography>
-      </MenuItem>
+      {isInstallable && (
+        <MenuItem onClick={handleAppDownload}>
+          <IconButton size="small" aria-label="Download App" color="inherit">
+            <DownloadIcon />
+          </IconButton>
+          <Typography variant="body1">Download App</Typography>
+        </MenuItem>
+      )}
       <MenuItem onClick={handleAdmin}>
         <IconButton size="small" aria-label="Admin" color="inherit">
           <AdminPanelSettingsIcon />

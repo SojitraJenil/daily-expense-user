@@ -1,45 +1,58 @@
-import { useRouter } from "next/router";
-import React from "react";
-import { FaUserCircle } from "react-icons/fa";
-import { useAtom } from "jotai";
-import { userAtom } from "atom/atom";
+import React, { useState, FC } from "react";
 
-const Chat = () => {
-  const router = useRouter();
-  const [users] = useAtom(userAtom);
+const Chat: FC = () => {
+  const [messages, setMessages] = useState<string[]>([]);
+  const [input, setInput] = useState<string>("");
 
-  console.log("users===========>", users);
-  const handleUserClick = (id: string, mobileNumber?: string) => {
-    router.push(`/chatDetails/?mobileNumber=${mobileNumber}/?id=${id}`);
+  const handleSend = () => {
+    if (input.trim()) {
+      setMessages([...messages, input]);
+      setInput("");
+    }
   };
 
   return (
-    <>
-      <div className="bg-gray-200 overflow-y-auto">
-        <div>
-          {users.map((user) => (
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Header */}
+      <header className="bg-green-500 text-white p-4">
+        <h1 className="text-xl font-bold">Chat with John Doe</h1>
+      </header>
+
+      {/* Messages */}
+      <main className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-4">
+          {messages.map((msg, idx) => (
             <div
-              key={user.id}
-              className="flex items-center px-2 py-1 border-b-2 bg-[#CBD5E4]"
-              onClick={() => handleUserClick(user._id, user.mobileNumber)}
+              key={idx}
+              className={`p-3 rounded-lg ${
+                idx % 2 === 0 ? "bg-gray-200" : "bg-green-200"
+              } text-gray-900`}
             >
-              <div className="text-black">
-                <FaUserCircle className="w-10 h-10 mr-2" />
-              </div>
-              <div className="text-black pb-1">
-                <p className="text-[18px] ps-3 font-semibold">
-                  {user.id === "5AfW9NT1FIYaTVxYMp9A" ? "JUI" : user.name}
-                </p>
-                <span className="text-[14px] text-gray-600 ps-3 font-semibold">
-                  {user.mobileNumber}
-                </span>
-              </div>
+              {msg}
             </div>
           ))}
         </div>
-      </div>
-      <div />
-    </>
+      </main>
+
+      {/* Input Area */}
+      <footer className="p-4 bg-white border-t border-gray-300">
+        <div className="flex items-center">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message"
+            className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <button
+            onClick={handleSend}
+            className="ml-2 bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+          >
+            Send
+          </button>
+        </div>
+      </footer>
+    </div>
   );
 };
 
