@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { deleteUser, getUser } from "API/api";
 import DeleteIcon from "@mui/icons-material/Delete";
+import bcrypt from "bcryptjs";
 
 const Admin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
+  console.log("users", users);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,6 +21,7 @@ const Admin: React.FC = () => {
     try {
       const response = await getUser();
       setUsers(response.data);
+      console.log(response.data);
       console.log("response", response);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -26,12 +29,14 @@ const Admin: React.FC = () => {
   };
 
   const staticEmail = "admin@gmail.com";
-  const staticPassword = "admin123";
+  const staticPassword = "123";
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (email === staticEmail && password === staticPassword) {
+    // Hash the password before comparing
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (email === staticEmail && hashedPassword === staticPassword) {
       setIsLoggedIn(true);
       setError(null);
     } else {
@@ -40,9 +45,9 @@ const Admin: React.FC = () => {
     }
   };
 
-  const HandleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     try {
-      const response = deleteUser(id);
+      await deleteUser(id);
       fetchAllData();
     } catch (error) {
       console.log(error);
@@ -131,11 +136,14 @@ const Admin: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Password
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user.id}>
+              <tr key={user._id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {user.name}
                 </td>
@@ -145,13 +153,11 @@ const Admin: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {user.password}
                 </td>
-                <td
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                  onClick={() => {
-                    HandleDelete(user._id);
-                  }}
-                >
-                  <DeleteIcon />
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <DeleteIcon
+                    className="cursor-pointer"
+                    onClick={() => handleDelete(user._id)}
+                  />
                 </td>
               </tr>
             ))}

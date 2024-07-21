@@ -4,6 +4,7 @@ import BottomBar from "component/bottombar/BottomBar";
 import Home from "component/home/Home";
 import { atom, useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
+import Profile from "component/profile/Profile";
 
 const Graph = lazy(() => import("component/graph/Graph"));
 const Chat = lazy(() => import("component/chat/Chat"));
@@ -25,6 +26,7 @@ const LandingLayout = () => {
           <Suspense fallback={<div>Loading content...</div>}>
             {isNavigate === "graph" && <Graph />}
             {isNavigate === "Fuel" && <Calculator />}
+            {isNavigate === "Profile" && <Profile />}
             {isNavigate === "chat" && <Chat />}
           </Suspense>
         </div>

@@ -82,11 +82,11 @@ const Navbar = () => {
     handleMobileMenuClose();
   };
 
-  const handleProfile = () => {
-    cookies.remove("token");
-    router.push("/profile");
-    handleMobileMenuClose();
-  };
+  // const handleProfile = () => {
+  //   cookies.remove("token");
+  //   router.push("/profile");
+  //   handleMobileMenuClose();
+  // };
 
   const menuId = "primary-search-account-menu";
 
@@ -120,12 +120,12 @@ const Navbar = () => {
         </IconButton>
         <Typography variant="body1">Admin</Typography>
       </MenuItem>
-      <MenuItem onClick={handleProfile}>
+      {/* <MenuItem onClick={handleProfile}>
         <IconButton size="small" aria-label="Profile" color="inherit">
           <AccountCircle />
         </IconButton>
         <Typography variant="body1">Profile</Typography>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleLogout}>
         <IconButton size="small" aria-label="Logout" color="inherit">
           <LogoutIcon />

@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "universal-cookie";
 import { loginData } from "API/api";
+import { userProfile } from "atom/atom";
+import { useAtom } from "jotai";
 
 interface FormValues {
   mobileNumber: string;
@@ -22,6 +24,7 @@ const Login: React.FC = () => {
 
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
 
   const validateForm = (): Errors => {
@@ -64,8 +67,8 @@ const Login: React.FC = () => {
         formValues.password
       );
       if (response.status == 200) {
+        setProfileUser(response.data.user);
         alert(response.data.message);
-        console.log("object", response);
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);

@@ -2,15 +2,18 @@ import { axiosInstance } from "./axios";
 
 export const registerData = async (
   name: string,
+  email: string,
   mobileNumber: string,
   password: string
 ) => {
   try {
-    const response = await axiosInstance.post(`/UserRegister`, {
+    const response = await axiosInstance.post(`/register`, {
       name,
+      email,
       mobileNumber,
       password,
     });
+    console.log("========>", response);
     return response;
   } catch (error: any) {
     if (error.response) {
@@ -24,7 +27,7 @@ export const registerData = async (
 };
 export const loginData = async (mobileNumber: string, password: string) => {
   try {
-    const response = await axiosInstance.post(`/UserLogin`, {
+    const response = await axiosInstance.post(`/login`, {
       mobileNumber,
       password,
     });
@@ -42,7 +45,7 @@ export const loginData = async (mobileNumber: string, password: string) => {
 
 export const getUser = async () => {
   try {
-    const response = await axiosInstance.get("/UserShow");
+    const response = await axiosInstance.get("/data");
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -51,7 +54,7 @@ export const getUser = async () => {
 };
 export const deleteUser = async (id: string) => {
   try {
-    await axiosInstance.delete(`/deleteUser/${id}`);
+    await axiosInstance.delete(`/user/${id}`);
   } catch (error: any) {
     if (error.response) {
       const ErrorMessage = error.response.data.message;

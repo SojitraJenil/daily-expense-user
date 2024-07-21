@@ -51,6 +51,11 @@ export default function BottomBar({
         label="Fuel"
         icon={<CalculateIcon />}
       />
+      <BottomNavigationAction
+        value="Profile"
+        label="Profile"
+        icon={<CalculateIcon />}
+      />
       <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
     </BottomNavigation>
   );

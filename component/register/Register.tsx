@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
 import Link from "next/link";
 import { registerData } from "API/api";
+import { useAtom } from "jotai";
+import { userProfile } from "atom/atom";
 
 interface FormValues {
   [x: string]: any;
@@ -15,6 +17,7 @@ interface Errors {
   name?: string;
   mobileNumber?: string;
   password?: string;
+  email?: string;
 }
 
 const Register: React.FC = () => {
@@ -22,10 +25,12 @@ const Register: React.FC = () => {
     name: "",
     mobileNumber: "",
     password: "",
+    email: "",
   });
 
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
 
   const validateForm = (): Errors => {
@@ -68,20 +73,23 @@ const Register: React.FC = () => {
       setLoader(true);
       const response = await registerData(
         formValues.name,
+        formValues.email,
         formValues.mobileNumber,
         formValues.password
       );
-      if (response === "User already exists") {
-        setErrors({ mobileNumber: "Mobile number is already registered" });
-        alert(response);
-      } else if (response.status == 201) {
+      console.log(response);
+      if (response.status == 201) {
         alert(response.data.message);
+        setProfileUser(response.data.user);
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber);
         router.push("/landing");
+      } else {
+        setErrors({ mobileNumber: "Mobile number is already registered" });
+        alert(response);
       }
     } catch (error: any) {
       console.error("Error: ", error);
@@ -116,6 +124,22 @@ const Register: React.FC = () => {
               {errors.name && (
                 <p className="text-red-500 text-xs mt-1">{errors.name}</p>
               )}
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={formValues.email}
+                onChange={handleChange}
+                className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Enter your email"
+              />
             </div>
             <div>
               <label
