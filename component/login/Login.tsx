@@ -7,17 +7,20 @@ import { userProfile } from "atom/atom";
 import { useAtom } from "jotai";
 
 interface FormValues {
+  name: string;
   mobileNumber: string;
   password: string;
 }
 
 interface Errors {
+  name?: string;
   mobileNumber?: string;
   password?: string;
 }
 
 const Login: React.FC = () => {
   const [formValues, setFormValues] = useState<FormValues>({
+    name: "",
     mobileNumber: "",
     password: "",
   });
@@ -40,6 +43,10 @@ const Login: React.FC = () => {
 
     if (!formValues.password.trim()) {
       errors.password = "Password is required";
+    }
+
+    if (!formValues.name.trim()) {
+      errors.name = "Name is required";
     }
 
     return errors;
@@ -68,15 +75,16 @@ const Login: React.FC = () => {
         formValues.mobileNumber,
         formValues.password
       );
-      if (response.status == 200) {
+      if (response.status === 200) {
         setError("");
         setProfileUser(response.data.user);
         setSuccess(response.data.message);
-        // alert(response.data.message);
+
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
+        cookies.set("userName", formValues.name, { expires: expires });
         cookies.set("UserId", response.data.user._id, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber, {
           expires: expires,
@@ -84,7 +92,6 @@ const Login: React.FC = () => {
         router.push("/landing");
       } else {
         setError(response);
-        // alert(response);
         console.log(response);
       }
     } catch (error) {
@@ -103,6 +110,25 @@ const Login: React.FC = () => {
             Login
           </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={formValues.name}
+                onChange={handleChange}
+                className="mt-1 p-2 text-black w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Enter your Name"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+              )}
+            </div>
             <div>
               <label
                 htmlFor="mobileNumber"
@@ -133,7 +159,7 @@ const Login: React.FC = () => {
                 Password
               </label>
               <input
-                type="text"
+                type="password"
                 id="password"
                 value={formValues.password}
                 onChange={handleChange}
@@ -164,10 +190,9 @@ const Login: React.FC = () => {
             <p className="text-green-700">{success}</p>
           </form>
           <hr className="text-gray-100 my-4" />
-          <Link className={`link `} href="/register">
-            Don`t have an account yet? click to Register...
+          <Link className={`link`} href="/register">
+            Don’t have an account yet? Click to Register...
           </Link>
-          {/* Optional: Add Google sign-in button */}
         </div>
       </div>
     </div>

@@ -31,14 +31,18 @@ function Chat() {
   const [user, setUser] = useState<string | null>(null);
   const messagesRef = collection(db, "Message");
   const cookies = new Cookies();
-  const authToken = cookies.get("token");
-  const room = getCookie("mobileNumber");
+  const room = cookies.get("mobileNumber");
+  const userName = cookies.get("userName");
   const containRef = useRef<HTMLDivElement>(null);
+
+  console.log("user================>", user);
+  console.log("room================>", room);
+  console.log("messages", messages);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        setUser(currentUser.displayName || "Anonymous");
+        setUser(userName || "Anonymous");
       }
     });
     return () => unsubscribe();
@@ -64,19 +68,6 @@ function Chat() {
     }
   }, [messages]);
 
-  function getCookie(name: string) {
-    if (typeof document !== "undefined") {
-      const cookies = document.cookie.split(";");
-      for (const cookie of cookies) {
-        const trimmedCookie = cookie.trim();
-        if (trimmedCookie.startsWith(name + "=")) {
-          return trimmedCookie.substring(name.length + 1);
-        }
-      }
-    }
-    return null;
-  }
-
   async function sendMessage() {
     if (newMessage.trim() === "") {
       setError("Enter the text!");
@@ -84,7 +75,7 @@ function Chat() {
     }
 
     setNewMessage("");
-    const displayName = auth.currentUser?.displayName || "Anonymous";
+    const displayName = userName || "Anonymous";
     try {
       await addDoc(messagesRef, {
         text: newMessage,
@@ -149,29 +140,21 @@ function Chat() {
                     user === data.user ? "justify-start" : "justify-end"
                   }`}
                 >
-                  <div
-                    className={`flex items-start ${
-                      user === data.user ? "justify-start" : "hidden"
-                    }`}
-                  >
+                  {user !== data.user && (
                     <FaUserCircle className="w-5 h-8 mr-2" />
-                  </div>
+                  )}
                   <div
                     className={`p-2 max-w-[300px] rounded-lg ${
                       user === data.user ? "bg-[#D9FDD3]" : "bg-white"
                     } text-dark`}
                   >
                     <div className="flex flex-col">
-                      <span
-                        className={`font-bold ${
-                          user === data.user ? "hidden" : "block"
-                        }`}
-                      >
-                        {data.user}:
-                      </span>
+                      {user !== data.user && (
+                        <span className="font-bold">{data.user}:</span>
+                      )}
                       <span className="whitespace-pre-wrap">{data.text}</span>
                       <div className="text-xs text-gray-500">
-                        {moment(data.createdAt).format("hh:mm:ss A")}
+                        {moment(data.createdAt).format("hh:mm A")}
                       </div>
                     </div>
                   </div>
