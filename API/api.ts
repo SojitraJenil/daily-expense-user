@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { axiosInstance } from "./axios";
+import Cookies from "universal-cookie";
 
 export const registerData = async (
   name: string,
@@ -45,7 +47,16 @@ export const loginData = async (mobileNumber: string, password: string) => {
 
 export const getUser = async () => {
   try {
-    const response = await axiosInstance.get("/data");
+    const cookies = new Cookies();
+    const token = cookies.get("token");
+    console.log("token", token);
+    const response = await axiosInstance.get("/data", {
+      headers: {
+        Authorization: token, // Ensure token is sent in the Authorization header
+      },
+    });
+
+    console.log("response.data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -146,6 +157,15 @@ export const addFuelDetails = async (formValues: any) => {
 export const showAllFuelDetails = async () => {
   try {
     const response = await axiosInstance.get(`/showFuelDetails`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching expenses:", error);
+    throw error;
+  }
+};
+export const showProfile = async (id: any) => {
+  try {
+    const response = await axiosInstance.get(`/user/profile/${id}`);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching expenses:", error);

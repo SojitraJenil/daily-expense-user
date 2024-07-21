@@ -13,8 +13,16 @@ const Chat: FC = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
+      {/* Header */}
+      <header className="bg-gray-800 text-white p-4 fixed top-0 left-0 right-0">
+        <h1 className="text-lg font-semibold">Chat</h1>
+      </header>
+
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto p-4">
+      <main
+        className="flex-1 overflow-y-auto p-4 pt-16"
+        style={{ height: `calc(100vh - 112px)` }}
+      >
         <div className="space-y-4">
           {messages.map((msg, idx) => (
             <div
@@ -30,7 +38,7 @@ const Chat: FC = () => {
       </main>
 
       {/* Input Area */}
-      <footer className="p-4 bg-white border-t border-gray-300 ">
+      <footer className="p-4 bg-white border-t mb-3  border-gray-300 fixed bottom-12 left-0 right-0">
         <div className="flex items-center">
           <input
             type="text"

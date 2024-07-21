@@ -85,7 +85,9 @@ const Register: React.FC = () => {
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
-        cookies.set("mobileNumber", formValues.mobileNumber);
+        cookies.set("mobileNumber", formValues.mobileNumber, {
+          expires: expires,
+        });
         router.push("/landing");
       } else {
         setErrors({ mobileNumber: "Mobile number is already registered" });

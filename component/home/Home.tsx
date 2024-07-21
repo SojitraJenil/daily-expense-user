@@ -36,6 +36,7 @@ interface Transaction {
 const Home: React.FC = () => {
   const cookies = new Cookies();
   const authToken = cookies.get("token");
+  console.log("authToken", authToken);
   const mobileNumber = cookies.get("mobileNumber");
   const [isOpen, setIsOpen] = useState(false);
   const [totalExpense, setTotalExpense] = useState("");
@@ -74,6 +75,8 @@ const Home: React.FC = () => {
   };
 
   const fetchTransactions = async () => {
+    setLoading(true);
+
     if (!authToken) {
       setLoading(false);
       return;
@@ -81,6 +84,7 @@ const Home: React.FC = () => {
 
     try {
       const transactionsData = await showAllExpenses();
+      console.log("transactionsData", transactionsData);
       console.log("Fetched transactions data:", transactionsData);
       if (!transactionsData || !transactionsData.data) {
         console.error("No data fetched");
@@ -119,9 +123,8 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
     fetchTransactions();
-  }, []);
+  }, [authToken, mobileNumber]);
 
   const handleOpenUpdateModal = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -188,7 +191,7 @@ const Home: React.FC = () => {
 
   if (loading) {
     return (
-      <Box className="flex justify-center items-center h-full">
+      <Box className="flex justify-center items-center h-full my-[250px]">
         <CircularProgress />
       </Box>
     );

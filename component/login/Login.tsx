@@ -24,6 +24,8 @@ const Login: React.FC = () => {
 
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
 
@@ -67,16 +69,22 @@ const Login: React.FC = () => {
         formValues.password
       );
       if (response.status == 200) {
+        setError("");
         setProfileUser(response.data.user);
-        alert(response.data.message);
+        setSuccess(response.data.message);
+        // alert(response.data.message);
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
-        cookies.set("mobileNumber", formValues.mobileNumber);
+        cookies.set("UserId", response.data.user._id, { expires: expires });
+        cookies.set("mobileNumber", formValues.mobileNumber, {
+          expires: expires,
+        });
         router.push("/landing");
       } else {
-        alert(response);
+        setError(response);
+        // alert(response);
         console.log(response);
       }
     } catch (error) {
@@ -152,6 +160,8 @@ const Login: React.FC = () => {
                 )}
               </button>
             </div>
+            <p className="text-red-600">{error}</p>
+            <p className="text-green-700">{success}</p>
           </form>
           <hr className="text-gray-100 my-4" />
           <Link className={`link `} href="/register">

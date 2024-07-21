@@ -3,6 +3,7 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import ChatIcon from "@mui/icons-material/Chat";
 
@@ -51,12 +52,12 @@ export default function BottomBar({
         label="Fuel"
         icon={<CalculateIcon />}
       />
+      <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
       <BottomNavigationAction
         value="Profile"
         label="Profile"
-        icon={<CalculateIcon />}
+        icon={<AccountCircleIcon />}
       />
-      <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
     </BottomNavigation>
   );
 }

@@ -136,13 +136,13 @@ const Navbar = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar
         position="fixed"
         sx={{
-          width: { xs: "100%", md: "300px" }, // 100% width for small screens, 300px for medium and up
+          width: { xs: "100%", md: "512px", sm: "512px" }, // 100% width for small screens, 300px for medium and up
           left: 0,
-          top: 0,
+          margin: "auto",
           zIndex: 1200,
           display: "flex",
           flexDirection: "column",

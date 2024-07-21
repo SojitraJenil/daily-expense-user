@@ -18,7 +18,7 @@ const LandingLayout = () => {
   };
 
   return (
-    <div className="w-full max-w-lg h-screen mx-auto bg-slate-300 border border-black flex flex-col">
+    <div className="w-full max-w-lg h-screen mx-auto bg-white border border-l flex flex-col">
       <div className="flex-grow overflow-auto">
         <Navbar />
         <div className="mt-10">

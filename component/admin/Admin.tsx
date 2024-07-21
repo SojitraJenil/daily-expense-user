@@ -12,14 +12,13 @@ const Admin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchAllData();
-    }
+    fetchAllData();
   }, [isLoggedIn]);
 
   const fetchAllData = async () => {
     try {
       const response = await getUser();
+      console.log("response===============>", response);
       setUsers(response.data);
       console.log(response.data);
       console.log("response", response);
@@ -29,14 +28,13 @@ const Admin: React.FC = () => {
   };
 
   const staticEmail = "admin@gmail.com";
-  const staticPassword = "123";
-
+  const staticPassword =
+    "$2a$10$dG6A8OgI/vQ5FJnPiQlP8OCIlhOE5M5QBVCneK7C/gTGralNVJ/5m"; // The hashed password
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Hash the password before comparing
-    const hashedPassword = await bcrypt.hash(password, 10);
-    if (email === staticEmail && hashedPassword === staticPassword) {
+    const isPasswordValid = await bcrypt.compare(password, staticPassword);
+    if (email === staticEmail && isPasswordValid) {
       setIsLoggedIn(true);
       setError(null);
     } else {
@@ -44,7 +42,6 @@ const Admin: React.FC = () => {
       setError("Invalid credentials. Please try again.");
     }
   };
-
   const handleDelete = async (id: string) => {
     try {
       await deleteUser(id);
@@ -128,6 +125,9 @@ const Admin: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Id
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -144,6 +144,9 @@ const Admin: React.FC = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
               <tr key={user._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {user._id}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {user.name}
                 </td>

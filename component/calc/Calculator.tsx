@@ -123,7 +123,7 @@ function Calculator() {
 
   if (loading) {
     return (
-      <Box className="flex justify-center items-center h-full">
+      <Box className="flex justify-center items-center h-full my-[250px]">
         <CircularProgress />
       </Box>
     );
