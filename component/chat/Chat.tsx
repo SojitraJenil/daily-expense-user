@@ -27,7 +27,6 @@ interface Message {
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,22 +58,11 @@ const Chat = () => {
       containRef.current.scrollTop = containRef.current.scrollHeight;
     }
   }, [messages]);
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  useEffect(() => {
-    const handleFocus = () => setIsKeyboardOpen(true);
-    const handleBlur = () => setIsKeyboardOpen(false);
-
-    window.addEventListener("focusin", handleFocus);
-    window.addEventListener("focusout", handleBlur);
-
-    return () => {
-      window.removeEventListener("focusin", handleFocus);
-      window.removeEventListener("focusout", handleBlur);
-    };
-  }, []);
   async function sendMessage() {
     if (newMessage.trim() === "") {
       setError("Enter the text!");
@@ -115,12 +103,7 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-screen bg-gray-100 pb-16">
       {/* Header */}
-      <div
-        className={`flex items-center p-2 border-b border-black bg-red-600 text-white top-0 left-0 w-full z-50 ${
-          isKeyboardOpen ? "header-static" : "header-fixed"
-        }`}
-      >
-        {" "}
+      <div className="flex items-center p-2 border-b border-black bg-red-600 text-white fixed top-0 left-0 w-full z-50">
         <div className="" onClick={handleNavigateHome}>
           <WestIcon className="w-8 h-8 ml-2" />
         </div>
