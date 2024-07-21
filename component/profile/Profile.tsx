@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
   const resetPassword = async () => {
     try {
       var response = await axios.post(
-        "https://daily-expense-api.onrender.com/reset",
+        "https://daily-expense-api.onrender.com/reset-password",
         {
           token: resetToken,
           newPassword,
