@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { showProfile } from "API/api";
 import Cookies from "universal-cookie";
 import Image from "next/image"; // Import Image from Next.js if you're using Next.js
+import { Box, CircularProgress } from "@mui/material";
 
 const Profile: React.FC = () => {
   const [profileDetails, setProfileDetails] = useState<any>(null);
@@ -23,7 +24,11 @@ const Profile: React.FC = () => {
   }, []);
 
   if (!profileDetails) {
-    return <div>Loading...</div>;
+    return (
+      <Box className="flex justify-center items-center h-full my-[250px]">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   const handleTogglePasswordVisibility = () => {
