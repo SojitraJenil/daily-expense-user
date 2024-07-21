@@ -132,7 +132,7 @@ function Calculator() {
 
   return (
     <div className="bg-white h-screen">
-      <div className="flex justify-evenly items-center gap-4 pt-2">
+      <div className="flex py-3 pt-8 justify-evenly items-center gap-4 ">
         <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
             Average
@@ -143,18 +143,10 @@ function Calculator() {
         </div>
         <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <Typography className="text-gray-500 mb-2 text-center">
-            1 Liter Price
+            Average
           </Typography>
           <Typography variant="h6" className="text-gray-700 text-center">
-            <input
-              type="text"
-              placeholder="Click"
-              value={CurrentPrice}
-              onChange={(e: any) => {
-                setCurrentPrice(e.target.value);
-              }}
-              className="bg-gray-50 w-2/4 border-1 text-md border-black"
-            />
+            100
           </Typography>
         </div>
       </div>

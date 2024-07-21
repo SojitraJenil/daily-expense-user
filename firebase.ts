@@ -1,10 +1,10 @@
-// Import the functions you need from the SDKs you need
+// firebase.ts
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDHfRs2XoRCURbz2TZHldBPj10-Nh7J4cA",
   authDomain: "daily-expense-4e81d.firebaseapp.com",
@@ -19,10 +19,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 if (typeof window !== "undefined" && (await isSupported())) {
   const analytics = getAnalytics(app);
 }
 
-export { db, auth };
+export { db, auth, storage };

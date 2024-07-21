@@ -195,7 +195,7 @@ const Home: React.FC = () => {
   return (
     <Card className="py-6 px-2 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
       <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
-        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-48 bg-[#9fff9f] p-4 border-2 border-solid border-[#426942] rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
             Total Expense
@@ -204,7 +204,7 @@ const Home: React.FC = () => {
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-48 bg-[#9fff9f] p-4 border-2 border-solid border-[#426942] rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
             Day Expense
