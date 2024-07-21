@@ -9,6 +9,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import ChatIcon from "@mui/icons-material/Chat";
 import DownloadIcon from "@mui/icons-material/Download";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,6 +17,7 @@ import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
 import { useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
+import dynamic from "next/dynamic";
 
 const Navbar = () => {
   const router = useRouter();
@@ -27,6 +29,11 @@ const Navbar = () => {
 
   const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
   const [isInstallable, setIsInstallable] = React.useState<boolean>(false);
+  const [, setIsNavigate] = useAtom(NavigateNameAtom); // Use atom to manage navigation state
+
+  const handleNavigateHome = () => {
+    setIsNavigate("chat");
+  };
 
   React.useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -122,6 +129,12 @@ const Navbar = () => {
         </IconButton>
         <Typography variant="body1">Admin</Typography>
       </MenuItem>
+      <MenuItem onClick={handleNavigateHome}>
+        <IconButton size="small" aria-label="Admin" color="inherit">
+          <ChatIcon />
+        </IconButton>
+        <Typography variant="body1">Chat</Typography>
+      </MenuItem>
       {/* <MenuItem onClick={handleProfile}>
         <IconButton size="small" aria-label="Profile" color="inherit">
           <AccountCircle />
@@ -185,4 +198,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default dynamic(() => Promise.resolve(Navbar), { ssr: false });

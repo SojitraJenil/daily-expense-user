@@ -12,4 +12,22 @@ export interface User {
 export const userAtom = atom<User[]>([]);
 export const userProfile = atom<any>([]);
 export const userProfileName = atom<any>([]);
-export const NavigateNameAtom = atom("Home"); // Default value set to "landing"
+
+const getInitialNavigateState = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("navigateName") || "Home";
+  }
+  return "Home";
+};
+
+export const NavigateNameAtom = atom(getInitialNavigateState());
+
+NavigateNameAtom.onMount = (setAtom) => {
+  const handler = () => {
+    setAtom(getInitialNavigateState());
+  };
+  window.addEventListener("storage", handler);
+  return () => {
+    window.removeEventListener("storage", handler);
+  };
+};

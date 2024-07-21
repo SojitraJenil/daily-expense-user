@@ -49,14 +49,11 @@ export const getUser = async () => {
   try {
     const cookies = new Cookies();
     const token = cookies.get("token");
-    console.log("token", token);
     const response = await axiosInstance.get("/data", {
       headers: {
         Authorization: token, // Ensure token is sent in the Authorization header
       },
     });
-
-    console.log("response.data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);

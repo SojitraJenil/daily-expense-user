@@ -29,7 +29,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       key={transaction.id}
       sx={{
         backgroundColor: "rgb(255, 245, 245)",
-        marginTop: 2,
+        marginTop: 1,
         paddingTop: 0,
         paddingBottom: 0,
         display: "flex",

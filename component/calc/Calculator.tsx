@@ -64,6 +64,7 @@ function Calculator() {
   };
 
   useEffect(() => {
+    console.log("Fuel", "=======================================>");
     ShowFuelRecord();
   }, []);
 

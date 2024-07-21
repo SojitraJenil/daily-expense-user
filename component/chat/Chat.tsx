@@ -2,16 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { collection, addDoc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
+import WestIcon from "@mui/icons-material/West";
 import moment from "moment";
 import { Box, CircularProgress } from "@mui/material";
 import Cookies from "universal-cookie";
 import { useAtom } from "jotai";
-import { userProfileName } from "atom/atom";
+import { NavigateNameAtom, userProfileName } from "atom/atom";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 const COMMON_ROOM_ID = "ExpenseAllUserChat"; // Replace with your actual common room ID
 
-// Define a TypeScript interface for message data
 interface Message {
   id: string;
   text: string;
@@ -30,9 +32,11 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);
   const messagesRef = collection(db, "Message");
   const cookie = new Cookies();
+  const [isNavigate] = useAtom(NavigateNameAtom);
+  console.log("isNavigate", isNavigate);
+  const router = useRouter();
   const MobileNumber = cookie.get("mobileNumber");
   const [getUserName] = useAtom(userProfileName);
-
   const containRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -91,25 +95,35 @@ const Chat = () => {
     return () => clearTimeout(typingTimeout);
   }, [newMessage]);
 
+  const [, setIsNavigate] = useAtom(NavigateNameAtom); // Use atom to manage navigation state
+
+  const handleNavigateHome = () => {
+    setIsNavigate("Home");
+  };
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-100 pb-14">
       {/* Header */}
       <div className="flex items-center p-2 border-b border-black bg-red-600 text-white fixed top-0 left-0 w-full z-50">
-        <FaUserCircle className="w-8 h-8 ml-2" />
+        <div className="" onClick={handleNavigateHome}>
+          <WestIcon className="w-8 h-8 ml-2" />
+        </div>
+        <FaUserCircle className="w-8 h-10 ml-2" />
         <div className="font-semibold text-center flex-grow">
-          <p className="text-lg">
-            {loading ? "Loading..." : "Common Chat".toUpperCase()}
+          <p className="text-md text-start ps-2 mt-0">
+            {loading ? "Loading..." : "Chat Room".toUpperCase()}
           </p>
-          {typing && <p className="text-sm">Typing...</p>}
+          <p className="text-SM text-start ps-2">
+            {typing && <p className="text-sm">{getUserName} Typing...</p>}
+          </p>
         </div>
       </div>
 
       {/* Messages Container */}
       <div
-        className="flex-grow overflow-y-auto px-2 pt-14 pb-16 bg-gray-100"
+        className="flex-grow overflow-y-auto px-2 pt-5 bg-gray-100"
         ref={containRef}
       >
-        <div className="space-y-4">
+        <div className="space-y-2">
           {loading ? (
             <Box className="flex justify-center items-center h-full">
               <CircularProgress />
@@ -141,7 +155,7 @@ const Chat = () => {
                   <div
                     className={`p-2 max-w-[300px] rounded-lg ${
                       MobileNumber === data.mobileNo
-                        ? "bg-[#D9FDD3]"
+                        ? "bg-red-600 text-white"
                         : "bg-white"
                     } text-dark`}
                   >
@@ -150,7 +164,7 @@ const Chat = () => {
                         <span className="font-bold">{data.user}:</span>
                       )}
                       <span className="whitespace-pre-wrap">{data.text}</span>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-white">
                         {moment(data.createdAt).format("hh:mm A")}
                       </div>
                     </div>
@@ -163,14 +177,14 @@ const Chat = () => {
       </div>
 
       {/* Chat Input */}
-      <div className="fixed bottom-12 mb-3 z-50 bg-slate-200 left-0 w-full p-2 border-t border-gray-300 flex items-center">
+      <div className="fixed bottom-0 z-50 bg-slate-200 left-0 w-full p-2 border-t border-gray-300 flex items-center">
         <input
           ref={inputRef}
           type="text"
           value={newMessage}
           onChange={handleInputChange}
           placeholder="Type a message..."
-          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#035F52] focus:border-transparent"
+          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#b54949] focus:border-transparent"
           onKeyPress={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -179,7 +193,7 @@ const Chat = () => {
           }}
         />
         <button
-          className="ml-2 bg-[#035F52] text-white p-2 rounded-full flex items-center justify-center"
+          className="ml-2 px-4 py-3 bg-red-500 text-white p-2 rounded-md flex items-center justify-center"
           type="button"
           onClick={sendMessage}
         >
@@ -193,4 +207,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default dynamic(() => Promise.resolve(Chat), { ssr: false });

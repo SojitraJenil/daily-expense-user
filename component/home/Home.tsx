@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -23,6 +24,7 @@ import {
 import Swal from "sweetalert2";
 import { useAtom } from "jotai";
 import { userAtom } from "atom/atom";
+import dynamic from "next/dynamic";
 
 interface Transaction {
   id?: string;
@@ -36,7 +38,6 @@ interface Transaction {
 const Home: React.FC = () => {
   const cookies = new Cookies();
   const authToken = cookies.get("token");
-  console.log("authToken", authToken);
   const mobileNumber = cookies.get("mobileNumber");
   const [isOpen, setIsOpen] = useState(false);
   const [totalExpense, setTotalExpense] = useState("");
@@ -61,13 +62,13 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log("Home", "=======================================>");
     fetchAllData();
-  }, []);
+  }, [transactions]);
   const [, setUsers] = useAtom(userAtom);
   const fetchAllData = async () => {
     try {
       const response = await getUser();
-      console.log(response);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -84,8 +85,6 @@ const Home: React.FC = () => {
 
     try {
       const transactionsData = await showAllExpenses();
-      console.log("transactionsData", transactionsData);
-      console.log("Fetched transactions data:", transactionsData);
       if (!transactionsData || !transactionsData.data) {
         console.error("No data fetched");
         setLoading(false);
@@ -114,7 +113,6 @@ const Home: React.FC = () => {
         .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
       setTotalExpense(totalExpense);
       setTransactions(formattedTransactions);
-      console.log("Formatted transactions:", formattedTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     } finally {
@@ -133,8 +131,7 @@ const Home: React.FC = () => {
 
   const addTransaction = async (formValues: any) => {
     try {
-      const response = await addExpense(formValues);
-      console.log("Added transaction:", response);
+      await addExpense(formValues);
       handleClose();
       fetchTransactions();
     } catch (error) {
@@ -143,12 +140,10 @@ const Home: React.FC = () => {
   };
 
   const updateTransaction = async (formValues: any) => {
-    console.log("formValues", formValues);
     if (!selectedTransaction) return;
 
     try {
-      const response = await updateExpense(selectedTransaction.id!, formValues);
-      console.log("Updated transaction:", response);
+      await updateExpense(selectedTransaction.id!, formValues);
       setUpdateModalOpen(false);
       setSelectedTransaction(null);
       fetchTransactions();
@@ -198,9 +193,9 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Card className="p-6 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
-      <Box className="w-full flex justify-center items-center gap-4">
-        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+    <Card className="py-6 px-2 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
+      <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
+        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
             Total Expense
@@ -209,7 +204,7 @@ const Home: React.FC = () => {
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-48 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
             Day Expense
@@ -218,30 +213,25 @@ const Home: React.FC = () => {
             coming...
           </Typography>
         </Box>
-        <Box className="w-33 bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
-          <ArrowDownwardIcon className="text-red-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2 text-center">
-            Week Expense{" "}
-          </Typography>
-          <Typography variant="h6" className="text-gray-700 text-sm">
-            coming...
-          </Typography>
-        </Box>
       </Box>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        fullWidth
-        className="px-8 py-2  text-white bg-blue-700 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center flex mx-auto"
-      >
-        Add Expense
-      </Button>
+      <Box sx={{ paddingBottom: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          fullWidth
+          className="px-8 py-2  text-white bg-blue-700 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center flex mx-auto"
+        >
+          Add Expense
+        </Button>
+      </Box>
 
       <Divider className="my-4" />
 
-      <Typography>Expense History</Typography>
+      <Typography className="py-2 text-black font-thin font-bold">
+        Expense History
+      </Typography>
       {transactions &&
         transactions.map(
           (item, index) =>
@@ -288,4 +278,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default dynamic(() => Promise.resolve(Home), { ssr: false });

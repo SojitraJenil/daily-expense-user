@@ -30,8 +30,10 @@ export default function BottomBar({
       showLabels
       sx={{
         backgroundColor: "whitesmoke",
+        padding: "2px 0px",
         "& .Mui-selected": {
           backgroundColor: "black",
+          padding: "2px 0px",
           color: "white",
         },
       }}
@@ -52,7 +54,6 @@ export default function BottomBar({
         label="Fuel"
         icon={<CalculateIcon />}
       />
-      <BottomNavigationAction value="chat" label="Chat" icon={<ChatIcon />} />
       <BottomNavigationAction
         value="Profile"
         label="Profile"
