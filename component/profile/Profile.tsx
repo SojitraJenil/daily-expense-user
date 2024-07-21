@@ -19,8 +19,10 @@ const Profile: React.FC = () => {
     setInputPassword(event.target.value);
   };
 
+  const Pass = ProfileDetails.password;
+
   const verifyPassword = () => {
-    bcrypt.compare(inputPassword, ProfileDetails.password, (err, result) => {
+    bcrypt.compare(inputPassword, Pass, (err, result) => {
       if (err) {
         console.error(err);
         setIsPasswordMatch(false);
