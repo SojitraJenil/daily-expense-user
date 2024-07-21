@@ -28,8 +28,7 @@ const Admin: React.FC = () => {
   };
 
   const staticEmail = "admin@gmail.com";
-  const staticPassword =
-    "$2a$10$dG6A8OgI/vQ5FJnPiQlP8OCIlhOE5M5QBVCneK7C/gTGralNVJ/5m"; // The hashed password
+  const staticPassword = "123"; // The hashed password
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -60,7 +59,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  if (isLoggedIn) {
+  if (!isLoggedIn) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg">

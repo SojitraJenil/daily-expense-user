@@ -18,6 +18,7 @@ interface Errors {
   mobileNumber?: string;
   password?: string;
   email?: string;
+  success?: string;
 }
 
 const Register: React.FC = () => {
@@ -38,6 +39,9 @@ const Register: React.FC = () => {
 
     if (!formValues.name.trim()) {
       errors.name = "Name is required";
+    }
+    if (!formValues.email.trim()) {
+      errors.email = "email is required";
     }
 
     if (!formValues.mobileNumber.trim()) {
@@ -79,7 +83,7 @@ const Register: React.FC = () => {
       );
       console.log(response);
       if (response.status == 201) {
-        alert(response.data.message);
+        setErrors({ success: response.data.message });
         setProfileUser(response.data.user);
         const cookies = new Cookies();
         const expires = new Date();
@@ -142,6 +146,9 @@ const Register: React.FC = () => {
                 className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter your email"
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              )}
             </div>
             <div>
               <label
@@ -200,6 +207,7 @@ const Register: React.FC = () => {
                 )}
               </button>
             </div>
+            <p className="text-green-600">{errors.success}</p>
           </form>
           <hr className="text-gray-100 my-4" />
           <Link className={`link `} href="/login">

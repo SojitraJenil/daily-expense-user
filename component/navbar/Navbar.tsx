@@ -78,6 +78,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     cookies.remove("token");
+    cookies.remove("UserId");
+    cookies.remove("mobileNumber");
     router.push("/login");
     handleMobileMenuClose();
   };

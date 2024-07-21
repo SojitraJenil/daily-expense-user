@@ -5,6 +5,7 @@ import Home from "component/home/Home";
 import { atom, useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
 import Profile from "component/profile/Profile";
+import { Box, CircularProgress } from "@mui/material";
 
 const Graph = lazy(() => import("component/graph/Graph"));
 const Chat = lazy(() => import("component/chat/Chat"));
@@ -20,10 +21,19 @@ const LandingLayout = () => {
   return (
     <div className="w-full max-w-lg h-screen mx-auto bg-white border border-l flex flex-col">
       <div className="flex-grow overflow-auto">
-        <Navbar />
+        {isNavigate === "chat" ? "" : <Navbar />}
         <div className="mt-10">
           {isNavigate === "Home" && <Home />}
-          <Suspense fallback={<div>Loading content...</div>}>
+          <Suspense
+            fallback={
+              <div>
+                {" "}
+                <Box className="flex justify-center items-center h-full my-[250px]">
+                  <CircularProgress />
+                </Box>
+              </div>
+            }
+          >
             {isNavigate === "graph" && <Graph />}
             {isNavigate === "Fuel" && <Calculator />}
             {isNavigate === "Profile" && <Profile />}
