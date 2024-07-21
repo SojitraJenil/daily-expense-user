@@ -6,6 +6,7 @@ export interface User {
   name: string;
   mobileNumber: string;
   password: string;
+  email: string;
 }
 
 export const userAtom = atom<User[]>([]);

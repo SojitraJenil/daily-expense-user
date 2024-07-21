@@ -19,21 +19,26 @@ const Profile: React.FC = () => {
     setInputPassword(event.target.value);
   };
 
-  const Pass = ProfileDetails.password;
+  // Handle the case where ProfileDetails might be an array
+  const user = Array.isArray(ProfileDetails)
+    ? ProfileDetails[0]
+    : ProfileDetails;
+  const Pass = user?.password;
 
   const verifyPassword = () => {
+    if (!Pass) {
+      console.error("Password not available.");
+      return;
+    }
     bcrypt.compare(inputPassword, Pass, (err, result) => {
       if (err) {
         console.error(err);
         setIsPasswordMatch(false);
       } else {
-        console.log("result", result);
-        console.log("ProfileDetails.password", ProfileDetails.password);
         setIsPasswordMatch(result);
       }
     });
   };
-
   const handleResetEmailChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
