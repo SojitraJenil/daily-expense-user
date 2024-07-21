@@ -174,7 +174,7 @@ function Calculator() {
                 </div>
               ) : null}
               <Box
-                className={"bg-[#FFF5F5] py-1"}
+                className={"bg-red-100 py-1"}
                 sx={{
                   marginLeft: 2,
                   marginRight: 2,
