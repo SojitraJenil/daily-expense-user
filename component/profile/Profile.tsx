@@ -3,9 +3,12 @@ import { showProfile } from "API/api";
 import Cookies from "universal-cookie";
 import Image from "next/image"; // Import Image from Next.js if you're using Next.js
 import { Box, CircularProgress } from "@mui/material";
+import { useAtom } from "jotai";
+import { userProfileName } from "atom/atom";
 
 const Profile: React.FC = () => {
   const [profileDetails, setProfileDetails] = useState<any>(null);
+  const [, serUserName] = useAtom(userProfileName);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false); // State for password visibility
   const cookies = new Cookies();
   const userId = cookies.get("UserId");
@@ -14,6 +17,7 @@ const Profile: React.FC = () => {
     try {
       const response = await showProfile(userId);
       setProfileDetails(response.user);
+      serUserName(response.user.name);
     } catch (error) {
       console.error("Failed to fetch profile details:", error);
     }

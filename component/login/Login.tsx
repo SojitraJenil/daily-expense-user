@@ -7,20 +7,17 @@ import { userProfile } from "atom/atom";
 import { useAtom } from "jotai";
 
 interface FormValues {
-  name: string;
   mobileNumber: string;
   password: string;
 }
 
 interface Errors {
-  name?: string;
   mobileNumber?: string;
   password?: string;
 }
 
 const Login: React.FC = () => {
   const [formValues, setFormValues] = useState<FormValues>({
-    name: "",
     mobileNumber: "",
     password: "",
   });
@@ -31,7 +28,6 @@ const Login: React.FC = () => {
   const [success, setSuccess] = useState<string>("");
   const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
-
   const validateForm = (): Errors => {
     const errors: Errors = {};
 
@@ -43,10 +39,6 @@ const Login: React.FC = () => {
 
     if (!formValues.password.trim()) {
       errors.password = "Password is required";
-    }
-
-    if (!formValues.name.trim()) {
-      errors.name = "Name is required";
     }
 
     return errors;
@@ -84,7 +76,7 @@ const Login: React.FC = () => {
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
-        cookies.set("userName", formValues.name, { expires: expires });
+        // cookies.set("userName", formValues.name, { expires: expires });
         cookies.set("UserId", response.data.user._id, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber, {
           expires: expires,
@@ -110,7 +102,7 @@ const Login: React.FC = () => {
             Login
           </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
+            {/* <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
@@ -128,7 +120,7 @@ const Login: React.FC = () => {
               {errors.name && (
                 <p className="text-red-500 text-xs mt-1">{errors.name}</p>
               )}
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="mobileNumber"

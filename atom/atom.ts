@@ -11,4 +11,5 @@ export interface User {
 
 export const userAtom = atom<User[]>([]);
 export const userProfile = atom<any>([]);
+export const userProfileName = atom<any>([]);
 export const NavigateNameAtom = atom("Home"); // Default value set to "landing"

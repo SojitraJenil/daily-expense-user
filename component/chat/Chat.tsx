@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, addDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../firebase";
-import Cookies from "universal-cookie";
 import moment from "moment";
 import { Box, CircularProgress } from "@mui/material";
+import Cookies from "universal-cookie";
+import { useAtom } from "jotai";
+import { userProfileName } from "atom/atom";
+
+const COMMON_ROOM_ID = "ExpenseAllUserChat"; // Replace with your actual common room ID
 
 // Define a TypeScript interface for message data
 interface Message {
@@ -19,54 +17,47 @@ interface Message {
   text: string;
   createdAt: number;
   user: string;
+  MobileNumber: string;
+  mobileNo: string;
   room: string;
 }
 
-function Chat() {
+const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<string | null>(null);
   const messagesRef = collection(db, "Message");
-  const cookies = new Cookies();
-  const room = cookies.get("mobileNumber");
-  const userName = cookies.get("userName");
+  const cookie = new Cookies();
+  const MobileNumber = cookie.get("mobileNumber");
+  const [getUserName] = useAtom(userProfileName);
+
   const containRef = useRef<HTMLDivElement>(null);
-
-  console.log("user================>", user);
-  console.log("room================>", room);
-  console.log("messages", messages);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      if (currentUser) {
-        setUser(userName || "Anonymous");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const queryMessages = query(messagesRef, where("room", "==", room || ""));
-    const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
+    const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
       const messages = snapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-      })) as Message[]; // Cast to Message[]
+      })) as Message[];
       const sortedMessages = messages.sort((a, b) => a.createdAt - b.createdAt);
       setLoading(false);
       setMessages(sortedMessages);
     });
     return () => unsubscribe();
-  }, [room]);
+  }, []);
 
   useEffect(() => {
     if (containRef.current) {
       containRef.current.scrollTop = containRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   async function sendMessage() {
     if (newMessage.trim() === "") {
@@ -75,15 +66,17 @@ function Chat() {
     }
 
     setNewMessage("");
-    const displayName = userName || "Anonymous";
+    const displayName = getUserName;
     try {
       await addDoc(messagesRef, {
         text: newMessage,
+        mobileNo: MobileNumber,
         createdAt: new Date().getTime(),
         user: displayName,
-        room,
+        room: COMMON_ROOM_ID,
       });
     } catch (error) {
+      console.error("Error sending message: ", error);
       setError("Failed to send message.");
     }
   }
@@ -105,9 +98,9 @@ function Chat() {
         <FaUserCircle className="w-8 h-8 ml-2" />
         <div className="font-semibold text-center flex-grow">
           <p className="text-lg">
-            {loading ? "Loading..." : "Demo".toUpperCase()}
+            {loading ? "Loading..." : "Common Chat".toUpperCase()}
           </p>
-          {typing && <p className="text-sm">Demo typing...</p>}
+          {typing && <p className="text-sm">Typing...</p>}
         </div>
       </div>
 
@@ -123,7 +116,7 @@ function Chat() {
             </Box>
           ) : (
             messages.map((data, index) => (
-              <div key={index}>
+              <div key={data.id}>
                 {(index === 0 ||
                   moment(data.createdAt).format("DD-MM-YYYY") !==
                     moment(messages[index - 1].createdAt).format(
@@ -137,19 +130,23 @@ function Chat() {
                 )}
                 <div
                   className={`flex ${
-                    user === data.user ? "justify-start" : "justify-end"
+                    MobileNumber === data.mobileNo
+                      ? "justify-end" // align right for current user's messages
+                      : "justify-start" // align left for other users' messages
                   }`}
                 >
-                  {user !== data.user && (
+                  {MobileNumber !== data.mobileNo && (
                     <FaUserCircle className="w-5 h-8 mr-2" />
                   )}
                   <div
                     className={`p-2 max-w-[300px] rounded-lg ${
-                      user === data.user ? "bg-[#D9FDD3]" : "bg-white"
+                      MobileNumber === data.mobileNo
+                        ? "bg-[#D9FDD3]"
+                        : "bg-white"
                     } text-dark`}
                   >
                     <div className="flex flex-col">
-                      {user !== data.user && (
+                      {MobileNumber !== data.mobileNo && (
                         <span className="font-bold">{data.user}:</span>
                       )}
                       <span className="whitespace-pre-wrap">{data.text}</span>
@@ -168,6 +165,7 @@ function Chat() {
       {/* Chat Input */}
       <div className="fixed bottom-12 mb-3 z-50 bg-slate-200 left-0 w-full p-2 border-t border-gray-300 flex items-center">
         <input
+          ref={inputRef}
           type="text"
           value={newMessage}
           onChange={handleInputChange}
@@ -193,6 +191,6 @@ function Chat() {
       {error && <p className="text-red-600 p-2">{error}</p>}
     </div>
   );
-}
+};
 
 export default Chat;
