@@ -90,6 +90,7 @@ const Register: React.FC = () => {
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("userName", formValues.name, { expires: expires });
         cookies.set("token", response.data.token, { expires: expires });
+        cookies.set("UserId", response.data.user._id, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber, {
           expires: expires,
         });
