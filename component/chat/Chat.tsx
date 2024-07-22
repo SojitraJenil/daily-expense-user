@@ -71,13 +71,12 @@ const Chat = () => {
     }
 
     setNewMessage("");
-    const displayName = getUserName;
     try {
       await addDoc(messagesRef, {
         text: newMessage,
         mobileNo: MobileNumber,
         createdAt: new Date().getTime(),
-        user: displayName,
+        user: getUserName,
         room: COMMON_ROOM_ID,
       });
     } catch (error) {

@@ -136,7 +136,7 @@ function Calculator() {
               Total Expense
             </Typography>
             <Typography variant="h6" className="text-gray-700">
-              ₹{"totalExpense"}
+              ₹100
             </Typography>
           </Box>
           <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
@@ -144,7 +144,7 @@ function Calculator() {
               Day Expense
             </Typography>
             <Typography variant="h6" className="text-gray-700 text-sm">
-              coming...
+              ₹100
             </Typography>
           </Box>
         </Box>

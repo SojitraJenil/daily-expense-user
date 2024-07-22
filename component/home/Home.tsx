@@ -19,11 +19,12 @@ import {
   deleteExpense,
   getUser,
   showAllExpenses,
+  showProfile,
   updateExpense,
 } from "API/api";
 import Swal from "sweetalert2";
 import { useAtom } from "jotai";
-import { NavigateNameAtom, userAtom } from "atom/atom";
+import { NavigateNameAtom, userAtom, userProfileName } from "atom/atom";
 import dynamic from "next/dynamic";
 
 interface Transaction {
@@ -44,6 +45,7 @@ const Home: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [isNavigate] = useAtom(NavigateNameAtom);
+  const [, setUserProfileName] = useAtom(userProfileName);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -62,8 +64,21 @@ const Home: React.FC = () => {
     setSelectedTransaction(null);
   };
 
+  const fetchProfileData = async () => {
+    const userId = cookies.get("UserId");
+    try {
+      const response = await showProfile(userId);
+      if (response && response.user) {
+        setUserProfileName(response.user.name);
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
+
   useEffect(() => {
     console.log("Home", "=======================================>");
+    fetchProfileData();
     fetchAllData();
   }, [transactions, isNavigate]);
   const [, setUsers] = useAtom(userAtom);
