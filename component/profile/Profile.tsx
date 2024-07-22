@@ -1,16 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { showProfile } from "API/api";
 import Cookies from "universal-cookie";
 import Image from "next/image"; // Import Image from Next.js if you're using Next.js
 import { Box, CircularProgress } from "@mui/material";
 import { useAtom } from "jotai";
-import { userProfileName } from "atom/atom";
+import { NavigateNameAtom, userProfileName } from "atom/atom";
 
 const Profile: React.FC = () => {
   const [profileDetails, setProfileDetails] = useState<any>(null);
   const [, serUserName] = useAtom(userProfileName);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false); // State for password visibility
   const cookies = new Cookies();
+  const [isNavigate] = useAtom(NavigateNameAtom);
   const userId = cookies.get("UserId");
 
   const fetchProfile = async () => {
@@ -26,7 +28,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     console.log("Profile", "=======================================>");
     fetchProfile();
-  }, []);
+  }, [isNavigate]);
 
   if (!profileDetails) {
     return (

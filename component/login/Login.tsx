@@ -71,7 +71,6 @@ const Login: React.FC = () => {
         setError("");
         setProfileUser(response.data.user);
         setSuccess(response.data.message);
-
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);

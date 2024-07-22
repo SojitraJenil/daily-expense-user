@@ -23,7 +23,7 @@ import {
 } from "API/api";
 import Swal from "sweetalert2";
 import { useAtom } from "jotai";
-import { userAtom } from "atom/atom";
+import { NavigateNameAtom, userAtom } from "atom/atom";
 import dynamic from "next/dynamic";
 
 interface Transaction {
@@ -43,6 +43,7 @@ const Home: React.FC = () => {
   const [totalExpense, setTotalExpense] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isNavigate] = useAtom(NavigateNameAtom);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -64,7 +65,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     console.log("Home", "=======================================>");
     fetchAllData();
-  }, [transactions]);
+  }, [transactions, isNavigate]);
   const [, setUsers] = useAtom(userAtom);
   const fetchAllData = async () => {
     try {
@@ -167,11 +168,6 @@ const Home: React.FC = () => {
           setTransactions(
             transactions.filter((transaction) => transaction.id !== id)
           );
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          });
         } catch (error) {
           console.error("Error deleting transaction: ", error);
           Swal.fire({
@@ -215,7 +211,7 @@ const Home: React.FC = () => {
         </Box>
       </Box>
 
-      <Box sx={{ paddingBottom: 2 }}>
+      <Box sx={{ paddingBottom: 2, marginLeft: 10, marginRight: 10 }}>
         <Button
           variant="contained"
           color="primary"

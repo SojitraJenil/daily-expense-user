@@ -21,17 +21,19 @@ import {
 import Cookies from "universal-cookie";
 import moment from "moment";
 import Swal from "sweetalert2";
-import { average } from "firebase/firestore";
+import { NavigateNameAtom } from "atom/atom";
+import { useAtom } from "jotai";
 
 function Calculator() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [CurrentPrice, setCurrentPrice] = useState("");
+  const [loader, setLoader] = useState(false);
   const [fuelRecord, setFuelRecord] = useState<any>();
   const [selectedFuel, setSelectedFuel] = useState<any>(null);
   const cookies = new Cookies();
   const mobileNumber = cookies.get("mobileNumber");
+  const [isNavigate] = useAtom(NavigateNameAtom);
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => {
     setIsOpen(false);
@@ -66,7 +68,7 @@ function Calculator() {
   useEffect(() => {
     console.log("Fuel", "=======================================>");
     ShowFuelRecord();
-  }, []);
+  }, [isNavigate]);
 
   const ShowFuelRecord = async () => {
     setLoading(true);
@@ -100,11 +102,6 @@ function Calculator() {
         try {
           await deleteFuelDetails(id);
           ShowFuelRecord();
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          });
         } catch (error) {
           console.error("Error deleting transaction: ", error);
           Swal.fire({
@@ -133,32 +130,37 @@ function Calculator() {
   return (
     <div className="bg-white h-screen">
       <div className="flex py-3 pt-8 justify-evenly items-center gap-4 ">
-        <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
-          <Typography className="text-gray-500 mb-2 text-center">
-            Average
-          </Typography>
-          <Typography variant="h6" className="text-gray-700">
-            100
-          </Typography>
-        </div>
-        <div className="w-[200px] h-[150px] bg-gray-50 p-4 border border-solid border-gray-100 rounded-lg flex flex-col items-center justify-center">
-          <Typography className="text-gray-500 mb-2 text-center">
-            Average
-          </Typography>
-          <Typography variant="h6" className="text-gray-700 text-center">
-            100
-          </Typography>
-        </div>
+        <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
+          <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
+            <Typography className="text-gray-500 mb-2 text-center">
+              Total Expense
+            </Typography>
+            <Typography variant="h6" className="text-gray-700">
+              ₹{"totalExpense"}
+            </Typography>
+          </Box>
+          <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
+            <Typography className="text-gray-500 mb-2 text-center">
+              Day Expense
+            </Typography>
+            <Typography variant="h6" className="text-gray-700 text-sm">
+              coming...
+            </Typography>
+          </Box>
+        </Box>
       </div>
       <div className="text-center">
-        <Button
-          variant="contained"
-          color="info"
-          onClick={handleOpen}
-          className="mx-2 px-10 py-2 text-white bg-blue-500 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center"
-        >
-          Add Expense
-        </Button>
+        <Box sx={{ paddingBottom: 2, marginLeft: 10, marginRight: 10 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            fullWidth
+            className="px-8 py-2  text-white bg-blue-700 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center flex mx-auto"
+          >
+            Add Fuel Details
+          </Button>
+        </Box>
       </div>
       <hr className="mt-2 bg-black" />
       <p className="text-black text-[19px] ms-5 mt-2">Fuel Records</p>
@@ -169,12 +171,12 @@ function Calculator() {
               {index === 0 ||
               moment(item.timestamp).format("DD-MM-YYYY") !==
                 moment(fuelRecord[index - 1].timestamp).format("DD-MM-YYYY") ? (
-                <div className="mt-4 bg-slate-500 text-white text-center mx-4 rounded-sm">
+                <div className="mt-4 bg-slate-400 text-white text-center mx-4 rounded-sm">
                   {moment(item.timestamp).format("DD-MM-YYYY")}
                 </div>
               ) : null}
               <Box
-                className={"bg-red-100 py-1"}
+                className={"bg-red-50  border-[#db8f8f]"}
                 sx={{
                   marginLeft: 2,
                   marginRight: 2,
@@ -182,8 +184,6 @@ function Calculator() {
                   paddingTop: 0,
                   paddingBottom: 0,
                   alignItems: "center",
-                  border: "1px solid rgb(255, 255, 255)",
-                  boxShadow: 1,
                   justifyContent: "space-between",
                   borderRadius: 1,
                 }}

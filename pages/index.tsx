@@ -1,11 +1,10 @@
 import React from "react";
-import Landing from "./landing";
-import LandingLayout from "component/layout/LandingLayout";
+import Login from "component/login/Login";
 
 const Index = () => {
   return (
     <div>
-      <LandingLayout />
+      <Login />
     </div>
   );
 };
