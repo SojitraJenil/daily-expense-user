@@ -42,6 +42,7 @@ const Home: React.FC = () => {
   const mobileNumber = cookies.get("mobileNumber");
   const [isOpen, setIsOpen] = useState(false);
   const [totalExpense, setTotalExpense] = useState("");
+  const [totalIncome, setTotalIncome] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [isNavigate] = useAtom(NavigateNameAtom);
@@ -51,7 +52,7 @@ const Home: React.FC = () => {
     useState<Transaction | null>(null);
 
   const initialFormValues = {
-    type: "expense",
+    type: "",
     desc: "",
     amount: 0,
     timestamp: null,
@@ -77,7 +78,6 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("Home", "=======================================>");
     fetchProfileData();
     fetchAllData();
   }, [transactions, isNavigate]);
@@ -127,7 +127,11 @@ const Home: React.FC = () => {
       const totalExpense = formattedTransactions
         .filter((item: { type: string }) => item.type === "expense")
         .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
+      const totalIncome = formattedTransactions
+        .filter((item: { type: string }) => item.type === "income")
+        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
       setTotalExpense(totalExpense);
+      setTotalIncome(totalIncome);
       setTransactions(formattedTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -207,7 +211,7 @@ const Home: React.FC = () => {
     <Card className="py-6 px-2 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
       <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
         <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
-          <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
+          <ArrowUpwardIcon className="text-red-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
             Total Expense
           </Typography>
@@ -215,13 +219,13 @@ const Home: React.FC = () => {
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
-          <ArrowUpwardIcon className="text-green-500 text-3xl mb-2" />
+        <Box className="w-48 bg-green-50 p-4 border-2 border-solid border-green-400	 rounded-lg flex flex-col items-center justify-center">
+          <ArrowDownwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
-            Day Expense
+            Total Income
           </Typography>
           <Typography variant="h6" className="text-gray-700 text-sm">
-            coming...
+            ₹{totalIncome}
           </Typography>
         </Box>
       </Box>
@@ -245,26 +249,27 @@ const Home: React.FC = () => {
       </Typography>
       {transactions &&
         transactions.map(
-          (item, index) =>
-            item.type === "expense" && (
-              <div key={item.id}>
-                {index === 0 ||
-                moment(item.timestamp).format("DD-MM-YYYY") !==
-                  moment(transactions[index - 1].timestamp).format(
-                    "DD-MM-YYYY"
-                  ) ? (
-                  <div className="mt-4 bg-slate-200 text-center">
-                    {moment(item.timestamp).format("DD-MM-YYYY")}
-                  </div>
-                ) : null}
-                <TransactionItem
-                  transaction={item}
-                  onEdit={handleOpenUpdateModal}
-                  onDelete={deleteTransaction}
-                  Time={moment(item.timestamp).format("hh:mm:ss A")}
-                />
-              </div>
-            )
+          (item, index) => (
+            // item.type === "expense" && (
+            <div key={item.id}>
+              {index === 0 ||
+              moment(item.timestamp).format("DD-MM-YYYY") !==
+                moment(transactions[index - 1].timestamp).format(
+                  "DD-MM-YYYY"
+                ) ? (
+                <div className="mt-4 bg-slate-200 text-center">
+                  {moment(item.timestamp).format("DD-MM-YYYY")}
+                </div>
+              ) : null}
+              <TransactionItem
+                transaction={item}
+                onEdit={handleOpenUpdateModal}
+                onDelete={deleteTransaction}
+                Time={moment(item.timestamp).format("hh:mm A")}
+              />
+            </div>
+          )
+          // )
         )}
 
       <TransactionFormModal
@@ -276,6 +281,7 @@ const Home: React.FC = () => {
         onSubmit={updateTransaction}
         initialValues={selectedTransaction || initialFormValues}
         title="Update Transaction"
+        type={undefined}
       />
 
       <TransactionFormModal
@@ -284,6 +290,7 @@ const Home: React.FC = () => {
         onSubmit={addTransaction}
         initialValues={initialFormValues}
         title="Add New Transaction"
+        type={undefined}
       />
     </Card>
   );

@@ -59,7 +59,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  if (isLoggedIn) {
+  if (!isLoggedIn) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg">

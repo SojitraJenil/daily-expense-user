@@ -6,6 +6,7 @@ interface TransactionFormModalProps {
   onSubmit: (formValues: any) => Promise<void> | void;
   initialValues: any;
   title: string;
+  type: any;
 }
 
 const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
@@ -17,7 +18,7 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
 }) => {
   const [formValues, setFormValues] = useState(initialValues);
   const [loader, setLoader] = useState(false);
-  const [errors, setErrors] = useState({ desc: "", amount: "" });
+  const [errors, setErrors] = useState({ desc: "", amount: "", type: "" });
 
   useEffect(() => {
     setFormValues(initialValues);
@@ -36,7 +37,7 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
   };
 
   const validate = () => {
-    let tempErrors = { desc: "", amount: "" };
+    let tempErrors = { desc: "", amount: "", type: "" };
     if (!formValues.desc) {
       tempErrors.desc = "Description is required.";
     }
@@ -44,6 +45,9 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
       tempErrors.amount = "Amount is required.";
     } else if (isNaN(Number(formValues.amount))) {
       tempErrors.amount = "Amount must be a number.";
+    }
+    if (!formValues.type) {
+      tempErrors.type = "Select any one type.";
     }
     setErrors(tempErrors);
     return Object.values(tempErrors).every((x) => x === "");
@@ -116,6 +120,40 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
           )}
         </div>
+        <div className="my-2">
+          <div className="flex items-center">
+            <input
+              type="radio"
+              value="expense"
+              className="mr-2 h-4 w-4"
+              name="type"
+              id="expense"
+              checked={formValues.type === "expense"}
+              onChange={handleChange}
+            />
+            <label htmlFor="expense" className="align-middle">
+              Expense
+            </label>
+          </div>
+          <div className="flex items-center py-1 pb-2">
+            <input
+              type="radio"
+              value="income"
+              className="mr-2 h-4 w-4"
+              name="type"
+              id="income"
+              checked={formValues.type === "income"}
+              onChange={handleChange}
+            />
+            <label htmlFor="income" className="align-middle">
+              Income
+            </label>
+          </div>
+          {errors.type && (
+            <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+          )}
+        </div>
+
         <button
           onClick={handleSubmit}
           disabled={loader}

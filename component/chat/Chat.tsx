@@ -145,8 +145,8 @@ const Chat = () => {
                 <div
                   className={`flex ${
                     MobileNumber === data.mobileNo
-                      ? "justify-end" // align right for current user's messages
-                      : "justify-start" // align left for other users' messages
+                      ? "justify-end"
+                      : "justify-start"
                   }`}
                 >
                   {MobileNumber !== data.mobileNo && (
@@ -156,7 +156,7 @@ const Chat = () => {
                     className={`p-2 max-w-[300px] rounded-lg ${
                       MobileNumber === data.mobileNo
                         ? "bg-red-600 text-white"
-                        : "bg-white"
+                        : "bg-white text-black"
                     } text-dark`}
                   >
                     <div className="flex flex-col">
@@ -164,7 +164,7 @@ const Chat = () => {
                         <span className="font-bold">{data.user}:</span>
                       )}
                       <span className="whitespace-pre-wrap">{data.text}</span>
-                      <div className="text-xs text-white">
+                      <div className="text-xs">
                         {moment(data.createdAt).format("hh:mm A")}
                       </div>
                     </div>

@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Typography, Avatar, Stack, IconButton } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 interface TransactionItemProps {
@@ -28,13 +30,20 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     <Box
       key={transaction.id}
       sx={{
-        backgroundColor: "rgb(255, 245, 245)",
+        backgroundColor:
+          transaction.type === "income"
+            ? "rgb(240, 255, 240)"
+            : "rgb(255, 245, 250)",
         marginTop: 1,
         paddingTop: 0,
         paddingBottom: 0,
         display: "flex",
         alignItems: "center",
-        border: "1px solid rgb(255, 205, 205)",
+        border: "1px solid",
+        borderColor:
+          transaction.type === "income"
+            ? "rgb(200, 255, 200)"
+            : "rgb(255, 205, 205)",
         boxShadow: 1,
         borderRadius: 1,
       }}
@@ -48,13 +57,18 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       >
         <Avatar
           sx={{
-            backgroundColor: "rgb(255, 105, 105)",
-            color: "white",
+            backgroundColor:
+              transaction.type === "income" ? "#B2FFB2" : "#ffc3cb",
+            color: "black",
             width: 32,
             height: 32,
           }}
         >
-          {transaction.desc[0]}
+          {transaction.type === "income" ? (
+            <ArrowDownwardIcon className="text-green-500 text-3xl" />
+          ) : (
+            <ArrowUpwardIcon className="text-red-500 text-3xl" />
+          )}
         </Avatar>
         <Typography variant="body1" sx={{ flex: 1 }}>
           {transaction.desc}

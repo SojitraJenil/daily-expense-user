@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "universal-cookie";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { loginData } from "API/api";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { userProfile } from "atom/atom";
 import { useAtom } from "jotai";
 
@@ -21,13 +23,23 @@ const Login: React.FC = () => {
     mobileNumber: "",
     password: "",
   });
-
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
+
+  useEffect(() => {
+    const cookies = new Cookies();
+    const Cookie = cookies.get("token");
+    console.log("Cookie", Cookie);
+    if (Cookie) {
+      router.push("/landing");
+    }
+  }, [router]);
+
   const validateForm = (): Errors => {
     const errors: Errors = {};
 
@@ -71,6 +83,7 @@ const Login: React.FC = () => {
         setError("");
         setProfileUser(response.data.user);
         setSuccess(response.data.message);
+        router.push("/landing");
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
@@ -80,7 +93,6 @@ const Login: React.FC = () => {
         cookies.set("mobileNumber", formValues.mobileNumber, {
           expires: expires,
         });
-        router.push("/landing");
       } else {
         setError(response);
         console.log(response);
@@ -142,7 +154,7 @@ const Login: React.FC = () => {
                 </p>
               )}
             </div>
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
@@ -150,17 +162,32 @@ const Login: React.FC = () => {
                 Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 value={formValues.password}
                 onChange={handleChange}
-                className="mt-1 text-black p-2 block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 text-black p-2 block w-full border-gray-800 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter your Password"
               />
+              {formValues.password.length != 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-8 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? (
+                    <VisibilityOffIcon className="text-blue-500 align-middle  text-4xl mb-2" />
+                  ) : (
+                    <VisibilityIcon className="text-blue-500 align-middle  text-4xl mb-2" />
+                  )}
+                </button>
+              )}
+
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
             </div>
+
             <div>
               <button
                 type="submit"
