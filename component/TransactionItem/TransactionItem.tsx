@@ -33,7 +33,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         backgroundColor:
           transaction.type === "income"
             ? "rgb(240, 255, 240)"
-            : "rgb(255, 245, 250)",
+            : transaction.type === "expense"
+            ? "rgb(255, 245, 250)"
+            : transaction.type === "invest"
+            ? "#e6eefc"
+            : undefined,
         marginTop: 1,
         paddingTop: 0,
         paddingBottom: 0,
@@ -41,9 +45,13 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         alignItems: "center",
         border: "1px solid",
         borderColor:
-          transaction.type === "income"
+          transaction.type === "invest"
+            ? "#7192c7"
+            : transaction.type === "income"
             ? "rgb(200, 255, 200)"
-            : "rgb(255, 205, 205)",
+            : transaction.type === "expense"
+            ? "#c8d3e8"
+            : undefined,
         boxShadow: 1,
         borderRadius: 1,
       }}

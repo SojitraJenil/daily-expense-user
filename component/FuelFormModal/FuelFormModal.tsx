@@ -17,7 +17,11 @@ const FuelFormModal: React.FC<FuelFormModalProps> = ({
 }) => {
   const [formValues, setFormValues] = useState(initialValues);
   const [loader, setLoader] = useState(false);
-  const [errors, setErrors] = useState({ Currentkm: "", fuelPrice: "" });
+  const [errors, setErrors] = useState({
+    Currentkm: "",
+    fuelPrice: "",
+    fuelVolume: "",
+  });
 
   useEffect(() => {
     setFormValues(initialValues);
@@ -36,7 +40,10 @@ const FuelFormModal: React.FC<FuelFormModalProps> = ({
   };
 
   const validate = () => {
-    let tempErrors = { Currentkm: "", fuelPrice: "" };
+    let tempErrors = { Currentkm: "", fuelPrice: "", fuelVolume: "" };
+    if (!formValues.fuelVolume) {
+      tempErrors.Currentkm = "fuel Volume Field is required.";
+    }
     if (!formValues.Currentkm) {
       tempErrors.Currentkm = "Current Km Field is required.";
     }
@@ -90,6 +97,21 @@ const FuelFormModal: React.FC<FuelFormModalProps> = ({
         className="p-4 bg-white rounded-md w-96 mx-auto mt-20 shadow-lg"
       >
         <h2 className="text-center mb-4 font-semibold text-xl">{title}</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700">fuel Volume</label>
+          <input
+            type="text"
+            name="fuelVolume"
+            value={formValues.fuelVolume == 0 ? "" : formValues.fuelVolume}
+            onChange={handleChange}
+            className={`w-full p-2 border ${
+              errors.fuelVolume ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
+          />
+          {errors.Currentkm && (
+            <span className="text-red-500 text-sm">{errors.Currentkm}</span>
+          )}
+        </div>
         <div className="mb-4">
           <label className="block text-gray-700">Current KM</label>
           <input

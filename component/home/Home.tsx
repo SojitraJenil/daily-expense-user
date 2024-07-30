@@ -24,7 +24,12 @@ import {
 } from "API/api";
 import Swal from "sweetalert2";
 import { useAtom } from "jotai";
-import { NavigateNameAtom, userAtom, userProfileName } from "atom/atom";
+import {
+  NavigateNameAtom,
+  userAtom,
+  userGraphExpense,
+  userProfileName,
+} from "atom/atom";
 import dynamic from "next/dynamic";
 
 interface Transaction {
@@ -43,10 +48,12 @@ const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [totalExpense, setTotalExpense] = useState("");
   const [totalIncome, setTotalIncome] = useState("");
+  const [totalInvest, setTotalInvest] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isNavigate] = useAtom(NavigateNameAtom);
   const [, setUserProfileName] = useAtom(userProfileName);
+  const [, setUserGraphExpense] = useAtom(userGraphExpense);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
@@ -92,20 +99,18 @@ const Home: React.FC = () => {
   };
 
   const fetchTransactions = async () => {
-    setLoading(true);
-
-    if (!authToken) {
-      setLoading(false);
-      return;
-    }
-
+    // setLoading(true);
+    // if (!authToken) {
+    //   setLoading(false);
+    //   return;
+    // }
     try {
+      // if (!transactionsData || !transactionsData.data) {
+      //   console.error("No data fetched");
+      //   setLoading(false);
+      //   return;
+      // }
       const transactionsData = await showAllExpenses();
-      if (!transactionsData || !transactionsData.data) {
-        console.error("No data fetched");
-        setLoading(false);
-        return;
-      }
       const sortedTransactions = transactionsData.data.sort(
         (a: any, b: any) => {
           return moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf();
@@ -130,9 +135,14 @@ const Home: React.FC = () => {
       const totalIncome = formattedTransactions
         .filter((item: { type: string }) => item.type === "income")
         .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
+      const totalInvest = formattedTransactions
+        .filter((item: { type: string }) => item.type === "invest")
+        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
       setTotalExpense(totalExpense);
       setTotalIncome(totalIncome);
+      setTotalInvest(totalInvest);
       setTransactions(formattedTransactions);
+      setUserGraphExpense(formattedTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     } finally {
@@ -210,22 +220,31 @@ const Home: React.FC = () => {
   return (
     <Card className="py-6 px-2 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
       <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
-        <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-32 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-red-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
-            Total Expense
+            Expense
           </Typography>
           <Typography variant="h6" className="text-gray-700">
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-48 bg-green-50 p-4 border-2 border-solid border-green-400	 rounded-lg flex flex-col items-center justify-center">
+        <Box className="w-32 bg-green-50 p-4 border-2 border-solid border-green-400	 rounded-lg flex flex-col items-center justify-center">
           <ArrowDownwardIcon className="text-green-500 text-3xl mb-2" />
           <Typography className="text-gray-500 mb-2 text-center">
-            Total Income
+            Income
           </Typography>
           <Typography variant="h6" className="text-gray-700 text-sm">
             ₹{totalIncome}
+          </Typography>
+        </Box>
+        <Box className="w-32 bg-blue-50 p-4 border-2 border-solid border-blue-400	 rounded-lg flex flex-col items-center justify-center">
+          <ArrowDownwardIcon className="text-blue-500 text-3xl mb-2" />
+          <Typography className="text-gray-500 mb-2 text-center">
+            Invest
+          </Typography>
+          <Typography variant="h6" className="text-gray-700 text-sm">
+            ₹{totalInvest}
           </Typography>
         </Box>
       </Box>
@@ -244,7 +263,7 @@ const Home: React.FC = () => {
 
       <Divider className="my-4" />
 
-      <Typography className="py-2 text-black font-thin font-bold">
+      <Typography className="py-2 text-black  font-bold">
         Expense History
       </Typography>
       {transactions &&
@@ -257,7 +276,7 @@ const Home: React.FC = () => {
                 moment(transactions[index - 1].timestamp).format(
                   "DD-MM-YYYY"
                 ) ? (
-                <div className="mt-4 bg-slate-200 text-center">
+                <div className="mt-4 bg-gray-100 mb-1 text-start font-bold ps-4 py-1">
                   {moment(item.timestamp).format("DD-MM-YYYY")}
                 </div>
               ) : null}

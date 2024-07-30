@@ -12,6 +12,7 @@ export interface User {
 export const userAtom = atom<User[]>([]);
 export const userProfile = atom<any>([]);
 export const userProfileName = atom<any>([]);
+export const userGraphExpense = atom<any>([]);
 
 const getInitialNavigateState = () => {
   if (typeof window !== "undefined") {

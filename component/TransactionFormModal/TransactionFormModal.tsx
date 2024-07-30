@@ -135,7 +135,7 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
               Expense
             </label>
           </div>
-          <div className="flex items-center py-1 pb-2">
+          <div className="flex items-center pt-1">
             <input
               type="radio"
               value="income"
@@ -147,6 +147,20 @@ const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
             />
             <label htmlFor="income" className="align-middle">
               Income
+            </label>
+          </div>
+          <div className="flex items-center py-1 pb-2">
+            <input
+              type="radio"
+              value="invest"
+              className="mr-2 h-4 w-4"
+              name="type"
+              id="invest"
+              checked={formValues.type === "invest"}
+              onChange={handleChange}
+            />
+            <label htmlFor="invest" className="align-middle">
+              Invest
             </label>
           </div>
           {errors.type && (

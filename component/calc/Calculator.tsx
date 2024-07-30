@@ -43,6 +43,7 @@ function Calculator() {
     Currentkm: 0,
     fuelPrice: 0,
     mobileNumber: mobileNumber,
+    fuelVolume: 0,
   };
 
   const addFuelRecord = async (formValues: any) => {
@@ -74,6 +75,7 @@ function Calculator() {
     setLoading(true);
     try {
       const response = await showAllFuelDetails();
+      console.log("response", response);
       const normalizedMobileNumber = String(mobileNumber).trim();
       const fuelRecords = response.data;
       const matchingRecords = fuelRecords.filter(
@@ -176,7 +178,7 @@ function Calculator() {
                 </div>
               ) : null}
               <Box
-                className={"bg-red-50  border-[#db8f8f]"}
+                className={"bg-red-100  border-[#db8f8f]"}
                 sx={{
                   marginLeft: 2,
                   marginRight: 2,
@@ -186,6 +188,7 @@ function Calculator() {
                   alignItems: "center",
                   justifyContent: "space-between",
                   borderRadius: 1,
+                  boxShadow: 1,
                 }}
               >
                 <Stack
@@ -199,7 +202,7 @@ function Calculator() {
                   <Typography variant="body1">{item?.Currentkm}-KM</Typography>
                   <Typography variant="body1">₹{item?.fuelPrice}</Typography>
                   <Typography variant="body1">
-                    {moment(item.timestamp).format("hh:mm:ss A")}
+                    {moment(item.timestamp).format("hh:mm A")}
                   </Typography>
                   <IconButton
                     onClick={() => handleEditClick(item)}
