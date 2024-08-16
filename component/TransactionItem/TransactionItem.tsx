@@ -66,18 +66,27 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <Avatar
           sx={{
             backgroundColor:
-              transaction.type === "income" ? "#B2FFB2" : "#ffc3cb",
+              transaction.type === "income"
+                ? "green"
+                : transaction.type === "expense"
+                ? "red"
+                : transaction.type === "invest"
+                ? "blue"
+                : undefined,
             color: "black",
             width: 32,
             height: 32,
           }}
         >
           {transaction.type === "income" ? (
-            <ArrowDownwardIcon className="text-green-500 text-3xl" />
+            <ArrowUpwardIcon className="text-transparent text-3xl" />
+          ) : transaction.type === "expense" ? (
+            <ArrowDownwardIcon className="text-transparent text-3xl" />
           ) : (
-            <ArrowUpwardIcon className="text-red-500 text-3xl" />
+            <ArrowDownwardIcon className="text-transparent text-3xl" />
           )}
         </Avatar>
+
         <Typography variant="body1" sx={{ flex: 1 }}>
           {transaction.desc}
         </Typography>
