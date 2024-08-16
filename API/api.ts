@@ -15,7 +15,6 @@ export const registerData = async (
       mobileNumber,
       password,
     });
-    console.log("========>", response);
     return response;
   } catch (error: any) {
     if (error.response) {

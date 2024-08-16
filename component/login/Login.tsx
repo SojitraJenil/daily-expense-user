@@ -34,7 +34,6 @@ const Login: React.FC = () => {
   useEffect(() => {
     const cookies = new Cookies();
     const Cookie = cookies.get("token");
-    console.log("Cookie", Cookie);
     if (Cookie) {
       router.push("/landing");
     }
@@ -95,7 +94,6 @@ const Login: React.FC = () => {
         });
       } else {
         setError(response);
-        console.log(response);
       }
     } catch (error) {
       console.error("Error: ", error);

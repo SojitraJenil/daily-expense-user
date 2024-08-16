@@ -26,7 +26,6 @@ interface Message {
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  console.log("messages", messages);
   const [newMessage, setNewMessage] = useState("");
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,10 +33,8 @@ const Chat = () => {
   const messagesRef = collection(db, "Message");
   const cookie = new Cookies();
   const [isNavigate] = useAtom(NavigateNameAtom);
-  console.log("isNavigate", isNavigate);
   const MobileNumber = cookie.get("mobileNumber");
   const [getUserName] = useAtom(userProfileName);
-  console.log("getUserName", getUserName);
   const containRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 

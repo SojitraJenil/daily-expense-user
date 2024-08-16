@@ -14,6 +14,10 @@ export const userProfile = atom<any>([]);
 export const userProfileName = atom<any>([]);
 export const userGraphExpense = atom<any>([]);
 
+export const TotalExpense = atom<any>([]);
+export const TotalIncome = atom<any>([]);
+export const TotalInvest = atom<any>([]);
+
 const getInitialNavigateState = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("navigateName") || "Home";

@@ -1,5 +1,10 @@
-import { userGraphExpense } from "atom/atom";
-import { useAtom } from "jotai";
+import {
+  TotalExpense,
+  TotalIncome,
+  TotalInvest,
+  userGraphExpense,
+} from "atom/atom";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import {
   PieChart,
@@ -8,13 +13,12 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
 } from "recharts";
-
-const data = [
-  { name: "Series A", value: 10 },
-  { name: "Series B", value: 15 },
-  { name: "Series C", value: 20 },
-];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
@@ -32,12 +36,20 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 function Graph() {
   const [userGraphExpenseData] = useAtom(userGraphExpense);
-  console.log("userGraphExpenseData", userGraphExpenseData);
+  const [DataTotalExpense] = useAtom(TotalExpense);
+  const [DataTotalIncome] = useAtom(TotalIncome);
+  const [DataTotalInvest] = useAtom(TotalInvest);
+
+  const data = [
+    { name: "Expense", value: DataTotalExpense },
+    { name: "Income", value: DataTotalIncome },
+    { name: "Invest", value: DataTotalInvest },
+  ];
 
   return (
     <div className="pt-5 pb-3 bg-white rounded-lg shadow-lg">
       <h2 className="mt-2 align-middle mx-auto text-center text-xl font-semibold text-gray-700 mb-4">
-        Pie Chart Example
+        Charts Example
       </h2>
       <div className="w-full h-64 md:h-96">
         <ResponsiveContainer>
@@ -71,6 +83,30 @@ function Graph() {
             />
             <Legend />
           </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="w-full h-64 md:h-96 mt-8">
+        <ResponsiveContainer>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="value"
+              fill="#8884d8"
+              animationDuration={800}
+              animationEasing="ease-out"
+            >
+              {data.map((_entry, index) => (
+                <Cell
+                  key={`cell-bar-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>

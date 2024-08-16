@@ -81,7 +81,6 @@ const Register: React.FC = () => {
         formValues.mobileNumber,
         formValues.password
       );
-      console.log(response);
       if (response.status == 201) {
         setErrors({ success: response.data.message });
         setProfileUser(response.data.user);

@@ -11,10 +11,8 @@ export default function index() {
   useEffect(() => {
     const authToken = cookies.get("token");
     if (authToken) {
-      console.log("AA1");
       router.push("/landing");
     } else {
-      console.log("BB1");
       router.push("/login");
     }
   }, []);

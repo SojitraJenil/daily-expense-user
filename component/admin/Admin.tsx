@@ -1,72 +1,69 @@
 import React, { useEffect, useState } from "react";
 import { deleteUser, getUser } from "API/api";
 import DeleteIcon from "@mui/icons-material/Delete";
-import bcrypt from "bcryptjs";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const Admin: React.FC = () => {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
-  console.log("users", users);
   const [error, setError] = useState<string | null>(null);
 
+  const staticPassword = "123";
+
   useEffect(() => {
-    fetchAllData();
+    if (isLoggedIn) {
+      fetchAllData();
+    }
   }, [isLoggedIn]);
 
   const fetchAllData = async () => {
     try {
       const response = await getUser();
-      console.log("response===============>", response);
       setUsers(response.data);
-      console.log(response.data);
-      console.log("response", response);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const staticEmail = "admin@gmail.com";
-  const staticPassword = "123"; // The hashed password
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const isPasswordValid = await bcrypt.compare(password, staticPassword);
-    if (email === staticEmail && isPasswordValid) {
+    if (password === staticPassword) {
       setIsLoggedIn(true);
       setError(null);
     } else {
-      setIsLoggedIn(false);
       setError("Invalid credentials. Please try again.");
     }
   };
+
   const handleDelete = async (id: string) => {
     try {
       await deleteUser(id);
       fetchAllData();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    if (id === "email") {
-      setEmail(value);
-    } else if (id === "password") {
-      setPassword(value);
-    }
+    setPassword(e.target.value);
   };
 
-  if (isLoggedIn) {
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  if (!isLoggedIn) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg">
-          <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="max-w-md w-full px-8 py-10 bg-white shadow-md rounded-lg">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Admin Login
           </h2>
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -74,15 +71,16 @@ const Admin: React.FC = () => {
               >
                 Email
               </label>
-              <input
-                type="email"
-                id="email"
-                value={email || "admin@gmail.com"}
-                onChange={handleChange}
-                className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your Email"
-                required
-              />
+              <div className="relative mt-1">
+                <input
+                  type="email"
+                  id="email"
+                  value="admin@123"
+                  className="block w-full p-1 text-black border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
             </div>
             <div>
               <label
@@ -91,21 +89,30 @@ const Admin: React.FC = () => {
               >
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={handleChange}
-                className="mt-1 text-black p-2 block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your Password"
-                required
-              />
+              <div className="relative mt-1">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={handleChange}
+                  className="block w-full p-1 text-black border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {isPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Login
               </button>

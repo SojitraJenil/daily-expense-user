@@ -26,7 +26,6 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("Profile", "=======================================>");
     fetchProfile();
   }, [isNavigate]);
 

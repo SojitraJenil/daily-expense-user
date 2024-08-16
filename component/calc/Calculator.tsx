@@ -67,7 +67,6 @@ function Calculator() {
   };
 
   useEffect(() => {
-    console.log("Fuel", "=======================================>");
     ShowFuelRecord();
   }, [isNavigate]);
 
@@ -75,7 +74,6 @@ function Calculator() {
     setLoading(true);
     try {
       const response = await showAllFuelDetails();
-      console.log("response", response);
       const normalizedMobileNumber = String(mobileNumber).trim();
       const fuelRecords = response.data;
       const matchingRecords = fuelRecords.filter(

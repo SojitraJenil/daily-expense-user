@@ -26,6 +26,9 @@ import Swal from "sweetalert2";
 import { useAtom } from "jotai";
 import {
   NavigateNameAtom,
+  TotalExpense,
+  TotalIncome,
+  TotalInvest,
   userAtom,
   userGraphExpense,
   userProfileName,
@@ -46,9 +49,11 @@ const Home: React.FC = () => {
   const authToken = cookies.get("token");
   const mobileNumber = cookies.get("mobileNumber");
   const [isOpen, setIsOpen] = useState(false);
-  const [totalExpense, setTotalExpense] = useState("");
-  const [totalIncome, setTotalIncome] = useState("");
-  const [totalInvest, setTotalInvest] = useState("");
+
+  const [totalExpense, setTotalExpense] = useAtom(TotalExpense);
+  const [totalIncome, setTotalIncome] = useAtom(TotalIncome);
+  const [totalInvest, setTotalInvest] = useAtom(TotalInvest);
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isNavigate] = useAtom(NavigateNameAtom);
@@ -276,7 +281,7 @@ const Home: React.FC = () => {
                 moment(transactions[index - 1].timestamp).format(
                   "DD-MM-YYYY"
                 ) ? (
-                <div className="mt-4 bg-gray-100 mb-1 text-start font-bold ps-4 py-1">
+                <div className="mt-4 bg-gray-200 mb-1 text-center font-bold ps-4 py-1">
                   {moment(item.timestamp).format("DD-MM-YYYY")}
                 </div>
               ) : null}
