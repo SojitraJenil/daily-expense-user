@@ -12,6 +12,7 @@ interface TransactionItemProps {
   onDelete: (id: string) => void;
 }
 
+
 const TransactionItem: React.FC<TransactionItemProps> = ({
   transaction,
   onEdit,
