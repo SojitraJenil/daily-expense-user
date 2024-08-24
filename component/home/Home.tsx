@@ -225,54 +225,53 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Card className="py-6 px-2 border h-[100%] mb-0 border-solid border-gray-50 overflow-hidden">
-      <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
-        <Box className="w-32 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
-          <ArrowUpwardIcon className="text-red-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2 text-center">
+    <Card className="py-6 px-4 border h-[100%] mb-0 border-solid border-gray-700 overflow-hidden bg-[#6c6c6c]">
+      <Box className="mb-5 pt-2 w-full flex justify-between items-center gap-4">
+        <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-red-700 rounded-lg flex flex-col items-center justify-center">
+          <ArrowUpwardIcon className="text-red-400 text-3xl mb-2" />
+          <Typography className="text-gray-300 mb-2 text-center">
             Expense
           </Typography>
-          <Typography variant="h6" className="text-gray-700">
+          <Typography variant="h6" className="text-white">
             ₹{totalExpense}
           </Typography>
         </Box>
-        <Box className="w-32 bg-green-50 p-4 border-2 border-solid border-green-400	 rounded-lg flex flex-col items-center justify-center">
-          <ArrowDownwardIcon className="text-green-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2 text-center">
+        <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-green-700 rounded-lg flex flex-col items-center justify-center">
+          <ArrowDownwardIcon className="text-green-400 text-3xl mb-2" />
+          <Typography className="text-gray-300 mb-2 text-center">
             Income
           </Typography>
-          <Typography variant="h6" className="text-gray-700 text-sm">
+          <Typography variant="h6" className="text-white text-sm">
             ₹{totalIncome}
           </Typography>
         </Box>
-        <Box className="w-32 bg-blue-50 p-4 border-2 border-solid border-blue-400	 rounded-lg flex flex-col items-center justify-center">
-          <ArrowDownwardIcon className="text-blue-500 text-3xl mb-2" />
-          <Typography className="text-gray-500 mb-2 text-center">
+        <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-blue-700 rounded-lg flex flex-col items-center justify-center">
+          <ArrowDownwardIcon className="text-blue-400 text-3xl mb-2" />
+          <Typography className="text-gray-300 mb-2 text-center">
             Invest
           </Typography>
-          <Typography variant="h6" className="text-gray-700 text-sm">
+          <Typography variant="h6" className="text-white text-sm">
             ₹{totalInvest}
           </Typography>
         </Box>
       </Box>
 
-      <Box sx={{ paddingBottom: 2, marginLeft: 10, marginRight: 10 }}>
+      <Box sx={{ paddingBottom: 2, marginLeft: 2, marginRight: 2 }}>
         <Button
           variant="contained"
           color="primary"
           onClick={handleOpen}
           fullWidth
-          className="px-8 py-2  text-white bg-blue-700 rounded transition duration-75 ease-in-out hover:bg-green-400 transform mt-6 align-middle justify-center flex mx-auto"
+          className="px-6 py-3 text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
         >
           Add Expense
         </Button>
       </Box>
 
-      <Divider className="my-4" />
+      <Divider className="my-4 border-gray-700" />
 
-      <Typography className="py-2 text-black  font-bold">
-        Expense History
-      </Typography>
+
+
       {transactions &&
         transactions.map(
           (item, index) =>
@@ -280,15 +279,15 @@ const Home: React.FC = () => {
               <div key={item.id}>
                 {(index === 0 ||
                   moment(item.timestamp).format("DD-MM-YYYY") !==
-                    moment(transactions[index - 1].timestamp).format(
-                      "DD-MM-YYYY"
-                    )) && (
-                  <div className="mt-8 mb-6">
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg text-center py-3 px-6 rounded-lg shadow-lg border border-blue-700">
-                      {moment(item.timestamp).format("DD-MM-YYYY")}
+                  moment(transactions[index - 1].timestamp).format(
+                    "DD-MM-YYYY"
+                  )) && (
+                    <div className="mt-8 mb-6">
+                      <div className="bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-3 px-6 ">
+                        {moment(item.timestamp).format("DD-MM-YYYY")}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <TransactionItemNew
                   transaction={item}
                   onEdit={handleOpenUpdateModal}

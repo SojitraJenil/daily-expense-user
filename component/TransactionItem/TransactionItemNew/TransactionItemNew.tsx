@@ -23,9 +23,9 @@ const TransactionItemNew: React.FC<TransactionItemProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <MdCurrencyRupee className="text-blue-500 text-2xl" />
-          <h2 className="text-xl font-semibold text-gray-800">
+          <div className="text-lg font-semibold text-gray-800">
             {transaction.desc}
-          </h2>
+          </div>
         </div>
         <span className="text-lg font-bold text-green-600">
           ₹{transaction.amount.toFixed(2)}
