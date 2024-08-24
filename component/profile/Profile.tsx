@@ -47,7 +47,7 @@ const Profile: React.FC = () => {
         <div className="relative w-32 h-32 mb-4">
           <Image
             // src={require("../../public/download.jpeg")} // Adjust path as necessary
-            src={`https://robohash.org/${profileDetails}`}
+            src={`https://robohash.org/${profileDetails.name}`}
             alt="Robot Avatar"
             layout="fill"
             objectFit="cover"

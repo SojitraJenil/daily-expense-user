@@ -34,6 +34,7 @@ import {
   userProfileName,
 } from "atom/atom";
 import dynamic from "next/dynamic";
+import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 
 interface Transaction {
   id?: string;
@@ -274,26 +275,28 @@ const Home: React.FC = () => {
       {transactions &&
         transactions.map(
           (item, index) => (
-            // item.type === "expense" && (
-            <div key={item.id}>
-              {index === 0 ||
-              moment(item.timestamp).format("DD-MM-YYYY") !==
-                moment(transactions[index - 1].timestamp).format(
-                  "DD-MM-YYYY"
-                ) ? (
-                <div className="mt-4 bg-gray-200 mb-1 text-center font-bold ps-4 py-1">
-                  {moment(item.timestamp).format("DD-MM-YYYY")}
-                </div>
-              ) : null}
-              <TransactionItem
-                transaction={item}
-                onEdit={handleOpenUpdateModal}
-                onDelete={deleteTransaction}
-                Time={moment(item.timestamp).format("hh:mm A")}
-              />
-            </div>
+            item.type === "expense" && (
+              <div key={item.id}>
+                {(index === 0 ||
+                  moment(item.timestamp).format("DD-MM-YYYY") !==
+                  moment(transactions[index - 1].timestamp).format("DD-MM-YYYY")) && (
+                    <div className="mt-8 mb-6">
+                      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg text-center py-3 px-6 rounded-lg shadow-lg border border-blue-700">
+                        {moment(item.timestamp).format("DD-MM-YYYY")}
+                      </div>
+                    </div>
+                  )}
+
+                <TransactionItemNew
+                  transaction={item}
+                  onEdit={handleOpenUpdateModal}
+                  onDelete={deleteTransaction}
+                  Time={moment(item.timestamp).format("hh:mm A")}
+                />
+              </div>
+
+            )
           )
-          // )
         )}
 
       <TransactionFormModal
