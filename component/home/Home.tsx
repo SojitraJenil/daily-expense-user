@@ -295,7 +295,6 @@ const Home: React.FC = () => {
                   onDelete={deleteTransaction}
                   Time={moment(item.timestamp).format("hh:mm A")}
                 />
-                /
               </div>
             )
         )}

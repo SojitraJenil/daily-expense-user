@@ -1,19 +1,23 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { showProfile } from "API/api";
 import Cookies from "universal-cookie";
-import Image from "next/image"; // Import Image from Next.js if you're using Next.js
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Button } from "@mui/material";
 import { useAtom } from "jotai";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { NavigateNameAtom, userProfileName } from "atom/atom";
+import { useRouter } from "next/router";
 
-const Profile: React.FC = () => {
+function Profile() {
   const [profileDetails, setProfileDetails] = useState<any>(null);
   const [, serUserName] = useAtom(userProfileName);
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false); // State for password visibility
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const cookies = new Cookies();
   const [isNavigate] = useAtom(NavigateNameAtom);
   const userId = cookies.get("UserId");
+  const router = useRouter();
 
   const fetchProfile = async () => {
     try {
@@ -41,53 +45,98 @@ const Profile: React.FC = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const handleEditProfile = () => {
+    console.log("Edit profile clicked");
+  };
+
+  const handleLogout = () => {
+    cookies.remove("token");
+    cookies.remove("UserId");
+    cookies.remove("mobileNumber");
+    router.push("/login");
+  };
+
   return (
-    <div className="h-[100%] bg-white p-6 w-full max-w-md mx-auto mt-8">
-      <div className="flex flex-col shadow-lg rounded-lg items-center mb-6">
-        <div className="relative w-32 h-32 mb-4">
-          <Image
-            // src={require("../../public/download.jpeg")} // Adjust path as necessary
-            src={`https://robohash.org/${profileDetails.name}`}
-            alt="Robot Avatar"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-full border-4 border-gray-200"
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-800 flex flex-col items-center justify-center">
+      <div className="w-full max-w-3xl bg-white pb-4 overflow-hidden">
+        {/* Header Section */}
+        <div className="h-32 bg-blue-600 overflow-hidden">
+          <img
+            className="w-full h-full object-cover"
+            src="https://media.istockphoto.com/id/1407983911/photo/forex-diagrams-and-stock-market-rising-lines-with-numbers.jpg?s=612x612&w=0&k=20&c=zas1h6LR6v2iCvE7SWnVoZ_s7ZSiboN45UK0d5oMWac="
+            alt="Cover"
           />
         </div>
-        <p className="text-2xl font-semibold text-gray-800">
-          {profileDetails.name}
-        </p>
-      </div>
-      <div className="mb-4 flex">
-        <div className="text-gray-600 font-semibold w-32">Name:</div>
-        <div className="text-gray-800">{profileDetails.name}</div>
-      </div>
-      <div className="mb-4 flex">
-        <div className="text-gray-600 font-semibold w-32">Mobile Number:</div>
-        <div className="text-gray-800">{profileDetails.mobileNumber}</div>
-      </div>
-      <div className="mb-4 flex">
-        <div className="text-gray-600 font-semibold w-32">Email:</div>
-        <div className="text-gray-800">
-          {profileDetails.email || "user@gmail.com"}
+        {/* Profile Section */}
+        <div className="flex justify-center px-5 -mt-16">
+          <img
+            className="h-32 w-32 bg-white p-2 rounded-full border border-black"
+            src={`https://robohash.org/${profileDetails.name}`}
+            alt="Profile"
+          />
         </div>
-      </div>
-      <div className="mb-4 flex items-center">
-        <div className="text-gray-600 font-semibold w-32">Password:</div>
-        <div className="text-gray-800 flex items-center">
-          <span>
-            {isPasswordVisible ? profileDetails.password : "********"}
-          </span>
-          <button
-            onClick={handleTogglePasswordVisibility}
-            className="ml-2 text-blue-500 hover:underline"
+        <div className="text-center px-6 py-4">
+          <h2 className="text-gray-800 text-3xl font-bold">
+            {profileDetails.name}
+          </h2>
+          <p className="text-gray-600">{profileDetails.mobileNumber}</p>
+          <div className="flex justify-center items-center mt-2">
+            <p className="text-gray-800"></p>
+          </div>
+          <p className="mt-2 text-gray-500 text-sm">
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry.
+          </p>
+        </div>
+        <hr />
+        {/* Additional Profile Information */}
+        <div className="px-6 py-4">
+          <h3 className="text-gray-800 text-xl font-semibold">Email</h3>
+          <p className="text-gray-600 mt-2">
+            {profileDetails.email || "user@gmail.com"}
+          </p>
+          <hr className="mb-1" />
+          <h3 className="text-gray-800 text-xl font-semibold mt-4">Password</h3>
+          <div className="flex justify-between">
+            <p className="text-gray-600 mt-2">
+              {isPasswordVisible ? profileDetails.password : "********"}
+            </p>
+            <button
+              onClick={handleTogglePasswordVisibility}
+              className="ml-2 text-blue-500 hover:underline"
+            >
+              {isPasswordVisible ? (
+                <VisibilityOffIcon className="text-blue-500 align-middle text-4xl mb-2" />
+              ) : (
+                <VisibilityIcon className="text-blue-500 align-middle text-4xl mb-2" />
+              )}
+            </button>
+          </div>
+          <hr className="mb-1" />
+          <h3 className="text-gray-800 text-xl font-semibold mt-4">
+            Interests
+          </h3>
+          <p className="text-gray-600 mt-2">
+            {profileDetails.interests || "No interests listed"}
+          </p>
+        </div>
+        <hr />
+        {/* Action Buttons */}
+        <div className="px-6 py-4 flex justify-between">
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleEditProfile}
           >
-            {isPasswordVisible ? "Hide" : "Show"}
-          </button>
+            Edit Profile
+          </Button>
+          <Button variant="outlined" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Profile;
