@@ -9,7 +9,7 @@ interface TransactionItemProps {
   };
   Time: string;
   onEdit: (transaction: any) => void;
-  onDelete: (id: string | undefined) => Promise<void>;
+  onDelete: (id: any | undefined) => Promise<void>;
 }
 
 const TransactionItemNew: React.FC<TransactionItemProps> = ({
@@ -42,7 +42,7 @@ const TransactionItemNew: React.FC<TransactionItemProps> = ({
             className="text-blue-500 text-2xl cursor-pointer hover:text-blue-700"
           />
           <MdDelete
-            onClick={() => onDelete(transaction.id)}
+            onClick={() => onDelete(transaction)}
             className="text-red-500 text-2xl cursor-pointer hover:text-red-700"
           />
         </div>

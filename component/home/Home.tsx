@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   Typography,
@@ -188,8 +188,8 @@ const Home: React.FC = () => {
     }
   };
 
-  const deleteTransaction = async (id: string | undefined) => {
-    if (!id) return; // Handle the case where id might be undefined
+  const deleteTransaction = async (record: any | undefined) => {
+    if (!record) return; // Handle the case where id might be undefined
     Swal.fire({
       title: "Are you sure you want to delete this item?",
       icon: "warning",
@@ -200,10 +200,11 @@ const Home: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await deleteExpense(id);
+          await deleteExpense(record?.id);
           setTransactions(
-            transactions.filter((transaction) => transaction.id !== id)
+            transactions.filter((transaction) => transaction.id !== record?.id)
           );
+          setTotalExpense(totalExpense - record.amount);
         } catch (error) {
           console.error("Error deleting transaction: ", error);
           Swal.fire({
@@ -216,17 +217,11 @@ const Home: React.FC = () => {
     });
   };
 
-  if (loading) {
+  const expenseBoxes = useCallback(() => {
+    console.log("REDNDER");
+    console.log(totalExpense);
     return (
-      <Box className="flex justify-center items-center h-full my-[250px]">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  return (
-    <Card className="py-6 px-4 border h-[100%] mb-0 border-solid border-gray-700 overflow-hidden bg-[#6c6c6c]">
-      <Box className="mb-5 pt-2 w-full flex justify-between items-center gap-4">
+      <>
         <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-red-700 rounded-lg flex flex-col items-center justify-center">
           <ArrowUpwardIcon className="text-red-400 text-3xl mb-2" />
           <Typography className="text-gray-300 mb-2 text-center">
@@ -254,6 +249,24 @@ const Home: React.FC = () => {
             ₹{totalInvest}
           </Typography>
         </Box>
+      </>
+    )
+  }, [totalInvest, totalIncome, totalExpense])
+
+  if (loading) {
+    return (
+      <Box className="flex justify-center items-center h-full my-[250px]">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+
+
+  return (
+    <Card className="py-6 px-4 border h-[100%] mb-0 border-solid border-gray-700 overflow-hidden bg-[#6c6c6c]">
+      <Box className="mb-5 pt-2 w-full flex justify-between items-center gap-4">
+        {expenseBoxes()}
       </Box>
 
       <Box sx={{ paddingBottom: 2, marginLeft: 2, marginRight: 2 }}>
