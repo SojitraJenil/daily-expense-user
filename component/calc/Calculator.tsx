@@ -133,7 +133,7 @@ function Calculator() {
         <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
           <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
             <Typography className="text-gray-500 mb-2 text-center">
-              Total Expense
+              Total Fual
             </Typography>
             <Typography variant="h6" className="text-gray-700">
               ₹100
