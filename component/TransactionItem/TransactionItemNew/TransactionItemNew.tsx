@@ -31,20 +31,23 @@ const TransactionItemNew: React.FC<TransactionItemProps> = ({
           ₹{transaction.amount.toFixed(2)}
         </span>
       </div>
-      <div className="flex items-center space-x-2 text-gray-500">
-        <MdDateRange className="text-xl" />
-        <p>{Time}</p>
+      <div className="flex items-center space-x-2 text-gray-500 justify-between">
+        <div className="flex">
+          <MdDateRange className="text-xl" />
+          <p>{Time}</p>
+        </div>
+        <div className="flex space-x-4">
+          <MdEdit
+            onClick={() => onEdit(transaction)}
+            className="text-blue-500 text-2xl cursor-pointer hover:text-blue-700"
+          />
+          <MdDelete
+            onClick={() => onDelete(transaction.id)}
+            className="text-red-500 text-2xl cursor-pointer hover:text-red-700"
+          />
+        </div>
       </div>
-      <div className="flex mt-4 space-x-4">
-        <MdEdit
-          onClick={() => onEdit(transaction)}
-          className="text-blue-500 text-2xl cursor-pointer hover:text-blue-700"
-        />
-        <MdDelete
-          onClick={() => onDelete(transaction.id)}
-          className="text-red-500 text-2xl cursor-pointer hover:text-red-700"
-        />
-      </div>
+
     </div>
   );
 };
