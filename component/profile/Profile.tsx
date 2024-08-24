@@ -9,6 +9,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { NavigateNameAtom, userProfileName } from "atom/atom";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function Profile() {
   const [profileDetails, setProfileDetails] = useState<any>(null);
@@ -50,15 +51,26 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    cookies.remove("token");
-    cookies.remove("UserId");
-    cookies.remove("mobileNumber");
-    router.push("/login");
+    Swal.fire({
+      title: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        cookies.remove("token");
+        cookies.remove("UserId");
+        cookies.remove("mobileNumber");
+        router.push("/login");
+      }
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-200 dark:bg-gray-800 flex flex-col items-center justify-center">
-      <div className="w-full max-w-3xl bg-white pb-4 overflow-hidden">
+    <div className="bg-gray-200 dark:bg-gray-800 flex flex-col items-center justify-center">
+      <div className="w-full max-w-3xl bg-white pb-20 overflow-hidden">
         {/* Header Section */}
         <div className="h-32 bg-blue-600 overflow-hidden">
           <img
@@ -119,8 +131,8 @@ function Profile() {
           <p className="text-gray-600 mt-2">
             {profileDetails.interests || "No interests listed"}
           </p>
+          <hr className="mb-1" />
         </div>
-        <hr />
         {/* Action Buttons */}
         <div className="px-6 py-4 flex justify-between">
           <Button
