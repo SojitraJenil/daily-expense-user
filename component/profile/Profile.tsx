@@ -46,8 +46,9 @@ const Profile: React.FC = () => {
       <div className="flex flex-col shadow-lg rounded-lg items-center mb-6">
         <div className="relative w-32 h-32 mb-4">
           <Image
-            src={require("../../public/download.jpeg")} // Adjust path as necessary
-            alt="Profile Picture"
+            // src={require("../../public/download.jpeg")} // Adjust path as necessary
+            src={`https://robohash.org/${profileDetails}`}
+            alt="Robot Avatar"
             layout="fill"
             objectFit="cover"
             className="rounded-full border-4 border-gray-200"
