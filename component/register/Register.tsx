@@ -7,10 +7,10 @@ import { useAtom } from "jotai";
 import { userProfile } from "atom/atom";
 
 interface FormValues {
-  [x: string]: any;
   name: string;
   mobileNumber: string;
   password: string;
+  email: string;
 }
 
 interface Errors {
@@ -41,7 +41,7 @@ const Register: React.FC = () => {
       errors.name = "Name is required";
     }
     if (!formValues.email.trim()) {
-      errors.email = "email is required";
+      errors.email = "Email is required";
     }
 
     if (!formValues.mobileNumber.trim()) {
@@ -51,6 +51,8 @@ const Register: React.FC = () => {
     }
 
     if (!formValues.password.trim()) {
+      errors.password = "Password is required";
+    } else if (formValues.password.length < 6) {
       errors.password = "Password must be at least 6 characters";
     }
     return errors;
@@ -106,9 +108,21 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="relative bg-gray-200">
-      <div className="flex items-center justify-center h-screen relative z-30">
-        <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg opacity-80">
+    <div className="flex items-center justify-center h-screen bg-gray-200">
+      <div className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
+      style={{
+        boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"
+      }}>
+        <div
+          className="hidden md:flex w-1/2 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://imgs.search.brave.com/bk-wMRBLPlJbEglNfU8gpmAGzSSBbdXxMUn3bizXZoM/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQ1/ODEwMDgwMS9waG90/by9maW5hbmNpYWwt/c3VydmVpbGxhbmNl/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1sNXBqdzF3Y3N6/UmpBeExVaExYc0pC/TEpyTFphbzVSS0t3/dUdPdEowSDg4PQ')",
+          }}
+        >
+        </div>
+
+        <div className="w-full md:w-1/2 p-8">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
             Register
           </h2>
@@ -137,7 +151,7 @@ const Register: React.FC = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                email
+                Email
               </label>
               <input
                 type="email"
@@ -145,7 +159,7 @@ const Register: React.FC = () => {
                 value={formValues.email}
                 onChange={handleChange}
                 className="mt-1 p-2 text-black block w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder="Enter your Email"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -211,8 +225,10 @@ const Register: React.FC = () => {
             <p className="text-green-600">{errors.success}</p>
           </form>
           <hr className="text-gray-100 my-4" />
-          <Link className={`link `} href="/login">
-            Click to Login
+          <Link className={`link`} href="/login">
+            Already Registred? <span style={{
+              color:"blue"
+            }}>Click here to Login</span>
           </Link>
         </div>
       </div>

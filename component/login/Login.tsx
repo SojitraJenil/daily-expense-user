@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "universal-cookie";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { loginData } from "API/api";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { loginData } from "API/api";
 import { userProfile } from "atom/atom";
 import { useAtom } from "jotai";
 
@@ -87,7 +87,6 @@ const Login: React.FC = () => {
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
         cookies.set("token", response.data.token, { expires: expires });
-        // cookies.set("userName", formValues.name, { expires: expires });
         cookies.set("UserId", response.data.user._id, { expires: expires });
         cookies.set("mobileNumber", formValues.mobileNumber, {
           expires: expires,
@@ -104,32 +103,25 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="relative bg-gray-200">
-      <div className="flex items-center justify-center h-screen relative z-30">
-        <div className="max-w-md w-full px-6 py-8 bg-white shadow-md overflow-hidden sm:rounded-lg opacity-80">
+    <div className="flex items-center justify-center h-screen bg-gray-200">
+      <div className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
+      style={{
+        boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"
+      }}>
+        <div
+          className="hidden md:flex w-1/2 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://imgs.search.brave.com/bk-wMRBLPlJbEglNfU8gpmAGzSSBbdXxMUn3bizXZoM/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQ1/ODEwMDgwMS9waG90/by9maW5hbmNpYWwt/c3VydmVpbGxhbmNl/LmpwZz9zPTYxMng2/MTImdz0wJms9MjAm/Yz1sNXBqdzF3Y3N6/UmpBeExVaExYc0pC/TEpyTFphbzVSS0t3/dUdPdEowSDg4PQ')",
+          }}
+        >
+        </div>
+
+        <div className="w-full md:w-1/2 p-8">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
             Login
           </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={formValues.name}
-                onChange={handleChange}
-                className="mt-1 p-2 text-black w-full border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your Name"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-              )}
-            </div> */}
             <div>
               <label
                 htmlFor="mobileNumber"
@@ -167,16 +159,16 @@ const Login: React.FC = () => {
                 className="mt-1 text-black p-2 block w-full border-gray-800 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter your Password"
               />
-              {formValues.password.length != 0 && (
+              {formValues.password.length !== 0 && (
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-2 top-8 text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? (
-                    <VisibilityOffIcon className="text-blue-500 align-middle  text-4xl mb-2" />
+                    <VisibilityOffIcon className="text-blue-500 align-middle text-4xl mb-2" />
                   ) : (
-                    <VisibilityIcon className="text-blue-500 align-middle  text-4xl mb-2" />
+                    <VisibilityIcon className="text-blue-500 align-middle text-4xl mb-2" />
                   )}
                 </button>
               )}
@@ -207,7 +199,9 @@ const Login: React.FC = () => {
           </form>
           <hr className="text-gray-100 my-4" />
           <Link className={`link`} href="/register">
-            Don’t have an account yet? Click to Register...
+            Don’t have an account yet?<span style={{
+              color:"blue"
+            }}>Click to Register...</span>
           </Link>
         </div>
       </div>
