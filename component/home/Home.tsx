@@ -188,7 +188,8 @@ const Home: React.FC = () => {
     }
   };
 
-  const deleteTransaction = async (id: string) => {
+  const deleteTransaction = async (id: string | undefined) => {
+    if (!id) return; // Handle the case where id might be undefined
     Swal.fire({
       title: "Are you sure you want to delete this item?",
       icon: "warning",
@@ -274,29 +275,29 @@ const Home: React.FC = () => {
       </Typography>
       {transactions &&
         transactions.map(
-          (item, index) => (
+          (item, index) =>
             item.type === "expense" && (
               <div key={item.id}>
                 {(index === 0 ||
                   moment(item.timestamp).format("DD-MM-YYYY") !==
-                  moment(transactions[index - 1].timestamp).format("DD-MM-YYYY")) && (
-                    <div className="mt-8 mb-6">
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg text-center py-3 px-6 rounded-lg shadow-lg border border-blue-700">
-                        {moment(item.timestamp).format("DD-MM-YYYY")}
-                      </div>
+                    moment(transactions[index - 1].timestamp).format(
+                      "DD-MM-YYYY"
+                    )) && (
+                  <div className="mt-8 mb-6">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold text-lg text-center py-3 px-6 rounded-lg shadow-lg border border-blue-700">
+                      {moment(item.timestamp).format("DD-MM-YYYY")}
                     </div>
-                  )}
-
+                  </div>
+                )}
                 <TransactionItemNew
                   transaction={item}
                   onEdit={handleOpenUpdateModal}
                   onDelete={deleteTransaction}
                   Time={moment(item.timestamp).format("hh:mm A")}
                 />
+                /
               </div>
-
             )
-          )
         )}
 
       <TransactionFormModal
