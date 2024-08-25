@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { useHome } from "pages/context/HomeContext";
 
-const COMMON_ROOM_ID = "ExpenseAllUserChat"; // Replace with your actual common room ID
+const COMMON_ROOM_ID = "ExpenseAllUserChat";
 
 interface Message {
   id: string;
