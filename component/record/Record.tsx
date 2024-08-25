@@ -2,7 +2,7 @@
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 import moment from "moment";
-import { useHome } from "pages/context/HomeContext";
+import useHome from "pages/context/HomeContext";
 import React, { useEffect, useState } from "react";
 
 interface Transaction {
@@ -39,8 +39,6 @@ const Record = () => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
-  console.log("updateModalOpen", updateModalOpen);
-
   const handleOpenUpdateModal = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
     setUpdateModalOpen(true);
@@ -52,16 +50,15 @@ const Record = () => {
   };
 
   useEffect(() => {
-    console.log("A");
     fetchTransactions();
-  }, []);
+  }, [transactions]);
 
   return (
     <div className="mt-4 pt-5">
       <div className="">
         {transactions &&
           transactions.map(
-            (item, index) =>
+            (item: any, index: number) =>
               (item.type === "expense" ||
                 item.type === "income" ||
                 item.type === "invest") && (

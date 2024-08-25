@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useContext,
@@ -83,7 +84,6 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    console.log("B");
     fetchTransactions();
     fetchProfileData();
   }, []);
@@ -221,10 +221,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useHome = (): HomeState => {
+export default function useHome(): HomeState {
   const context = useContext(HomeContext);
   if (!context) {
     throw new Error("useHome must be used within a HomeProvider");
   }
   return context;
-};
+}
