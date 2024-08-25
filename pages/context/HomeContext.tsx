@@ -109,10 +109,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
 
-      const normalizedMobileNumber = mobileNumber.trim(); // Simplified mobileNumber normalization
+      const normalizedMobileNumber = mobileNumber; // Simplified mobileNumber normalization
       const filteredTransactions = sortedTransactions.filter(
         (item: { mobileNumber: string }) =>
-          item.mobileNumber.trim() === normalizedMobileNumber
+          item.mobileNumber === normalizedMobileNumber
       );
 
       const formattedTransactions: Transaction[] = filteredTransactions.map(

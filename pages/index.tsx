@@ -1,7 +1,8 @@
-import React from "react";
-import Login from "component/login/Login";
+import dynamic from "next/dynamic";
 
-const Index = () => {
+const Login = dynamic(() => import("component/login/Login"));
+
+const Index: React.FC = () => {
   return (
     <div>
       <Login />
