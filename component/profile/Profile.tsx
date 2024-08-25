@@ -7,7 +7,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
-import { useHome } from "pages/context/HomeContext";
+import useHome from "pages/context/HomeContext";
 
 function Profile() {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);

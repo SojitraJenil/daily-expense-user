@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
@@ -11,7 +12,7 @@ import { useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { useHome } from "pages/context/HomeContext";
+import useHome from "pages/context/HomeContext";
 
 const COMMON_ROOM_ID = "ExpenseAllUserChat";
 
