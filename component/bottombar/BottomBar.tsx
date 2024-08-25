@@ -5,7 +5,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ChatIcon from "@mui/icons-material/Chat";
+
 export default function BottomBar({
   isNavigate,
   onNavigate,
@@ -44,9 +45,9 @@ export default function BottomBar({
         icon={<HomeIcon />}
       />
       <BottomNavigationAction
-        value="Record"
-        label="Record"
-        icon={<AccountBalanceWalletIcon />}
+        value="graph"
+        label="Chart"
+        icon={<LeaderboardIcon />}
       />
       <BottomNavigationAction
         value="Fuel"

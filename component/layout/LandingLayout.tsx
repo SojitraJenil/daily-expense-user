@@ -7,9 +7,10 @@ import { NavigateNameAtom } from "atom/atom";
 import Profile from "component/profile/Profile";
 import { Box, CircularProgress } from "@mui/material";
 import dynamic from "next/dynamic";
-import Fuel from "component/fuel/Fuel";
-import Chat from "component/chat/Chat";
-import Record from "component/record/Record";
+
+const Graph = lazy(() => import("component/graph/Graph"));
+const Chat = lazy(() => import("component/chat/Chat"));
+const Calculator = lazy(() => import("component/calc/Calculator"));
 
 const LandingLayout = () => {
   const [isNavigate, setIsNavigate] = useAtom(NavigateNameAtom); // Use atom to manage navigation state
@@ -38,8 +39,8 @@ const LandingLayout = () => {
               </div>
             }
           >
-            {isNavigate === "Fuel" && <Fuel />}
-            {isNavigate === "Record" && <Record />}
+            {isNavigate === "graph" && <Graph />}
+            {isNavigate === "Fuel" && <Calculator />}
             {isNavigate === "Profile" && <Profile />}
             {isNavigate === "chat" && <Chat />}
           </Suspense>
