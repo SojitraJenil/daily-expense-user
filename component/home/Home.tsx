@@ -158,9 +158,9 @@ const Home: React.FC = () => {
                     <div className="w-65 text-sm">{currentDateTime}</div>
                   </div>
                   <div className="flex justify-between items-center p-2">
-                    <div className="text-md">{userProfile.name}</div>
+                    <div className="text-md">{userProfile?.name}</div>
                     <div className="text-md">
-                      +91 {userProfile.mobileNumber}
+                      +91 {userProfile?.mobileNumber}
                     </div>
                   </div>
                   <div className="flex justify-center items-center9">

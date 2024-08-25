@@ -64,15 +64,15 @@ function Profile() {
         <div className="flex justify-center px-5 -mt-16">
           <img
             className="h-32 w-32 bg-white p-2 rounded-full border border-black"
-            src={`https://robohash.org/${userProfile.name}`}
+            src={`https://robohash.org/${userProfile?.name}`}
             alt="Profile"
           />
         </div>
         <div className="text-center px-6 py-4">
           <h2 className="text-gray-800 text-3xl font-bold">
-            {userProfile.name}
+            {userProfile?.name}
           </h2>
-          <p className="text-gray-600">{userProfile.mobileNumber}</p>
+          <p className="text-gray-600">{userProfile?.mobileNumber}</p>
           <div className="flex justify-center items-center mt-2">
             <p className="text-gray-800"></p>
           </div>
@@ -86,13 +86,13 @@ function Profile() {
         <div className="px-6 py-4">
           <h3 className="text-gray-800 text-xl font-semibold">Email</h3>
           <p className="text-gray-600 mt-2">
-            {userProfile.email || "user@gmail.com"}
+            {userProfile?.email || "user@gmail.com"}
           </p>
           <hr className="mb-1" />
           <h3 className="text-gray-800 text-xl font-semibold mt-4">Password</h3>
           <div className="flex justify-between">
             <p className="text-gray-600 mt-2">
-              {isPasswordVisible ? userProfile.password : "********"}
+              {isPasswordVisible ? userProfile?.password : "********"}
             </p>
             <button
               onClick={handleTogglePasswordVisibility}
@@ -110,7 +110,7 @@ function Profile() {
             Interests
           </h3>
           <p className="text-gray-600 mt-2">
-            {userProfile.id || "No interests listed"}
+            {userProfile?.id || "No interests listed"}
           </p>
           <hr className="mb-1" />
         </div>
