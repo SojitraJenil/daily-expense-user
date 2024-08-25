@@ -86,7 +86,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     fetchTransactions();
     fetchProfileData();
-  }, []);
+  }, [userProfile]);
 
   const fetchProfileData = async () => {
     const userId = cookies.get("UserId");
