@@ -11,7 +11,6 @@ export function middleware(request: NextRequest) {
   if (token && mobileNumber && UserId && pathname === "/login") {
     return NextResponse.redirect(new URL("/landing", request.url));
   }
-
   return NextResponse.next();
 }
 export const config = {
