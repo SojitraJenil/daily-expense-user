@@ -16,6 +16,27 @@ import {
 import moment from "moment";
 import Swal from "sweetalert2";
 
+const defaultContextValue: HomeState = {
+  userProfile: null,
+  isOpen: false,
+  mobileNumber: "",
+  transactions: [],
+  totalExpense: 0,
+  totalIncome: 0,
+  totalInvest: 0,
+  loading: false,
+  setIsOpen: () => {},
+  setUpdateModalOpen: () => {},
+  updateModalOpen: false,
+  fetchTransactions: async () => {},
+  addTransaction: async () => {},
+  updateTransaction: async () => {},
+  deleteTransaction: async () => {},
+  fetchProfileData: async () => {},
+};
+
+const HomeContext = createContext<HomeState>(defaultContextValue);
+
 interface UserProfile {
   id: string;
   name: string;
@@ -61,8 +82,6 @@ interface HomeState {
   deleteTransaction: (record: { id: string; amount: number }) => Promise<void>;
   fetchProfileData: () => Promise<void>;
 }
-
-const HomeContext = createContext<HomeState | undefined>(undefined);
 
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
