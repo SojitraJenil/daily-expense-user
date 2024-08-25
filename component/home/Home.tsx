@@ -3,14 +3,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   Typography,
-  Button,
   Box,
   Divider,
   CircularProgress,
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import moment from "moment";
 import {
   PieChart,
   Pie,
@@ -18,37 +16,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
 } from "recharts";
 import Cookies from "universal-cookie";
-import TransactionItem from "component/TransactionItem/TransactionItem";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
-import {
-  addExpense,
-  deleteExpense,
-  getUser,
-  showAllExpenses,
-  showProfile,
-  updateExpense,
-} from "API/api";
-import Swal from "sweetalert2";
-import { useAtom } from "jotai";
-import {
-  NavigateNameAtom,
-  TotalExpense,
-  TotalIncome,
-  TotalInvest,
-  userAtom,
-  userGraphExpense,
-  userProfileName,
-} from "atom/atom";
 import dynamic from "next/dynamic";
-import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
-
+import { useHome } from "pages/context/HomeContext";
 interface Transaction {
   id?: string;
   type: "expense" | "income";
@@ -59,22 +31,27 @@ interface Transaction {
 }
 
 const Home: React.FC = () => {
+  const {
+    transactions,
+    totalExpense,
+    totalIncome,
+    totalInvest,
+    loading,
+    isOpen,
+    setIsOpen,
+    setUpdateModalOpen,
+    updateModalOpen,
+    userProfile,
+    fetchTransactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  } = useHome();
+
   const cookies = new Cookies();
   const authToken = cookies.get("token");
   const mobileNumber = cookies.get("mobileNumber");
-  const [isOpen, setIsOpen] = useState(false);
 
-  const [totalExpense, setTotalExpense] = useAtom(TotalExpense);
-  const [totalIncome, setTotalIncome] = useAtom(TotalIncome);
-  const [totalInvest, setTotalInvest] = useAtom(TotalInvest);
-
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isNavigate] = useAtom(NavigateNameAtom);
-  const [profileName, setUserProfileName] = useAtom(userProfileName);
-  const [userProfileMobileNumber, setUserProfileMobileNumber] = useState("");
-  const [, setUserGraphExpense] = useAtom(userGraphExpense);
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [currentDateTime, setCurrentDateTime] = useState("");
@@ -115,145 +92,9 @@ const Home: React.FC = () => {
     setSelectedTransaction(null);
   };
 
-  const fetchProfileData = async () => {
-    const userId = cookies.get("UserId");
-    try {
-      const response = await showProfile(userId);
-      if (response && response.user) {
-        setUserProfileName(response.user.name);
-        setUserProfileMobileNumber(response.user.mobileNumber);
-      }
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfileData();
-    fetchAllData();
-  }, [transactions, isNavigate]);
-  const [, setUsers] = useAtom(userAtom);
-  const fetchAllData = async () => {
-    try {
-      const response = await getUser();
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const fetchTransactions = async () => {
-    // setLoading(true);
-    // if (!authToken) {
-    //   setLoading(false);
-    //   return;
-    // }
-    try {
-      // if (!transactionsData || !transactionsData.data) {
-      //   console.error("No data fetched");
-      //   setLoading(false);
-      //   return;
-      // }
-      const transactionsData = await showAllExpenses();
-      const sortedTransactions = transactionsData.data.sort(
-        (a: any, b: any) => {
-          return moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf();
-        }
-      );
-      const normalizedMobileNumber = String(mobileNumber).trim();
-      const filteredTransactions = sortedTransactions.filter(
-        (item: { mobileNumber: string }) =>
-          String(item.mobileNumber).trim() === normalizedMobileNumber
-      );
-      const formattedTransactions = filteredTransactions.map((item: any) => ({
-        id: item._id,
-        type: item.type.toLowerCase(),
-        desc: item.desc,
-        amount: parseFloat(item.amount),
-        timestamp: item.timestamp,
-        mobileNumber: item.mobileNumber,
-      }));
-      const totalExpense = formattedTransactions
-        .filter((item: { type: string }) => item.type === "expense")
-        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
-      const totalIncome = formattedTransactions
-        .filter((item: { type: string }) => item.type === "income")
-        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
-      const totalInvest = formattedTransactions
-        .filter((item: { type: string }) => item.type === "invest")
-        .reduce((acc: any, item: { amount: any }) => acc + item.amount, 0);
-      setTotalExpense(totalExpense);
-      setTotalIncome(totalIncome);
-      setTotalInvest(totalInvest);
-      setTransactions(formattedTransactions);
-      setUserGraphExpense(formattedTransactions);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchTransactions();
   }, [authToken, mobileNumber]);
-
-  const handleOpenUpdateModal = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setUpdateModalOpen(true);
-  };
-
-  const addTransaction = async (formValues: any) => {
-    try {
-      await addExpense(formValues);
-      handleClose();
-      fetchTransactions();
-    } catch (error) {
-      console.error("Error adding transaction:", error);
-    }
-  };
-
-  const updateTransaction = async (formValues: any) => {
-    if (!selectedTransaction) return;
-
-    try {
-      await updateExpense(selectedTransaction.id!, formValues);
-      setUpdateModalOpen(false);
-      setSelectedTransaction(null);
-      fetchTransactions();
-    } catch (error) {
-      console.error("Error updating transaction:", error);
-    }
-  };
-
-  const deleteTransaction = async (record: any | undefined) => {
-    if (!record) return; // Handle the case where id might be undefined
-    Swal.fire({
-      title: "Are you sure you want to delete this item?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteExpense(record?.id);
-          setTransactions(
-            transactions.filter((transaction) => transaction.id !== record?.id)
-          );
-          setTotalExpense(totalExpense - record.amount);
-        } catch (error) {
-          console.error("Error deleting transaction: ", error);
-          Swal.fire({
-            title: "Error",
-            text: "Failed to delete transaction.",
-            icon: "error",
-          });
-        }
-      }
-    });
-  };
 
   const expenseBoxes = useCallback(() => {
     return (
@@ -308,18 +149,20 @@ const Home: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Card className="py-2 px-4 border h-[100%] mb-0 border-solid border-gray-700 overflow-hidden bg-[#6c6c6c]">
+        <div className="py-2 px-4 h-[100%] mb-0 overflow-hidden">
           <div className="">
             <Box className="mb-5 pt-1 w-full flex justify-between items-center">
-              <main className="bg-[#1F2937] rounded-lg shadow-md mt-4 w-[100%] p-2">
+              <main className="bg-[#1F2937] rounded-lg mt-4 w-[100%] p-2">
                 <div className=" bg-[#1F2937] text-gray-300 mb-4">
                   <div className="flex justify-between items-center p-2">
                     <div className="w-35 text-sm">Updated as on:</div>
                     <div className="w-65 text-sm">{currentDateTime}</div>
                   </div>
                   <div className="flex justify-between items-center p-2">
-                    <div className="text-md">{profileName}</div>
-                    <div className="text-md">+91 {userProfileMobileNumber}</div>
+                    <div className="text-md">{userProfile.name}</div>
+                    <div className="text-md">
+                      +91 {userProfile.mobileNumber}
+                    </div>
                   </div>
                   <div className="flex justify-center items-center9">
                     <Divider className="w-[95%] bg-white text-gray-200" />
@@ -339,14 +182,14 @@ const Home: React.FC = () => {
                     <button
                       color="primary"
                       onClick={handleOpen}
-                      className="px-6 w-[45%]  py-1 text-md text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
+                      className="px-6 w-[45%]  py-2 text-md text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
                     >
                       show expense
                     </button>
                     <button
                       color="primary"
                       onClick={handleOpen}
-                      className="px-6 w-[45%] py-1 text-sm text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
+                      className="px-6 w-[45%] py-2 text-sm text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
                     >
                       Add Expense
                     </button>
@@ -395,32 +238,6 @@ const Home: React.FC = () => {
             </Box>
           </div>
           <Divider className="my-4 border-gray-700" />
-          {transactions &&
-            transactions.map(
-              (item, index) =>
-                item.type === "expense" && (
-                  <div key={item.id}>
-                    {(index === 0 ||
-                      moment(item.timestamp).format("DD-MM-YYYY") !==
-                        moment(transactions[index - 1].timestamp).format(
-                          "DD-MM-YYYY"
-                        )) && (
-                      <div className="mt-8 mb-6">
-                        <div className="bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-3 px-6 ">
-                          {moment(item.timestamp).format("DD-MM-YYYY")}
-                        </div>
-                      </div>
-                    )}
-                    <TransactionItemNew
-                      transaction={item}
-                      onEdit={handleOpenUpdateModal}
-                      onDelete={deleteTransaction}
-                      Time={moment(item.timestamp).format("hh:mm A")}
-                    />
-                  </div>
-                )
-            )}
-
           <TransactionFormModal
             open={updateModalOpen}
             onClose={() => {
@@ -441,7 +258,7 @@ const Home: React.FC = () => {
             title="Add New Transaction"
             type={undefined}
           />
-        </Card>
+        </div>
       )}
     </>
   );
