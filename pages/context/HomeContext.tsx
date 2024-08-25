@@ -80,11 +80,13 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const cookies = new Cookies();
     const mobile = cookies.get("mobileNumber") as string;
-    setMobileNumber(mobile);
+    if (mobile) {
+      setMobileNumber(mobile);
+    }
 
     fetchTransactions();
     fetchProfileData();
-  }, []);
+  }, [mobileNumber]); // Added mobileNumber as a dependency to ensure it updates correctly
 
   const fetchProfileData = async () => {
     try {
@@ -107,10 +109,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
 
-      const normalizedMobileNumber = String(mobileNumber).trim();
+      const normalizedMobileNumber = mobileNumber.trim(); // Simplified mobileNumber normalization
       const filteredTransactions = sortedTransactions.filter(
         (item: { mobileNumber: string }) =>
-          String(item.mobileNumber).trim() === normalizedMobileNumber
+          item.mobileNumber.trim() === normalizedMobileNumber
       );
 
       const formattedTransactions: Transaction[] = filteredTransactions.map(
@@ -124,19 +126,20 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         })
       );
 
-      const totalExpense = formattedTransactions
-        .filter((item) => item.type === "expense")
-        .reduce((acc, item) => acc + item.amount, 0);
-      const totalIncome = formattedTransactions
-        .filter((item) => item.type === "income")
-        .reduce((acc, item) => acc + item.amount, 0);
-      const totalInvest = formattedTransactions
-        .filter((item) => item.type === "invest")
-        .reduce((acc, item) => acc + item.amount, 0);
+      // Calculating totals
+      const totals = formattedTransactions.reduce(
+        (acc, item) => {
+          if (item.type === "expense") acc.expense += item.amount;
+          if (item.type === "income") acc.income += item.amount;
+          if (item.type === "invest") acc.invest += item.amount;
+          return acc;
+        },
+        { expense: 0, income: 0, invest: 0 }
+      );
 
-      setTotalExpense(totalExpense);
-      setTotalIncome(totalIncome);
-      setTotalInvest(totalInvest);
+      setTotalExpense(totals.expense);
+      setTotalIncome(totals.income);
+      setTotalInvest(totals.invest);
       setTransactions(formattedTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -183,7 +186,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           setTransactions(
             transactions.filter((transaction) => transaction.id !== record.id)
           );
-          setTotalExpense(totalExpense - record.amount);
+          setTotalExpense((prev) => prev - record.amount);
         } catch (error) {
           console.error("Error deleting transaction: ", error);
           Swal.fire({

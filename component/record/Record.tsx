@@ -2,6 +2,7 @@
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 import moment from "moment";
+import dynamic from "next/dynamic";
 import useHome from "pages/context/HomeContext";
 import React, { useEffect, useState } from "react";
 
@@ -109,4 +110,4 @@ const Record = () => {
   );
 };
 
-export default Record;
+export default dynamic(() => Promise.resolve(Record), { ssr: false });
