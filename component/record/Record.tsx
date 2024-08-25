@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 import moment from "moment";
