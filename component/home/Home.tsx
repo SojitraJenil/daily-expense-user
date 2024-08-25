@@ -57,6 +57,8 @@ const Home: React.FC = () => {
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
+  console.log("object");
+
   const data = [
     { name: "Expense", value: totalExpense },
     { name: "Income", value: totalIncome },
