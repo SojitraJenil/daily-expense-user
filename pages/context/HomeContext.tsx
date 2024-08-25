@@ -16,6 +16,22 @@ import {
 import moment from "moment";
 import Swal from "sweetalert2";
 
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  mobileNumber: string;
+}
+
+interface TransactionFormValues {
+  type: "expense" | "income" | "invest";
+  desc: string;
+  amount: number;
+  timestamp: string | Date;
+  mobileNumber: string;
+}
+
 interface Transaction {
   id?: string;
   type: "expense" | "income" | "invest";
@@ -26,7 +42,7 @@ interface Transaction {
 }
 
 interface HomeState {
-  userProfile: any;
+  userProfile: UserProfile;
   isOpen: boolean;
   mobileNumber: string;
   transactions: Transaction[];
@@ -34,14 +50,16 @@ interface HomeState {
   totalIncome: number;
   totalInvest: number;
   loading: boolean;
-  setIsOpen: any;
-  setUpdateModalOpen: any;
-  updateModalOpen: any;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setUpdateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  updateModalOpen: boolean;
   fetchTransactions: () => Promise<void>;
-  addTransaction: (formValues: any) => Promise<void>;
-  updateTransaction: (formValues: any) => Promise<void>;
-  deleteTransaction: (record: any) => Promise<void>;
-  fetchProfileData: (record: any) => Promise<void>;
+  addTransaction: (formValues: TransactionFormValues) => Promise<void>;
+  updateTransaction: (
+    formValues: TransactionFormValues & { id: string }
+  ) => Promise<void>;
+  deleteTransaction: (record: { id: string; amount: number }) => Promise<void>;
+  fetchProfileData: () => Promise<void>;
 }
 
 const HomeContext = createContext<HomeState | undefined>(undefined);
@@ -56,7 +74,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const [totalInvest, setTotalInvest] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userProfile, setUserProfile] = useState([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
