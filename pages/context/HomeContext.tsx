@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useContext,
@@ -84,6 +83,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
+    console.log("B");
     fetchTransactions();
     fetchProfileData();
   }, []);
