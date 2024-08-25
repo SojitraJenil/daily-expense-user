@@ -45,7 +45,6 @@ const Home: React.FC = () => {
     fetchTransactions,
     addTransaction,
     updateTransaction,
-    deleteTransaction,
   } = useHome();
 
   const cookies = new Cookies();
