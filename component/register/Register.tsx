@@ -5,6 +5,9 @@ import Link from "next/link";
 import { registerData } from "API/api";
 import { useAtom } from "jotai";
 import { userProfile } from "atom/atom";
+import Loading from "../Loading/index"
+import {REGISTER_LOADIN_MSG} from "../LoadingMsg"
+
 
 interface FormValues {
   name: string;
@@ -31,6 +34,7 @@ const Register: React.FC = () => {
 
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [loadingMsg,setLoadingMsg]=useState("")
   const [, setProfileUser] = useAtom(userProfile);
   const router = useRouter();
 
@@ -67,6 +71,8 @@ const Register: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setLoader(true);
+    setLoadingMsg(REGISTER_LOADIN_MSG)
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -109,6 +115,10 @@ const Register: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
+      {
+        loader && <Loading title={loadingMsg}/>
+
+      }
       <div className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
       style={{
         boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"

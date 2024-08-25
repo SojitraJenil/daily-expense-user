@@ -7,6 +7,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { loginData } from "API/api";
 import { userProfile } from "atom/atom";
 import { useAtom } from "jotai";
+import Loading from "../Loading/index"
+import {LOGIN_LOADIN_MSG} from "../LoadingMsg"
 
 interface FormValues {
   mobileNumber: string;
@@ -25,6 +27,7 @@ const Login: React.FC = () => {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [loadingMsg,setLoadingMsg]=useState("")
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -64,6 +67,8 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setLoader(true);
+    setLoadingMsg(LOGIN_LOADIN_MSG)
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -73,7 +78,6 @@ const Login: React.FC = () => {
     }
 
     try {
-      setLoader(true);
       const response = await loginData(
         formValues.mobileNumber,
         formValues.password
@@ -104,10 +108,13 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
+      {
+        loader && <Loading title={loadingMsg}/>
+      }
       <div className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
-      style={{
-        boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"
-      }}>
+        style={{
+          boxShadow: "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px"
+        }}>
         <div
           className="hidden md:flex w-1/2 bg-cover bg-center"
           style={{
@@ -181,17 +188,9 @@ const Login: React.FC = () => {
             <div>
               <button
                 type="submit"
-                disabled={loader}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {loader ? (
-                  <div
-                    className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-                    role="status"
-                  ></div>
-                ) : (
-                  "Login"
-                )}
+                Login
               </button>
             </div>
             <p className="text-red-600">{error}</p>
@@ -200,7 +199,7 @@ const Login: React.FC = () => {
           <hr className="text-gray-100 my-4" />
           <Link className={`link`} href="/register">
             Don’t have an account yet?<span style={{
-              color:"blue"
+              color: "blue"
             }}>Click to Register...</span>
           </Link>
         </div>
