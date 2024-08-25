@@ -9,9 +9,10 @@ import moment from "moment";
 import { Box, CircularProgress } from "@mui/material";
 import Cookies from "universal-cookie";
 import { useAtom } from "jotai";
-import { NavigateNameAtom, userProfileName } from "atom/atom";
+import { NavigateNameAtom } from "atom/atom";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import useHome from "pages/context/HomeContext";
 
 const COMMON_ROOM_ID = "ExpenseAllUserChat";
 
@@ -26,6 +27,7 @@ interface Message {
 }
 
 const Chat = () => {
+  const { userProfile } = useHome();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [typing, setTyping] = useState(false);
@@ -34,7 +36,6 @@ const Chat = () => {
   const messagesRef = collection(db, "Message");
   const cookie = new Cookies();
   const MobileNumber = cookie.get("mobileNumber");
-  const [getUserName] = useAtom(userProfileName);
   const containRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,7 +74,7 @@ const Chat = () => {
         text: newMessage,
         mobileNo: MobileNumber,
         createdAt: new Date().getTime(),
-        user: getUserName,
+        user: userProfile?.name,
         room: COMMON_ROOM_ID,
       });
     } catch (error) {
@@ -110,7 +111,7 @@ const Chat = () => {
             {loading ? "Loading..." : "Chat Room".toUpperCase()}
           </p>
           <p className="text-SM text-start ps-2">
-            {typing && <p className="text-sm">{getUserName} Typing...</p>}
+            {typing && <p className="text-sm">{userProfile?.name} Typing...</p>}
           </p>
         </div>
       </div>

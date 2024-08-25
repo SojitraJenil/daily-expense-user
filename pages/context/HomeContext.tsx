@@ -17,27 +17,6 @@ import {
 import moment from "moment";
 import Swal from "sweetalert2";
 
-const defaultContextValue: HomeState = {
-  userProfile: null,
-  isOpen: false,
-  mobileNumber: "",
-  transactions: [],
-  totalExpense: 0,
-  totalIncome: 0,
-  totalInvest: 0,
-  loading: false,
-  setIsOpen: () => {},
-  setUpdateModalOpen: () => {},
-  updateModalOpen: false,
-  fetchTransactions: async () => {},
-  addTransaction: async () => {},
-  updateTransaction: async () => {},
-  deleteTransaction: async () => {},
-  fetchProfileData: async () => {},
-};
-
-const HomeContext = createContext<HomeState>(defaultContextValue);
-
 interface UserProfile {
   id: string;
   name: string;
@@ -64,7 +43,7 @@ interface Transaction {
 }
 
 interface HomeState {
-  userProfile: UserProfile | null;
+  userProfile: UserProfile;
   isOpen: boolean;
   mobileNumber: string;
   transactions: Transaction[];
@@ -84,34 +63,34 @@ interface HomeState {
   fetchProfileData: () => Promise<void>;
 }
 
+const HomeContext = createContext<HomeState | undefined>(undefined);
+
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const cookies = new Cookies();
+  const mobileNumber = cookies.get("mobileNumber") as string;
   const [totalExpense, setTotalExpense] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalInvest, setTotalInvest] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [mobileNumber, setMobileNumber] = useState<string>("");
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
 
   useEffect(() => {
-    const cookies = new Cookies();
-    const mobile = cookies.get("mobileNumber") as string;
-    if (mobile) {
-      setMobileNumber(mobile);
-    }
-
     fetchTransactions();
     fetchProfileData();
-  }, [mobileNumber]); // Added mobileNumber as a dependency to ensure it updates correctly
+  }, []);
 
   const fetchProfileData = async () => {
+    const userId = cookies.get("UserId");
     try {
-      const cookies = new Cookies();
-      const userId = cookies.get("UserId");
       const response = await showProfile(userId);
       if (response && response.user) {
         setUserProfile(response.user);
@@ -128,11 +107,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         (a: any, b: any) =>
           moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
-
-      const normalizedMobileNumber = mobileNumber; // Simplified mobileNumber normalization
+      const normalizedMobileNumber = String(mobileNumber).trim();
       const filteredTransactions = sortedTransactions.filter(
         (item: { mobileNumber: string }) =>
-          item.mobileNumber === normalizedMobileNumber
+          String(item.mobileNumber).trim() === normalizedMobileNumber
       );
 
       const formattedTransactions: Transaction[] = filteredTransactions.map(
@@ -146,20 +124,19 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         })
       );
 
-      // Calculating totals
-      const totals = formattedTransactions.reduce(
-        (acc, item) => {
-          if (item.type === "expense") acc.expense += item.amount;
-          if (item.type === "income") acc.income += item.amount;
-          if (item.type === "invest") acc.invest += item.amount;
-          return acc;
-        },
-        { expense: 0, income: 0, invest: 0 }
-      );
+      const totalExpense = formattedTransactions
+        .filter((item) => item.type === "expense")
+        .reduce((acc, item) => acc + item.amount, 0);
+      const totalIncome = formattedTransactions
+        .filter((item) => item.type === "income")
+        .reduce((acc, item) => acc + item.amount, 0);
+      const totalInvest = formattedTransactions
+        .filter((item) => item.type === "invest")
+        .reduce((acc, item) => acc + item.amount, 0);
 
-      setTotalExpense(totals.expense);
-      setTotalIncome(totals.income);
-      setTotalInvest(totals.invest);
+      setTotalExpense(totalExpense);
+      setTotalIncome(totalIncome);
+      setTotalInvest(totalInvest);
       setTransactions(formattedTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -168,19 +145,18 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const addTransaction = async (formValues: TransactionFormValues) => {
+  const addTransaction = async (formValues: any) => {
     try {
       await addExpense(formValues);
       fetchTransactions();
       setIsOpen(false);
+      handleClose();
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
   };
 
-  const updateTransaction = async (
-    formValues: TransactionFormValues & { id: string }
-  ) => {
+  const updateTransaction = async (formValues: any) => {
     try {
       await updateExpense(formValues.id, formValues);
       setUpdateModalOpen(false);
@@ -190,7 +166,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const deleteTransaction = async (record: { id: string; amount: number }) => {
+  const deleteTransaction = async (record: any) => {
     if (!record) return;
     Swal.fire({
       title: "Are you sure you want to delete this item?",
@@ -206,7 +182,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
           setTransactions(
             transactions.filter((transaction) => transaction.id !== record.id)
           );
-          setTotalExpense((prev) => prev - record.amount);
+          setTotalExpense(totalExpense - record.amount);
         } catch (error) {
           console.error("Error deleting transaction: ", error);
           Swal.fire({

@@ -1,40 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { showProfile } from "API/api";
 import Cookies from "universal-cookie";
 import { Box, CircularProgress, Button } from "@mui/material";
-import { useAtom } from "jotai";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { NavigateNameAtom, userProfileName } from "atom/atom";
 import { useRouter } from "next/router";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
+import useHome from "pages/context/HomeContext";
 
 function Profile() {
-  const [profileDetails, setProfileDetails] = useState<any>(null);
-  const [, serUserName] = useAtom(userProfileName);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const cookies = new Cookies();
-  const [isNavigate] = useAtom(NavigateNameAtom);
-  const userId = cookies.get("UserId");
   const router = useRouter();
+  const { userProfile } = useHome();
 
-  const fetchProfile = async () => {
-    try {
-      const response = await showProfile(userId);
-      setProfileDetails(response.user);
-      serUserName(response.user.name);
-    } catch (error) {
-      console.error("Failed to fetch profile details:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, [isNavigate]);
-
-  if (!profileDetails) {
+  if (!userProfile) {
     return (
       <Box className="flex justify-center items-center h-full my-[250px]">
         <CircularProgress />
@@ -83,15 +64,15 @@ function Profile() {
         <div className="flex justify-center px-5 -mt-16">
           <img
             className="h-32 w-32 bg-white p-2 rounded-full border border-black"
-            src={`https://robohash.org/${profileDetails.name}`}
+            src={`https://robohash.org/${userProfile.name}`}
             alt="Profile"
           />
         </div>
         <div className="text-center px-6 py-4">
           <h2 className="text-gray-800 text-3xl font-bold">
-            {profileDetails.name}
+            {userProfile.name}
           </h2>
-          <p className="text-gray-600">{profileDetails.mobileNumber}</p>
+          <p className="text-gray-600">{userProfile.mobileNumber}</p>
           <div className="flex justify-center items-center mt-2">
             <p className="text-gray-800"></p>
           </div>
@@ -105,13 +86,13 @@ function Profile() {
         <div className="px-6 py-4">
           <h3 className="text-gray-800 text-xl font-semibold">Email</h3>
           <p className="text-gray-600 mt-2">
-            {profileDetails.email || "user@gmail.com"}
+            {userProfile.email || "user@gmail.com"}
           </p>
           <hr className="mb-1" />
           <h3 className="text-gray-800 text-xl font-semibold mt-4">Password</h3>
           <div className="flex justify-between">
             <p className="text-gray-600 mt-2">
-              {isPasswordVisible ? profileDetails.password : "********"}
+              {isPasswordVisible ? userProfile.password : "********"}
             </p>
             <button
               onClick={handleTogglePasswordVisibility}
@@ -129,7 +110,7 @@ function Profile() {
             Interests
           </h3>
           <p className="text-gray-600 mt-2">
-            {profileDetails.interests || "No interests listed"}
+            {userProfile?.name || "No interests listed"}
           </p>
           <hr className="mb-1" />
         </div>

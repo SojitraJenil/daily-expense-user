@@ -52,7 +52,9 @@ const Record = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [transactions]);
+  }, []);
+
+  console.log("transactions==>", transactions);
 
   return (
     <div className="mt-4 pt-5 mx-3">
