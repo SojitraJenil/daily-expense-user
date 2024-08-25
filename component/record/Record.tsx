@@ -54,7 +54,7 @@ const Record = () => {
   }, [transactions]);
 
   return (
-    <div className="mt-4 pt-5">
+    <div className="mt-4 pt-5 mx-3">
       <div className="">
         {transactions &&
           transactions.map(

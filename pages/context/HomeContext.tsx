@@ -43,7 +43,7 @@ interface Transaction {
 }
 
 interface HomeState {
-  userProfile: UserProfile;
+  userProfile: UserProfile | null;
   isOpen: boolean;
   mobileNumber: string;
   transactions: Transaction[];
@@ -68,27 +68,27 @@ const HomeContext = createContext<HomeState | undefined>(undefined);
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const cookies = new Cookies();
-  const mobileNumber = cookies.get("mobileNumber") as string;
+  const cookies = typeof window !== "undefined" ? new Cookies() : null;
+  const mobileNumber = cookies ? (cookies.get("mobileNumber") as string) : "";
+
   const [totalExpense, setTotalExpense] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalInvest, setTotalInvest] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userProfile, setUserProfile] = useState<UserProfile | any>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
   useEffect(() => {
-    fetchTransactions();
-    fetchProfileData();
+    if (typeof window !== "undefined") {
+      fetchTransactions();
+      fetchProfileData();
+    }
   }, []);
 
   const fetchProfileData = async () => {
+    if (!cookies) return;
     const userId = cookies.get("UserId");
     try {
       const response = await showProfile(userId);
@@ -101,6 +101,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchTransactions = async () => {
+    if (!cookies) return;
     try {
       const transactionsData = await showAllExpenses();
       const sortedTransactions = transactionsData.data.sort(
@@ -145,18 +146,19 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const addTransaction = async (formValues: any) => {
+  const addTransaction = async (formValues: TransactionFormValues) => {
     try {
       await addExpense(formValues);
       fetchTransactions();
       setIsOpen(false);
-      handleClose();
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
   };
 
-  const updateTransaction = async (formValues: any) => {
+  const updateTransaction = async (
+    formValues: TransactionFormValues & { id: string }
+  ) => {
     try {
       await updateExpense(formValues.id, formValues);
       setUpdateModalOpen(false);
@@ -166,7 +168,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const deleteTransaction = async (record: any) => {
+  const deleteTransaction = async (record: { id: string; amount: number }) => {
     if (!record) return;
     Swal.fire({
       title: "Are you sure you want to delete this item?",
