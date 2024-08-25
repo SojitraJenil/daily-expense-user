@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useContext,
@@ -68,9 +67,6 @@ const HomeContext = createContext<HomeState | undefined>(undefined);
 export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const cookies = typeof window !== "undefined" ? new Cookies() : null;
-  const mobileNumber = cookies ? (cookies.get("mobileNumber") as string) : "";
-
   const [totalExpense, setTotalExpense] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalInvest, setTotalInvest] = useState<number>(0);
@@ -79,18 +75,21 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState<string>("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      fetchTransactions();
-      fetchProfileData();
-    }
+    const cookies = new Cookies();
+    const mobile = cookies.get("mobileNumber") as string;
+    setMobileNumber(mobile);
+
+    fetchTransactions();
+    fetchProfileData();
   }, []);
 
   const fetchProfileData = async () => {
-    if (!cookies) return;
-    const userId = cookies.get("UserId");
     try {
+      const cookies = new Cookies();
+      const userId = cookies.get("UserId");
       const response = await showProfile(userId);
       if (response && response.user) {
         setUserProfile(response.user);
@@ -101,13 +100,13 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchTransactions = async () => {
-    if (!cookies) return;
     try {
       const transactionsData = await showAllExpenses();
       const sortedTransactions = transactionsData.data.sort(
         (a: any, b: any) =>
           moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
+
       const normalizedMobileNumber = String(mobileNumber).trim();
       const filteredTransactions = sortedTransactions.filter(
         (item: { mobileNumber: string }) =>
