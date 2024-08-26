@@ -52,6 +52,7 @@ interface HomeState {
   totalInvest: number;
   loading: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserProfile: any;
   setUpdateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateModalOpen: boolean;
   deleteLoading: boolean;
@@ -219,6 +220,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         deleteLoading,
         setUpdateModalOpen,
         setDeleteLoading,
+        setUserProfile,
         setIsOpen,
         fetchTransactions,
         addTransaction,

@@ -3,7 +3,9 @@ import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
 import Link from "next/link";
 import { registerData } from "API/api";
-import { useAtom } from "jotai";
+import Loading from "../Loading/index";
+import { REGISTER_LOADIN_MSG } from "../LoadingMsg";
+import useHome from "context/HomeContext";
 
 interface FormValues {
   name: string;
@@ -21,6 +23,7 @@ interface Errors {
 }
 
 const Register: React.FC = () => {
+  const { userProfile, setUserProfile } = useHome();
   const [formValues, setFormValues] = useState<FormValues>({
     name: "",
     mobileNumber: "",
@@ -30,6 +33,7 @@ const Register: React.FC = () => {
 
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
+  const [loadingMsg, setLoadingMsg] = useState("");
   const router = useRouter();
 
   const validateForm = (): Errors => {
@@ -66,6 +70,7 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setLoader(true);
+    setLoadingMsg(REGISTER_LOADIN_MSG);
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -84,6 +89,7 @@ const Register: React.FC = () => {
       );
       if (response.status == 201) {
         setErrors({ success: response.data.message });
+        setUserProfile(response.data.user);
         const cookies = new Cookies();
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 12);
@@ -107,6 +113,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
+      {loader && <Loading title={loadingMsg} />}
       <div
         className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
         style={{

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import { Box, CircularProgress, Button } from "@mui/material";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -27,7 +27,9 @@ function Profile() {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const handleEditProfile = () => {};
+  const handleEditProfile = () => {
+    console.log("Edit profile clicked");
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -83,7 +85,9 @@ function Profile() {
         {/* Additional Profile Information */}
         <div className="px-6 py-4">
           <h3 className="text-gray-800 text-xl font-semibold">Email</h3>
-          <p className="text-gray-600 mt-2">{userProfile.email}</p>
+          <p className="text-gray-600 mt-2">
+            {userProfile.email || "user@gmail.com"}
+          </p>
           <hr className="mb-1" />
           <h3 className="text-gray-800 text-xl font-semibold mt-4">Password</h3>
           <div className="flex justify-between">
