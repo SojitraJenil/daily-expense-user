@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
@@ -6,6 +5,7 @@ import {
   Box,
   Divider,
   CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -21,6 +21,8 @@ import Cookies from "universal-cookie";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import dynamic from "next/dynamic";
 import useHome from "context/HomeContext";
+import DashboardSkeleton from "component/skeleton/HomeSkeleton";
+
 interface Transaction {
   id?: string;
   type: "expense" | "income";
@@ -32,7 +34,6 @@ interface Transaction {
 
 const Home: React.FC = () => {
   const {
-    transactions,
     totalExpense,
     totalIncome,
     totalInvest,
@@ -44,8 +45,6 @@ const Home: React.FC = () => {
     userProfile,
     fetchTransactions,
     addTransaction,
-    updateTransaction,
-    deleteTransaction,
   } = useHome();
 
   const cookies = new Cookies();
@@ -57,8 +56,6 @@ const Home: React.FC = () => {
   const [currentDateTime, setCurrentDateTime] = useState("");
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
-
-  console.log("object");
 
   const data = [
     { name: "Expense", value: totalExpense },
@@ -107,7 +104,7 @@ const Home: React.FC = () => {
             Expense
           </Typography>
           <Typography variant="h6" className="text-white">
-            ₹{totalExpense}
+            {`₹${totalExpense}`}
           </Typography>
         </Box>
         <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-green-700 rounded-lg flex flex-col items-center justify-center">
@@ -116,7 +113,7 @@ const Home: React.FC = () => {
             Income
           </Typography>
           <Typography variant="h6" className="text-white text-sm">
-            ₹{totalIncome}
+            {`₹${totalIncome}`}
           </Typography>
         </Box>
         <Box className="w-32 bg-gray-800 p-4 border-2 border-solid border-blue-700 rounded-lg flex flex-col items-center justify-center">
@@ -125,12 +122,12 @@ const Home: React.FC = () => {
             Invest
           </Typography>
           <Typography variant="h6" className="text-white text-sm">
-            ₹{totalInvest}
+            {`₹${totalInvest}`}
           </Typography>
         </Box>
       </>
     );
-  }, [totalInvest, totalIncome, totalExpense]);
+  }, [totalInvest, totalIncome, totalExpense, loading]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -147,8 +144,8 @@ const Home: React.FC = () => {
   return (
     <>
       {loading ? (
-        <Box className="flex justify-center items-center h-full my-[250px]">
-          <CircularProgress />
+        <Box className="flex justify-center rounded-xl items-center h-full ">
+          <DashboardSkeleton />
         </Box>
       ) : (
         <div className="py-2 px-4 h-[100%] mb-0 overflow-hidden">
@@ -163,10 +160,10 @@ const Home: React.FC = () => {
                   <div className="flex justify-between items-center p-2">
                     <div className="text-md">{userProfile?.name}</div>
                     <div className="text-md">
-                      +91 {userProfile?.mobileNumber}
+                      {`+91 ${userProfile?.mobileNumber}`}
                     </div>
                   </div>
-                  <div className="flex justify-center items-center9">
+                  <div className="flex justify-center items-center">
                     <Divider className="w-[95%] bg-white text-gray-200" />
                   </div>
                 </div>
@@ -184,14 +181,14 @@ const Home: React.FC = () => {
                     <button
                       color="primary"
                       onClick={handleOpen}
-                      className="px-6 w-[45%]  py-2 text-md text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
+                      className="px-4 w-[45%]  py-2 text-md text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
                     >
                       show expense
                     </button>
                     <button
                       color="primary"
                       onClick={handleOpen}
-                      className="px-6 w-[45%] py-2 text-sm text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
+                      className="px-4 w-[45%] py-2 text-sm text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
                     >
                       Add Expense
                     </button>
@@ -246,18 +243,20 @@ const Home: React.FC = () => {
               setUpdateModalOpen(false);
               setSelectedTransaction(null);
             }}
-            onSubmit={updateTransaction}
             initialValues={selectedTransaction || initialFormValues}
             title="Update Transaction"
             type={undefined}
+            onSubmit={function (formValues: any): Promise<void> | void {
+              throw new Error("Function not implemented.");
+            }}
           />
 
           <TransactionFormModal
             open={isOpen}
             onClose={handleClose}
-            onSubmit={addTransaction}
             initialValues={initialFormValues}
-            title="Add New Transaction"
+            title="Add Transaction"
+            onSubmit={addTransaction}
             type={undefined}
           />
         </div>
@@ -266,4 +265,6 @@ const Home: React.FC = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Home), { ssr: false });
+export default dynamic(() => Promise.resolve(Home), {
+  ssr: false,
+});

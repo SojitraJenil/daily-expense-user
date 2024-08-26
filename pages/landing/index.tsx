@@ -1,12 +1,12 @@
-import LandingLayout from 'component/layout/LandingLayout'
-import React from 'react'
+import LandingLayout from "component/layout/LandingLayout";
+import React from "react";
 
 function Landing() {
-    return (
-        <div>
-            <LandingLayout />
-        </div>
-    )
+  return (
+    <div>
+      <LandingLayout />
+    </div>
+  );
 }
 
-export default Landing
+export default Landing;

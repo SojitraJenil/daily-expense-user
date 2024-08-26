@@ -93,7 +93,6 @@ export const addExpense = async (formValues: any) => {
 export const showAllExpenses = async () => {
   try {
     const response = await axiosInstance.get(`/showAllExpenses`);
-    console.log("response.data", response.data);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching expenses:", error);

@@ -1,18 +1,18 @@
+// BottomBar.tsx
 import * as React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CalculateIcon from "@mui/icons-material/Calculate";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-export default function BottomBar({
-  isNavigate,
-  onNavigate,
-}: {
+import CalculateIcon from "@mui/icons-material/Calculate";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+interface BottomBarProps {
   isNavigate: string;
   onNavigate: (navigateName: string) => void;
-}) {
+}
+
+const BottomBar: React.FC<BottomBarProps> = ({ isNavigate, onNavigate }) => {
   const [value, setValue] = React.useState<string>(isNavigate);
 
   const handleChange = (newValue: string) => {
@@ -37,12 +37,7 @@ export default function BottomBar({
         },
       }}
     >
-      <BottomNavigationAction
-        value="Home"
-        label="Home"
-        className="py-[10px]"
-        icon={<HomeIcon />}
-      />
+      <BottomNavigationAction value="Home" label="Home" icon={<HomeIcon />} />
       <BottomNavigationAction
         value="Record"
         label="Record"
@@ -60,4 +55,6 @@ export default function BottomBar({
       />
     </BottomNavigation>
   );
-}
+};
+
+export default BottomBar;

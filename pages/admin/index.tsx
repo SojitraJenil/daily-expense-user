@@ -1,12 +1,12 @@
-import Admin from 'component/admin/Admin'
-import React from 'react'
+import Admin from "component/admin/Admin";
+import React from "react";
 
 function index() {
-    return (
-        <div>
-            <Admin />
-        </div>
-    )
+  return (
+    <div>
+      <Admin />
+    </div>
+  );
 }
 
-export default index
+export default index;

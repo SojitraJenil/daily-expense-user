@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -11,6 +12,8 @@ import React, { useEffect, useState } from "react";
 import FuelFormModal from "component/FuelFormModal/FuelFormModal";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 import {
   addFuelDetails,
@@ -129,24 +132,24 @@ function Fuel() {
 
   return (
     <div className="bg-white h-screen">
-      <div className="flex py-3 pt-8 justify-evenly items-center gap-4 ">
-        <Box className="mb-5 pt-2 w-full flex justify-center items-center gap-4">
-          <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
-            <Typography className="text-gray-500 mb-2 text-center">
-              Total Fual
-            </Typography>
-            <Typography variant="h6" className="text-gray-700">
-              ₹100
-            </Typography>
-          </Box>
-          <Box className="w-48 bg-red-50 p-4 border-2 border-solid border-[#db8f8f] rounded-lg flex flex-col items-center justify-center">
-            <Typography className="text-gray-500 mb-2 text-center">
-              Day Expense
-            </Typography>
-            <Typography variant="h6" className="text-gray-700 text-sm">
-              ₹100
-            </Typography>
-          </Box>
+      <div className="flex py-3  pt-8 justify-evenly items-center  ">
+        <Box className="w-40 bg-gray-800 p-4 border-2 border-solid border-red-700 rounded-lg flex flex-col items-center justify-center">
+          <ArrowUpwardIcon className="text-red-400 text-3xl mb-2" />
+          <Typography className="text-gray-300 mb-2 text-center">
+            Expense
+          </Typography>
+          <Typography variant="h6" className="text-white">
+            {loading ? <Skeleton width={60} /> : `₹${"344"}`}
+          </Typography>
+        </Box>
+        <Box className="w-40 bg-gray-800 p-4 border-2 border-solid border-green-700 rounded-lg flex flex-col items-center justify-center">
+          <ArrowDownwardIcon className="text-green-400 text-3xl mb-2" />
+          <Typography className="text-gray-300 mb-2 text-center">
+            Income
+          </Typography>
+          <Typography variant="h6" className="text-white text-sm">
+            {loading ? <Skeleton width={60} /> : `₹${"234"}`}
+          </Typography>
         </Box>
       </div>
       <div className="text-center">

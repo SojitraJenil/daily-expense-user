@@ -54,6 +54,8 @@ interface HomeState {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setUpdateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateModalOpen: boolean;
+  deleteLoading: boolean;
+  setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   fetchTransactions: () => Promise<void>;
   addTransaction: (formValues: TransactionFormValues) => Promise<void>;
   updateTransaction: (
@@ -75,6 +77,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const [totalInvest, setTotalInvest] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile | any>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -101,6 +104,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchTransactions = async () => {
+    setLoading(true);
     try {
       const transactionsData = await showAllExpenses();
       const sortedTransactions = transactionsData.data.sort(
@@ -158,8 +162,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 
   const updateTransaction = async (formValues: any) => {
     try {
+      setDeleteLoading(true);
       await updateExpense(formValues.id, formValues);
       setUpdateModalOpen(false);
+      setDeleteLoading(false);
       fetchTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -169,7 +175,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const deleteTransaction = async (record: any) => {
     if (!record) return;
     Swal.fire({
-      title: "Are you sure you want to delete this item?",
+      title: `Are you sure you want to delete ${record.desc} ₹${record.amount} ?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -177,6 +183,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setDeleteLoading(true);
         try {
           await deleteExpense(record.id);
           setTransactions(
@@ -190,6 +197,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
             text: "Failed to delete transaction.",
             icon: "error",
           });
+        } finally {
+          setDeleteLoading(false);
         }
       }
     });
@@ -206,8 +215,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         totalInvest,
         loading,
         mobileNumber,
-        setUpdateModalOpen,
         updateModalOpen,
+        deleteLoading,
+        setUpdateModalOpen,
+        setDeleteLoading,
         setIsOpen,
         fetchTransactions,
         addTransaction,
