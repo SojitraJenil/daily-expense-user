@@ -12,7 +12,7 @@ import { useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import useHome from "pages/context/HomeContext";
+import useHome from "context/HomeContext";
 
 const COMMON_ROOM_ID = "ExpenseAllUserChat";
 

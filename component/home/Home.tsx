@@ -20,7 +20,7 @@ import {
 import Cookies from "universal-cookie";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import dynamic from "next/dynamic";
-import useHome from "pages/context/HomeContext";
+import useHome from "context/HomeContext";
 interface Transaction {
   id?: string;
   type: "expense" | "income";
