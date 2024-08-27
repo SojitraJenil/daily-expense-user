@@ -5,6 +5,8 @@ import Cookies from "universal-cookie";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { loginData } from "API/api";
+import { LOGIN_LOADIN_MSG } from "component/LoadingMsg";
+import Loading from "../Loading/index"
 interface FormValues {
   mobileNumber: string;
   password: string;
@@ -62,7 +64,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setLoader(true);
-    setLoadingMsg("LOGIN_LOADIN_MSG");
+    setLoadingMsg(LOGIN_LOADIN_MSG);
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -101,6 +103,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
+      {loader && <Loading title={loadingMsg}/>}
       <div
         className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
         style={{

@@ -6,6 +6,7 @@ import { registerData } from "API/api";
 import Loading from "../Loading/index";
 import { REGISTER_LOADIN_MSG } from "../LoadingMsg";
 import useHome from "context/HomeContext";
+import ErrorCmp from "../error/index"
 
 interface FormValues {
   name: string;
@@ -34,6 +35,7 @@ const Register: React.FC = () => {
   const [errors, setErrors] = useState<Errors>({});
   const [loader, setLoader] = useState<boolean>(false);
   const [loadingMsg, setLoadingMsg] = useState("");
+  const [showErr,setShowErr]=useState(false)
   const router = useRouter();
 
   const validateForm = (): Errors => {
@@ -69,8 +71,6 @@ const Register: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    setLoader(true);
-    setLoadingMsg(REGISTER_LOADIN_MSG);
     event.preventDefault();
 
     const formErrors = validateForm();
@@ -81,6 +81,7 @@ const Register: React.FC = () => {
 
     try {
       setLoader(true);
+      setLoadingMsg(REGISTER_LOADIN_MSG);  
       const response = await registerData(
         formValues.name,
         formValues.email,
@@ -114,6 +115,9 @@ const Register: React.FC = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-200">
       {loader && <Loading title={loadingMsg} />}
+      {
+        showErr && <ErrorCmp/>
+      }
       <div
         className="flex max-w-4xl w-full bg-white shadow-md overflow-hidden sm:rounded-lg"
         style={{
@@ -219,14 +223,7 @@ const Register: React.FC = () => {
                 disabled={loader}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {loader ? (
-                  <div
-                    className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-                    role="status"
-                  ></div>
-                ) : (
-                  "Register"
-                )}
+                Register
               </button>
             </div>
             <p className="text-green-600">{errors.success}</p>
