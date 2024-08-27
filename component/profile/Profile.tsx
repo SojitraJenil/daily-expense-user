@@ -27,10 +27,6 @@ function Profile() {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const handleEditProfile = () => {
-    console.log("Edit profile clicked");
-  };
-
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure you want to logout?",
@@ -116,11 +112,7 @@ function Profile() {
         </div>
         {/* Action Buttons */}
         <div className="px-6 py-4 flex justify-between">
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleEditProfile}
-          >
+          <Button variant="outlined" color="primary">
             Edit Profile
           </Button>
           <Button variant="outlined" color="secondary" onClick={handleLogout}>

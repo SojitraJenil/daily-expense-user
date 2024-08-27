@@ -104,13 +104,10 @@ export const showAllExpensesBySearch = async (
   mobileNo: string,
   searchTerm: string
 ) => {
-  console.log("mobileNo", mobileNo);
-  console.log("searchTerm", searchTerm);
   try {
     const response = await axiosInstance.get(
       `/search/${mobileNo}/${searchTerm}`
     );
-    console.log("response.data=>>>>>>>>>>>", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching expenses:", error);
