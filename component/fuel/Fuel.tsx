@@ -19,6 +19,7 @@ import {
   addFuelDetails,
   deleteFuelDetails,
   showAllFuelDetails,
+  showAllFuelDetailsByMobileNo,
   updateFuelDetails,
 } from "API/api";
 import Cookies from "universal-cookie";
@@ -31,7 +32,6 @@ function Fuel() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [loader, setLoader] = useState(false);
   const [fuelRecord, setFuelRecord] = useState<any>();
   const [selectedFuel, setSelectedFuel] = useState<any>(null);
   const cookies = new Cookies();
@@ -76,14 +76,11 @@ function Fuel() {
   const ShowFuelRecord = async () => {
     setLoading(true);
     try {
-      const response = await showAllFuelDetails();
       const normalizedMobileNumber = String(mobileNumber).trim();
-      const fuelRecords = response.data;
-      const matchingRecords = fuelRecords.filter(
-        (item: any) =>
-          String(item.mobileNumber).trim() === normalizedMobileNumber
+      const response = await showAllFuelDetailsByMobileNo(
+        normalizedMobileNumber
       );
-      setFuelRecord(matchingRecords);
+      setFuelRecord(response.data);
       handleClose();
     } catch (error) {
       console.error("Error fetching records:", error);

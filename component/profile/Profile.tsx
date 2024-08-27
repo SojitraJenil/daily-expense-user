@@ -110,7 +110,7 @@ function Profile() {
             Interests
           </h3>
           <p className="text-gray-600 mt-2">
-            {userProfile?.id || "No interests listed"}
+            {userProfile?._id || "No interests listed"}
           </p>
           <hr className="mb-1" />
         </div>

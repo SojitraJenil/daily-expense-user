@@ -6,6 +6,9 @@ import useHome from "context/HomeContext";
 import moment from "moment";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import MicIcon from "@mui/icons-material/Mic";
 
 interface Transaction {
   id?: string;
@@ -21,6 +24,7 @@ const Record = () => {
     transactions,
     mobileNumber,
     setIsOpen,
+    OnSearchRecord,
     isOpen,
     setUpdateModalOpen,
     updateModalOpen,
@@ -28,6 +32,7 @@ const Record = () => {
     addTransaction,
     deleteLoading,
     updateTransaction,
+    onBtnFilterRecord,
     deleteTransaction,
   } = useHome();
 
@@ -40,6 +45,7 @@ const Record = () => {
   };
 
   const [loading, setLoading] = useState(true);
+  const [FilterStatus, setFilterStatus] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
@@ -51,6 +57,11 @@ const Record = () => {
   const handleClose = () => {
     setIsOpen(false);
     setSelectedTransaction(null);
+  };
+
+  const RemoveAllFilter = () => {
+    fetchTransactions();
+    setFilterStatus(false);
   };
 
   useEffect(() => {
@@ -81,6 +92,57 @@ const Record = () => {
 
   return (
     <div className="mt-4 pt-5 mx-3">
+      <div className="flex mt-2 mb-5 items-center justify-between bg-gray-100 p-3 rounded-full shadow-md max-w-md mx-auto">
+        <SearchIcon className="text-gray-500" />
+        <input
+          type="text"
+          placeholder="Search"
+          onChange={OnSearchRecord}
+          className="flex-grow bg-transparent outline-none px-3 text-gray-700"
+        />
+        <MicIcon className="text-gray-500" />
+      </div>
+      <div className="flex justify-evenly mb-4">
+        <button
+          onClick={() => {
+            onBtnFilterRecord("invest")();
+            setFilterStatus(true);
+          }}
+          className="bg-blue-200 border-blue-500 border rounded-lg px-5 p-1"
+        >
+          invest
+        </button>
+        <button
+          onClick={() => {
+            onBtnFilterRecord("income")();
+            setFilterStatus(true);
+          }}
+          className="bg-green-200 border-green-500 border rounded-lg px-5 p-1"
+        >
+          income
+        </button>
+
+        <button
+          onClick={() => {
+            onBtnFilterRecord("expense")();
+            setFilterStatus(true);
+          }}
+          className="bg-red-200 border-red-500 border rounded-lg px-5 p-1"
+        >
+          expense
+        </button>
+      </div>
+      {FilterStatus == true && (
+        <div className="">
+          <button
+            onClick={RemoveAllFilter}
+            className="bg-yellow-200 border ms-2 border-yellow-500 rounded-lg px-2"
+          >
+            Remove Filter <CloseIcon />
+          </button>
+        </div>
+      )}
+
       <div>
         {loading || deleteLoading ? (
           <>

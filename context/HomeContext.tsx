@@ -8,16 +8,18 @@ import React, {
 } from "react";
 import Cookies from "universal-cookie";
 import {
-  showAllExpenses,
   addExpense,
   updateExpense,
   deleteExpense,
   showProfile,
+  showAllExpensesByNumber,
+  showAllExpensesBySearch,
 } from "API/api";
 import moment from "moment";
 import Swal from "sweetalert2";
 
 interface UserProfile {
+  [x: string]: string;
   id: string;
   name: string;
   email: string;
@@ -59,6 +61,8 @@ interface HomeState {
   setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   fetchTransactions: () => Promise<void>;
   addTransaction: (formValues: TransactionFormValues) => Promise<void>;
+  OnSearchRecord: any;
+  onBtnFilterRecord: any;
   updateTransaction: (
     formValues: TransactionFormValues & { id: string }
   ) => Promise<void>;
@@ -104,18 +108,44 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const OnSearchRecord = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value;
+    const newSearchTermLength = e.target.value.length;
+    if (newSearchTermLength == 0) {
+      fetchTransactions();
+    }
+    try {
+      const SearchRes = await showAllExpensesBySearch(
+        mobileNumber,
+        newSearchTerm
+      );
+      setTransactions(SearchRes.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
+  const onBtnFilterRecord = (filterType: string) => async () => {
+    try {
+      const SearchRes = await showAllExpensesBySearch(mobileNumber, filterType);
+      setTransactions(SearchRes.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const transactionsData = await showAllExpenses();
+      const MobileNumber = String(mobileNumber).trim();
+      const transactionsData = await showAllExpensesByNumber(MobileNumber);
+
       const sortedTransactions = transactionsData.data.sort(
         (a: any, b: any) =>
           moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
-      const normalizedMobileNumber = String(mobileNumber).trim();
       const filteredTransactions = sortedTransactions.filter(
-        (item: { mobileNumber: string }) =>
-          String(item.mobileNumber).trim() === normalizedMobileNumber
+        (item: { mobileNumber: string }) => transactionsData
       );
 
       const formattedTransactions: Transaction[] = filteredTransactions.map(
@@ -224,9 +254,11 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         setIsOpen,
         fetchTransactions,
         addTransaction,
+        onBtnFilterRecord,
         updateTransaction,
         deleteTransaction,
         fetchProfileData,
+        OnSearchRecord,
       }}
     >
       {children}

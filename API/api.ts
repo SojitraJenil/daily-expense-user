@@ -90,13 +90,31 @@ export const addExpense = async (formValues: any) => {
 };
 
 // Get all expenses
-export const showAllExpenses = async () => {
+export const showAllExpensesByNumber = async (mobileNO: any) => {
   try {
-    const response = await axiosInstance.get(`/showAllExpenses`);
+    const response = await axiosInstance.get(`/showAllExpenses/${mobileNO}`);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching expenses:", error);
     throw error;
+  }
+};
+
+export const showAllExpensesBySearch = async (
+  mobileNo: string,
+  searchTerm: string
+) => {
+  console.log("mobileNo", mobileNo);
+  console.log("searchTerm", searchTerm);
+  try {
+    const response = await axiosInstance.get(
+      `/search/${mobileNo}/${searchTerm}`
+    );
+    console.log("response.data=>>>>>>>>>>>", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    throw error; // Re-throwing error to handle it in the calling function
   }
 };
 
@@ -159,6 +177,17 @@ export const showAllFuelDetails = async () => {
     throw error;
   }
 };
+
+export const showAllFuelDetailsByMobileNo = async (mobileNo: string) => {
+  try {
+    const response = await axiosInstance.get(`/showFuelDetails/${mobileNo}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching expenses:", error);
+    throw error;
+  }
+};
+
 export const showProfile = async (id: any) => {
   try {
     const response = await axiosInstance.get(`/user/profile/${id}`);

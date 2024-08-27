@@ -73,7 +73,7 @@ const TransactionItemNew: React.FC<TransactionItemProps> = ({
           </div>
         </div>
         <span className="text-lg font-bold text-gray-800">
-          ₹{transaction.amount.toFixed(2)}
+          ₹{transaction?.amount}
         </span>
       </div>
       <div className="flex items-center space-x-2 text-gray-500 justify-between">
