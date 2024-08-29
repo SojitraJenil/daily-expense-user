@@ -28,10 +28,12 @@ const Record = () => {
     isOpen,
     setUpdateModalOpen,
     updateModalOpen,
+    setFilterStatus,
     fetchTransactions,
     addTransaction,
     deleteLoading,
     updateTransaction,
+    filterStatus,
     onBtnFilterRecord,
     deleteTransaction,
   } = useHome();
@@ -45,7 +47,6 @@ const Record = () => {
   };
 
   const [loading, setLoading] = useState(true);
-  const [FilterStatus, setFilterStatus] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
 
@@ -102,11 +103,13 @@ const Record = () => {
         />
         <MicIcon className="text-gray-500" />
       </div>
+      {/* <div className=" mx-auto text-center py-3">
+        Total Record :-{transactions.length}
+      </div> */}
       <div className="flex justify-evenly mb-4">
         <button
           onClick={() => {
             onBtnFilterRecord("invest")();
-            setFilterStatus(true);
           }}
           className="bg-blue-200 border-blue-500 border rounded-lg px-5 p-1"
         >
@@ -115,7 +118,6 @@ const Record = () => {
         <button
           onClick={() => {
             onBtnFilterRecord("income")();
-            setFilterStatus(true);
           }}
           className="bg-green-200 border-green-500 border rounded-lg px-5 p-1"
         >
@@ -125,14 +127,13 @@ const Record = () => {
         <button
           onClick={() => {
             onBtnFilterRecord("expense")();
-            setFilterStatus(true);
           }}
           className="bg-red-200 border-red-500 border rounded-lg px-5 p-1"
         >
           expense
         </button>
       </div>
-      {FilterStatus == true && (
+      {filterStatus && (
         <div className="">
           <button
             onClick={RemoveAllFilter}
@@ -146,6 +147,8 @@ const Record = () => {
       <div>
         {loading || deleteLoading ? (
           <>
+            <TransactionSkeleton />
+            <TransactionSkeleton />
             <TransactionSkeleton />
             <TransactionSkeleton />
             <TransactionSkeleton />

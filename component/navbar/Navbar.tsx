@@ -18,6 +18,7 @@ import Cookies from "universal-cookie";
 import { useAtom } from "jotai";
 import { NavigateNameAtom } from "atom/atom";
 import dynamic from "next/dynamic";
+import useHome from "context/HomeContext";
 
 const Navbar = () => {
   const router = useRouter();
@@ -26,6 +27,8 @@ const Navbar = () => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const { transactions } = useHome();
 
   const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
   const [isInstallable, setIsInstallable] = React.useState<boolean>(false);
@@ -160,6 +163,10 @@ const Navbar = () => {
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             {navigateName}
+            <span className="ps-5 font-thin">
+              {navigateName == "Record" &&
+                `Total Record-: ${transactions.length}`}
+            </span>
           </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton

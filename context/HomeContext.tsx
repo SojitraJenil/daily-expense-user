@@ -58,10 +58,12 @@ interface HomeState {
   setUpdateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateModalOpen: boolean;
   deleteLoading: boolean;
+  filterStatus: boolean;
   setDeleteLoading: React.Dispatch<React.SetStateAction<boolean>>;
   fetchTransactions: () => Promise<void>;
   addTransaction: (formValues: TransactionFormValues) => Promise<void>;
   OnSearchRecord: any;
+  setFilterStatus: any;
   onBtnFilterRecord: any;
   updateTransaction: (
     formValues: TransactionFormValues & { id: string }
@@ -78,6 +80,7 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
   const cookies = new Cookies();
   const mobileNumber = cookies.get("mobileNumber") as string;
   const [totalExpense, setTotalExpense] = useState<number>(0);
+  const [filterStatus, setFilterStatus] = useState<boolean>(false);
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalInvest, setTotalInvest] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -110,18 +113,21 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 
   const OnSearchRecord = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value;
-    const newSearchTermLength = e.target.value.length;
-    if (newSearchTermLength == 0) {
+
+    if (newSearchTerm.length === 0) {
+      setFilterStatus(false);
       fetchTransactions();
-    }
-    try {
-      const SearchRes = await showAllExpensesBySearch(
-        mobileNumber,
-        newSearchTerm
-      );
-      setTransactions(SearchRes.data);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+    } else {
+      setFilterStatus(true);
+      try {
+        const SearchRes = await showAllExpensesBySearch(
+          mobileNumber,
+          newSearchTerm
+        );
+        setTransactions(SearchRes.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
     }
   };
 
@@ -131,6 +137,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
       setTransactions(SearchRes.data);
     } catch (error) {
       console.error("Error fetching search results:", error);
+    } finally {
+      setFilterStatus(true);
     }
   };
 
@@ -247,8 +255,10 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         loading,
         mobileNumber,
         updateModalOpen,
+        filterStatus,
         deleteLoading,
         setUpdateModalOpen,
+        setFilterStatus,
         setDeleteLoading,
         setUserProfile,
         setIsOpen,
