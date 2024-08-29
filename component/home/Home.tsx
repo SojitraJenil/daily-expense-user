@@ -22,6 +22,7 @@ import TransactionFormModal from "component/TransactionFormModal/TransactionForm
 import dynamic from "next/dynamic";
 import useHome from "context/HomeContext";
 import DashboardSkeleton from "component/skeleton/HomeSkeleton";
+import Calendar from "component/celender/Celender";
 
 interface Transaction {
   id?: string;
@@ -237,6 +238,11 @@ const Home: React.FC = () => {
             </Box>
           </div>
           <Divider className="my-4 border-gray-700" />
+
+          <div className="my-5">
+            <Calendar />
+          </div>
+
           <TransactionFormModal
             open={updateModalOpen}
             onClose={() => {

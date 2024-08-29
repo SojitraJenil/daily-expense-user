@@ -132,6 +132,12 @@ const Record = () => {
         >
           expense
         </button>
+        <button
+          disabled
+          className="bg-yellow-200 border-yellow-500 border rounded-lg px-5 p-1"
+        >
+          {transactions.length}
+        </button>
       </div>
       {filterStatus && (
         <div className="">

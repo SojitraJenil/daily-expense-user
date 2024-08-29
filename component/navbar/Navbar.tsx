@@ -163,10 +163,6 @@ const Navbar = () => {
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             {navigateName}
-            <span className="ps-5 font-thin">
-              {navigateName == "Record" &&
-                `Total Record-: ${transactions.length}`}
-            </span>
           </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
