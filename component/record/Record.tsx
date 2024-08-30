@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Skeleton } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 import TransactionFormModal from "component/TransactionFormModal/TransactionFormModal";
 import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 import useHome from "context/HomeContext";
@@ -9,6 +9,11 @@ import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import MicIcon from "@mui/icons-material/Mic";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { GiReceiveMoney } from "react-icons/gi";
+import { GiPayMoney } from "react-icons/gi";
+
+
 
 interface Transaction {
   id?: string;
@@ -107,31 +112,55 @@ const Record = () => {
         Total Record :-{transactions.length}
       </div> */}
       <div className="flex justify-evenly mb-4">
-        <button
+        <Button
+          sx={{
+            backgroundColor: 'black.200',
+            color:"black",
+            borderColor: 'gray.500',
+            borderRadius: '8px',
+            padding: '8px 20px',
+          }}
+          variant="outlined"
+          endIcon={<GiReceiveMoney/>}
+          
           onClick={() => {
             onBtnFilterRecord("invest")();
           }}
-          className="bg-blue-200 border-blue-500 border rounded-lg px-5 p-1"
         >
-          invest
-        </button>
-        <button
-          onClick={() => {
-            onBtnFilterRecord("income")();
+          INVEST
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: 'black.200',
+            color:"black",
+            borderColor: 'gray.500',
+            borderRadius: '8px',
+            padding: '8px 20px',
           }}
-          className="bg-green-200 border-green-500 border rounded-lg px-5 p-1"
-        >
-          income
-        </button>
-
-        <button
+          variant="outlined"
+          endIcon={<FaMoneyBillTrendUp />}
           onClick={() => {
             onBtnFilterRecord("expense")();
           }}
-          className="bg-red-200 border-red-500 border rounded-lg px-5 p-1"
         >
-          expense
-        </button>
+          EXPENSE
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: 'black.200',
+            color:"black",
+            borderColor: 'gray.500',
+            borderRadius: '8px',
+            padding: '8px 20px',
+          }}
+          variant="outlined"
+          endIcon={<GiPayMoney />}
+          onClick={() => {
+            onBtnFilterRecord("income")();
+          }}
+        >
+          INCOME
+        </Button>
         <button
           disabled
           className="bg-yellow-200 border-yellow-500 border rounded-lg px-5 p-1"
@@ -168,15 +197,15 @@ const Record = () => {
                 <div key={item.id}>
                   {(index === 0 ||
                     moment(item.timestamp).format("DD-MM-YYYY") !==
-                      moment(transactions[index - 1].timestamp).format(
-                        "DD-MM-YYYY"
-                      )) && (
-                    <div className="mt-2 mb-2">
-                      <div className="bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-1 px-6">
-                        {moment(item.timestamp).format("DD-MM-YYYY")}
+                    moment(transactions[index - 1].timestamp).format(
+                      "DD-MM-YYYY"
+                    )) && (
+                      <div className="mt-2 mb-2">
+                        <div className="bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-1 px-6">
+                          {moment(item.timestamp).format("DD-MM-YYYY")}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   <TransactionItemNew
                     transaction={item}
                     onEdit={handleOpenUpdateModal}
