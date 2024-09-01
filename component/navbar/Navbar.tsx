@@ -164,19 +164,7 @@ const Navbar = () => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             {navigateName}
           </Typography>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "flex" } }}>
             <IconButton
               size="large"
               aria-label="show more"
