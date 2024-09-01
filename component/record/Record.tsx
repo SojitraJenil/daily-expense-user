@@ -67,7 +67,7 @@ const Record = () => {
 
   useEffect(() => {
     fetchTransactions().finally(() => setLoading(false));
-  }, [fetchTransactions]);
+  }, []);
 
   const TransactionSkeleton = () => (
     <div className="p-4 py-6 rounded-lg shadow-md mb-4 bg-gray-50">
@@ -169,54 +169,35 @@ const Record = () => {
         />
         <MicIcon className="text-gray-500" />
       </div>
+      {/* <div className=" mx-auto text-center py-3">
+        Total Record :-{transactions.length}
+      </div> */}
       <div className="flex justify-evenly mb-4">
-        <Button
-          sx={{
-            backgroundColor: "black.200",
-            color: "black",
-            borderColor: "gray.500",
-            borderRadius: "8px",
-            padding: "8px 20px",
+        <button
+          onClick={() => {
+            onBtnFilterRecord("invest")();
           }}
-          variant="outlined"
-          endIcon={<GiReceiveMoney />}
-          onClick={() => onBtnFilterRecord("invest")()}
-          className="bg-blue-200 border-blue-500 border rounded-lg px-3 p-1"
+          className="bg-blue-200 border-blue-500 border rounded-lg px-5 p-1"
         >
-          INVEST
-        </Button>
-        <Button
-          sx={{
-            backgroundColor: "black.200",
-            color: "black",
-            borderColor: "gray.500",
-            borderRadius: "8px",
-            padding: "8px 20px",
+          invest
+        </button>
+        <button
+          onClick={() => {
+            onBtnFilterRecord("income")();
           }}
-          className="bg-green-200 border-green-500 border rounded-lg px-3 p-1"
+          className="bg-green-200 border-green-500 border rounded-lg px-5 p-1"
         >
-          INCOME
-        </Button>
-        <Button
-          onClick={() => onBtnFilterRecord("expense")()}
-          className="bg-red-200 border-red-500 border rounded-lg px-3 p-1"
-        >
-          EXPENSE
-        </Button>
-        <Button
-          sx={{
-            backgroundColor: "black.200",
-            color: "black",
-            borderColor: "gray.500",
-            borderRadius: "8px",
-            padding: "8px 20px",
+          income
+        </button>
+
+        <button
+          onClick={() => {
+            onBtnFilterRecord("expense")();
           }}
-          variant="outlined"
-          endIcon={<GiPayMoney />}
-          onClick={() => onBtnFilterRecord("income")()}
+          className="bg-red-200 border-red-500 border rounded-lg px-5 p-1"
         >
-          INCOME
-        </Button>
+          expense
+        </button>
         <button
           disabled
           className="bg-yellow-200 border-yellow-500 border rounded-lg px-3 p-1"
