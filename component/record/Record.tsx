@@ -111,7 +111,7 @@ const Record = () => {
           onClick={() => {
             onBtnFilterRecord("invest")();
           }}
-          className="bg-blue-200 border-blue-500 border rounded-lg px-5 p-1"
+          className="bg-blue-200 border-blue-500 border rounded-lg px-3 p-1"
         >
           invest
         </button>
@@ -119,7 +119,7 @@ const Record = () => {
           onClick={() => {
             onBtnFilterRecord("income")();
           }}
-          className="bg-green-200 border-green-500 border rounded-lg px-5 p-1"
+          className="bg-green-200 border-green-500 border rounded-lg px-3 p-1"
         >
           income
         </button>
@@ -128,13 +128,13 @@ const Record = () => {
           onClick={() => {
             onBtnFilterRecord("expense")();
           }}
-          className="bg-red-200 border-red-500 border rounded-lg px-5 p-1"
+          className="bg-red-200 border-red-500 border rounded-lg px-3 p-1"
         >
           expense
         </button>
         <button
           disabled
-          className="bg-yellow-200 border-yellow-500 border rounded-lg px-5 p-1"
+          className="bg-yellow-200 border-yellow-500 border rounded-lg px-3 p-1"
         >
           {transactions.length}
         </button>
@@ -172,12 +172,32 @@ const Record = () => {
                         "DD-MM-YYYY"
                       )) && (
                     <div className="mt-2 mb-2">
-                      <div className="bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-1 px-6">
-                        {moment(item.timestamp).format("DD-MM-YYYY")}
+                      <div className="bg-gradient-to-r justify-between flex from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out text-white font-bold text-lg text-center py-1 px-6">
+                        <div className="">
+                          {moment(item.timestamp).format("DD-MM-YYYY")}
+                        </div>
+                        <div className="">
+                          ={" "}
+                          {transactions
+                            .filter(
+                              (transaction) =>
+                                moment(transaction.timestamp).format(
+                                  "DD-MM-YYYY"
+                                ) ===
+                                moment(item.timestamp).format("DD-MM-YYYY")
+                            )
+                            .reduce(
+                              (total, transaction) =>
+                                total + transaction.amount,
+                              0
+                            )}
+                          ₹
+                        </div>
                       </div>
                     </div>
                   )}
                   <TransactionItemNew
+                    name={"Transaction"}
                     transaction={item}
                     onEdit={handleOpenUpdateModal}
                     onDelete={deleteTransaction}

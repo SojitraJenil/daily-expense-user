@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { axiosInstance } from "./axios";
 import Cookies from "universal-cookie";
 

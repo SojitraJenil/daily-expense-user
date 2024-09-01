@@ -46,8 +46,10 @@ interface Transaction {
 
 interface HomeState {
   userProfile: UserProfile;
+  userId: string;
   isOpen: boolean;
   mobileNumber: string;
+  token: string;
   transactions: Transaction[];
   totalExpense: number;
   totalIncome: number;
@@ -68,7 +70,7 @@ interface HomeState {
   updateTransaction: (
     formValues: TransactionFormValues & { id: string }
   ) => Promise<void>;
-  deleteTransaction: (record: { id: string; amount: number }) => Promise<void>;
+  deleteTransaction: any;
   fetchProfileData: () => Promise<void>;
 }
 
@@ -79,6 +81,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const cookies = new Cookies();
   const mobileNumber = cookies.get("mobileNumber") as string;
+  const userId = cookies.get("UserId");
+  const token = cookies.get("token");
   const [totalExpense, setTotalExpense] = useState<number>(0);
   const [filterStatus, setFilterStatus] = useState<boolean>(false);
   const [totalIncome, setTotalIncome] = useState<number>(0);
@@ -254,6 +258,8 @@ export const HomeProvider: React.FC<{ children: ReactNode }> = ({
         totalInvest,
         loading,
         mobileNumber,
+        token,
+        userId,
         updateModalOpen,
         filterStatus,
         deleteLoading,

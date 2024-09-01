@@ -27,6 +27,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { NavigateNameAtom } from "atom/atom";
 import { useAtom } from "jotai";
+import TransactionItemNew from "component/TransactionItem/TransactionItemNew/TransactionItemNew";
 
 function Fuel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -189,41 +190,13 @@ function Fuel() {
                   boxShadow: 1,
                 }}
               >
-                <Stack
-                  direction="row"
-                  paddingLeft={0.5}
-                  alignItems="center"
-                  spacing={1}
-                  justifyContent={"space-evenly"}
-                >
-                  <Typography variant="body1">{index + 1}</Typography>
-                  <Typography variant="body1">{item?.Currentkm}-KM</Typography>
-                  <Typography variant="body1">₹{item?.fuelPrice}</Typography>
-                  <Typography variant="body1">
-                    {moment(item.timestamp).format("hh:mm A")}
-                  </Typography>
-                  <IconButton
-                    onClick={() => handleEditClick(item)}
-                    className="p-0 m-0"
-                  >
-                    <CreateIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(item._id)}
-                    className="p-0 m-0"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Stack>
-                <Stack>
-                  <Typography
-                    variant="body2"
-                    className="pr-1"
-                    sx={{ color: "gray", fontSize: "0.75rem" }}
-                  >
-                    {/* {Time} */}
-                  </Typography>
-                </Stack>
+                <TransactionItemNew
+                  name={"Fuel"}
+                  fuel={item}
+                  onEdit={handleEditClick}
+                  onDelete={handleDeleteClick}
+                  Time={moment(item.timestamp).format("hh:mm A")}
+                />
               </Box>
             </React.Fragment>
           );
