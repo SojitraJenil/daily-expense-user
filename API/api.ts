@@ -226,3 +226,14 @@ export const updateFuelDetails = async (id: string, formValues: any) => {
     throw error;
   }
 };
+
+export const showChatMessage = async () => {
+  try {
+    const response = await axiosInstance.get(`/messages`);
+    console.log("response.data", response);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error chat expenses:", error);
+    throw error;
+  }
+};

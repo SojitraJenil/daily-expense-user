@@ -1,208 +1,93 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from "react";
-import { FaUserCircle } from "react-icons/fa";
-import { IoSend } from "react-icons/io5";
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebase";
-import WestIcon from "@mui/icons-material/West";
-import moment from "moment";
-import { Box, CircularProgress } from "@mui/material";
-import Cookies from "universal-cookie";
-import { useAtom } from "jotai";
-import { NavigateNameAtom } from "atom/atom";
-import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
-import useHome from "context/HomeContext";
+import { showChatMessage } from "API/api";
+import React, { useState, useEffect, useRef } from "react";
+import io from "socket.io-client";
 
-const COMMON_ROOM_ID = "ExpenseAllUserChat";
-
-interface Message {
-  id: string;
-  text: string;
-  createdAt: number;
-  user: string;
-  MobileNumber: string;
-  mobileNo: string;
-  room: string;
-}
+const socket = io("https://daily-expense-api.onrender.com", {
+  transports: ["websocket"],
+});
 
 const Chat = () => {
-  const { userProfile } = useHome();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [typing, setTyping] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const messagesRef = collection(db, "Message");
-  const cookie = new Cookies();
-  const MobileNumber = cookie.get("mobileNumber");
-  const containRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [message, setMessage] = useState<string>("");
+  const [messages, setMessages] = useState<Array<any>>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
-      const messages = snapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as Message[];
-      const sortedMessages = messages.sort((a, b) => a.createdAt - b.createdAt);
-      setLoading(false);
-      setMessages(sortedMessages);
+    const fetchMessages = async () => {
+      try {
+        const response = await showChatMessage();
+        console.log("response", response);
+        if (response) {
+          setMessages(response);
+        } else {
+          console.error("Failed to fetch messages");
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    fetchMessages();
+
+    socket.emit("join_room", "room1");
+
+    socket.on("receive_message", (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
     });
-    return () => unsubscribe();
+
+    return () => {
+      socket.off("receive_message");
+    };
   }, []);
 
   useEffect(() => {
-    if (containRef.current) {
-      containRef.current.scrollTop = containRef.current.scrollHeight;
-    }
+    // Scroll to the bottom whenever messages change
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  async function sendMessage() {
-    if (newMessage.trim() === "") {
-      setError("Enter the text!");
-      return;
-    }
-
-    setNewMessage("");
-    try {
-      await addDoc(messagesRef, {
-        text: newMessage,
-        mobileNo: MobileNumber,
-        createdAt: new Date().getTime(),
-        user: userProfile?.name,
-        room: COMMON_ROOM_ID,
+  const sendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      socket.emit("send_message", {
+        author: "User",
+        message,
+        room: "room1",
       });
-    } catch (error) {
-      console.error("Error sending message: ", error);
-      setError("Failed to send message.");
+      setMessage("");
     }
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(event.target.value);
-    setTyping(true);
   };
 
-  useEffect(() => {
-    const typingTimeout = setTimeout(() => setTyping(false), 1000);
-    return () => clearTimeout(typingTimeout);
-  }, [newMessage]);
-
-  const [, setIsNavigate] = useAtom(NavigateNameAtom); // Use atom to manage navigation state
-
-  const handleNavigateHome = () => {
-    setIsNavigate("Home");
-  };
   return (
-    <div className="flex flex-col h-screen bg-gray-100 pb-16">
-      {/* Header */}
-      <div className="flex items-center p-2 border-b border-black bg-red-600 text-white fixed top-0 left-0 w-full z-50">
-        <div className="" onClick={handleNavigateHome}>
-          <WestIcon className="w-8 h-8 ml-2" />
-        </div>
-        <FaUserCircle className="w-8 h-10 ml-2" />
-        <div className="font-semibold text-center flex-grow">
-          <p className="text-md text-start ps-2 mt-0">
-            {loading ? "Loading..." : "Chat Room".toUpperCase()}
-          </p>
-          <p className="text-SM text-start ps-2">
-            {typing && <p className="text-sm">{userProfile?.name} Typing...</p>}
-          </p>
-        </div>
-      </div>
-
-      {/* Messages Container */}
+    <div className="pt-10 max-w-md mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Chat Room</h2>
       <div
-        className="flex-grow overflow-y-auto px-2 pt-5 bg-gray-100"
-        ref={containRef}
+        className="bg-gray-200 p-4 rounded-lg overflow-y-auto h-64 mb-4"
+        style={{ maxHeight: "300px" }}
       >
-        <div className="space-y-2">
-          {loading ? (
-            <Box className="flex justify-center items-center h-full">
-              <CircularProgress />
-            </Box>
-          ) : (
-            messages.map((data, index) => (
-              <div key={data.id}>
-                {(index === 0 ||
-                  moment(data.createdAt).format("DD-MM-YYYY") !==
-                    moment(messages[index - 1].createdAt).format(
-                      "DD-MM-YYYY"
-                    )) && (
-                  <div className="text-center mb-2">
-                    <span className="px-4 py-1 bg-gray-300 text-gray-800 rounded-md">
-                      {moment(data.createdAt).format("DD-MM-YYYY")}
-                    </span>
-                  </div>
-                )}
-                <div
-                  className={`flex ${
-                    MobileNumber === data.mobileNo
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
-                  {MobileNumber !== data.mobileNo && (
-                    <FaUserCircle className="w-5 h-8 mr-2" />
-                  )}
-                  <div
-                    className={`p-2 max-w-[300px] rounded-lg ${
-                      MobileNumber === data.mobileNo
-                        ? "bg-red-600 text-white"
-                        : "bg-white text-black"
-                    } text-dark`}
-                  >
-                    <div className="flex flex-col">
-                      {MobileNumber !== data.mobileNo && (
-                        <span className="font-bold">{data.user}:</span>
-                      )}
-                      <span className="whitespace-pre-wrap">{data.text}</span>
-                      <div className="text-xs">
-                        {moment(data.createdAt).format("hh:mm A")}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        {messages &&
+          messages.map((msg, index) => (
+            <p key={index} className="mb-2">
+              <strong>{msg.author}:</strong> {msg.message}
+            </p>
+          ))}
+        <div ref={messagesEndRef} />
       </div>
-
-      {/* Chat Input */}
-      <div className="fixed bottom-0 z-50 bg-slate-200 left-0 w-full p-2 border-t border-gray-300 flex items-center">
+      <form onSubmit={sendMessage} className="flex">
         <input
-          ref={inputRef}
           type="text"
-          value={newMessage}
-          onChange={handleInputChange}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
-          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#b54949] focus:border-transparent"
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
+          className="flex-grow p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          className="ml-2 px-4 py-3 bg-red-500 text-white p-2 rounded-md flex items-center justify-center"
-          type="button"
-          onClick={sendMessage}
+          type="submit"
+          className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
         >
-          <IoSend />
+          Send
         </button>
-      </div>
-
-      {/* Error Message */}
-      {error && <p className="text-red-600 p-2">{error}</p>}
+      </form>
     </div>
   );
 };
 
-export default dynamic(() => Promise.resolve(Chat), { ssr: false });
+export default Chat;
