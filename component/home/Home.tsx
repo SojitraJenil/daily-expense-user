@@ -23,6 +23,8 @@ import dynamic from "next/dynamic";
 import useHome from "context/HomeContext";
 import DashboardSkeleton from "component/skeleton/HomeSkeleton";
 import Calendar from "component/celender/Celender";
+import { NavigateNameAtom } from "atom/atom";
+import { useAtom } from "jotai";
 
 interface Transaction {
   id?: string;
@@ -54,6 +56,11 @@ const Home: React.FC = () => {
 
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+  const [, setIsNavigate] = useAtom(NavigateNameAtom);
+
+  const handleNavigateRecord = () => {
+    setIsNavigate("Record");
+  };
   const [currentDateTime, setCurrentDateTime] = useState("");
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -181,7 +188,7 @@ const Home: React.FC = () => {
                   >
                     <button
                       color="primary"
-                      onClick={handleOpen}
+                      onClick={handleNavigateRecord}
                       className="px-4 w-[45%]  py-2 text-md text-white bg-gradient-to-r from-teal-600 to-purple-700 rounded-lg transition-transform duration-300 ease-in-out hover:from-purple-700 hover:to-teal-600 transform hover:scale-105"
                     >
                       show expense

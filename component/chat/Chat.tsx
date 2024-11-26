@@ -93,7 +93,7 @@ const Chat = () => {
     return () => clearTimeout(typingTimeout);
   }, [newMessage]);
 
-  const [, setIsNavigate] = useAtom(NavigateNameAtom); // Use atom to manage navigation state
+  const [, setIsNavigate] = useAtom(NavigateNameAtom);
 
   const handleNavigateHome = () => {
     setIsNavigate("Home");
