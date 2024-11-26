@@ -1,4 +1,3 @@
-// BottomBar.tsx
 import * as React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -15,7 +14,13 @@ interface BottomBarProps {
 const BottomBar: React.FC<BottomBarProps> = ({ isNavigate, onNavigate }) => {
   const [value, setValue] = React.useState<string>(isNavigate);
 
-  const handleChange = (newValue: string) => {
+  // Synchronize local state with the parent prop
+  React.useEffect(() => {
+    setValue(isNavigate); // Update state if isNavigate changes externally
+  }, [isNavigate]);
+
+  // Handle value changes
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
     onNavigate(newValue);
   };
@@ -23,16 +28,13 @@ const BottomBar: React.FC<BottomBarProps> = ({ isNavigate, onNavigate }) => {
   return (
     <BottomNavigation
       value={value}
-      onChange={(event, newValue) => {
-        handleChange(newValue);
-      }}
+      onChange={handleChange}
       showLabels
       sx={{
         backgroundColor: "whitesmoke",
         padding: "2px 0px",
         "& .Mui-selected": {
           backgroundColor: "black",
-          padding: "2px 0px",
           color: "white",
         },
       }}
