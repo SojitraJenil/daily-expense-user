@@ -75,7 +75,7 @@ const Admin: React.FC = () => {
                 <input
                   type="email"
                   id="email"
-                  value="admin@123"
+                  value=""
                   className="block w-full p-1 text-black border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter your email"
                   required
